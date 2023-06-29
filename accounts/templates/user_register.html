@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Registration
+{% endblock title %}
+
+{% block css %}
+
+{% endblock css %}
+
+{% block content %}
+
+<div class="container">
+  <h2>User Registration</h2>
+  <form id="register_form">{% csrf_token %}
+    <div class="form-group mb-3">
+      <label for="fullname"><i class="fas fa-user"></i> Full name</label>
+      <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Enter username" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="email"><i class="fas fa-envelope"></i> Email</label>
+      <input type="email" maxlength="50" class="form-control" id="email" name="email" placeholder="Enter email" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="password"><i class="fas fa-lock"></i> Password</label>
+      <input type="password" maxlength="16" class="form-control" id="password" name="password" placeholder="Enter password" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="contact_number"><i class="fas fa-phone"></i> Contact Number</label>
+      <input type="text" maxlength="12" class="form-control" id="contact_number" name="contact_number" placeholder="Enter contact number" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="address"><i class="fas fa-map-marker"></i>Complete Adress</label>
+      <textarea class="form-control" id="address" name="address" placeholder="Enter complete address" required></textarea>
+    </div>
+    <button type="button" id="submit_form_btn" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i> Register</button>
+  </form>
+  <p class="text-center mt-3">Already have an account? <a href="/accounts/login/">Login</a></p>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+
+$(document).ready(function() {
+    $('#submit_form_btn').click(function(e) {
+        e.preventDefault();  // Prevent the form from submitting normally
+
+        var formData = $('#register_form').serialize();  // Serialize the form data
+
+        $.ajax({
+            url: '/accounts/register/',  // URL to the Django view
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                // Handle the successful response
+                console.log(response);
+                Swal.fire({
+                    title: 'Success',
+                    text: response.msg,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    // Redirect to another page or perform additional actions
+                    window.location.href = '/accounts/login/';
+                });
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle the error
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    });
+});
+
+</script>
+{% endblock js %}

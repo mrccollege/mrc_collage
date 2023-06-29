@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+<div class="col-lg-10 mx-auto p-5">
+    {% for course_data in course_data %}
+    <div class="row list-group-item-success mb-3">
+
+        <div class="col-lg-6 p-5">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2>{{course_data.name}}</h2>
+                    <h4>Description : </h4>
+                    <p style="text-align: justify;">{{course_data.description|slice:'100'}} <a href="#">Read more</a></p>
+                </div>
+                <div class="col-lg-6">
+                    <h4>Course Details</h4>
+                    <ul>
+                        <li>Duration: 4 weeks</li>
+                        <li>Level: Intermediate</li>
+                        <li>Language: Hindi</li>
+                        <li>Price: {{course_data.price}} Rs.</li>
+                    </ul>
+                </div>
+                <a href="/cart-page/{{course_data.id}}/" class="btn btn-sm btn-danger w-75">Buy now</a>
+            </div>
+
+        </div>
+        <div class="col-lg-6 p-5">
+            <video class="img-fluid" controls src="{{course_data.demo_video.url}}"></video>
+            <button class="btn btn-sm btn-primary w-100 bg-secondary">Watch Demo Video</button>
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+
+</div>
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

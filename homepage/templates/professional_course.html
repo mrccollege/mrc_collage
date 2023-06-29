@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block css %}
+    <style>
+        .pointer{
+            cursor: pointer;
+        }
+
+        .pointer:hover{
+            background-color: gray;
+        }
+
+    </style>
+{% endblock css %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3">
+            <ul class="list-group">
+                {% for data in data %}
+                <li class="list-group-item pointer" onclick="play_video('{{data.video_file.url}}', {% if data.thumb_video %} '{{data.thumb_video.url}}' {% endif %})">Day : {{data.day}}
+                    <input type="hidden" value="{% if data.thumb_video %} {{data.thumb_video.url}} {% endif %}">
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-lg-8">
+            <video controls controlsList="nodownload" height="540px" id="video_frame" src="" type="video/mp4" width="960px" poster="{{thumb.file.url}}" class="img-fluid">
+            </video>
+        </div>
+    </div>
+</div>
+
+
+<!--other course data show-->
+<!--<div class="container">-->
+<!--    {% if request.user.is_authenticated %}-->
+<!--    <h3>Other Courses</h3>-->
+<!--    <div class="row">-->
+<!--        {% for other_course in other_course %}-->
+<!--        <div class="col-md-6 col-lg-3">-->
+<!--            <div class="card">-->
+<!--                <img alt="Course Image" class="card-img-top" height="200" src="{{main_course.image.url}}">-->
+<!--                <div class="card-body">-->
+<!--                    <h5 class="card-title">{{other_course.name}}</h5>-->
+<!--                    <p class="card-text">{{other_course.description}}</p>-->
+<!--                    <p class="card-text">Instructor: John Doe</p>-->
+<!--                    <p class="card-text">Rs. {{other_course.totalprice}}</p>-->
+<!--                    <a href="/cart-page/{{other_course.id}}/">add to cart</a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        {% empty %}-->
+<!--        <p class="text-center">other courses are not available</p>-->
+<!--        {% endfor %}-->
+<!--    </div>-->
+<!--    {% endif %}-->
+<!--</div>-->
+{% endblock content %}
+
+{% block js %}
+<script>
+        function play_video(param1, param2) {
+            if (param1){
+                $('#video_frame').attr('src', param1)
+            }else{
+                $('#video_frame').attr('src', '')
+            }
+
+            if(param2){
+                $('#video_frame').attr('poster', param2)
+            }else{
+                $('#video_frame').attr('poster', '{{thumb.file.url}}')
+            }
+        }
+
+</script>
+{% endblock js %}

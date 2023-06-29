@@ -1,0 +1,95 @@
+
+
+{% extends 'base.html' %}
+
+{% block css %}
+{% endblock css %}
+
+
+{% block content %}
+
+<div class="container">
+        <div class="row">
+            {% if request.user.is_authenticated %}
+                {% if data  %}
+                <div class="col-md-6">
+                    <h2>Video Gallery</h2>
+                    <div class="video-container">
+                        <video controls controlsList="nodownload" height="540px" id="video_frame" src="{{data.video_file.url}}" type="video/mp4" width="960px" class="img-fluid">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h2>Video Instructions</h2>
+                    <div class="video-container">
+                        <p style="text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta
+                            placeat suscipit voluptatibus
+                            omnis cum dignissimos velit, quibusdam corporis cumque, alias laborum impedit
+                            cupiditate
+                            consequatur, ipsam quo illum quas repudiandae vel.</p>
+                        <p style="text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta
+                            placeat suscipit voluptatibus
+                            omnis cum dignissimos velit, quibusdam corporis cumque, alias laborum impedit
+                            cupiditate
+                            consequatur, ipsam quo illum quas repudiandae vel.</p>
+                        <p style="text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta
+                            placeat suscipit voluptatibus
+                            omnis cum dignissimos velit, quibusdam corporis cumque, alias laborum impedit
+                            cupiditate
+                            consequatur, ipsam quo illum quas repudiandae vel.</p>
+                        <p style="text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta
+                            placeat suscipit voluptatibus
+                            omnis cum dignissimos velit, quibusdam corporis cumque, alias laborum impedit
+                            cupiditate
+                            consequatur, ipsam quo illum quas repudiandae vel.</p>
+                        <p style="text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta
+                            placeat suscipit voluptatibus
+                            omnis cum dignissimos velit, quibusdam corporis cumque, alias laborum impedit
+                            cupiditate
+                            consequatur, ipsam quo illum quas repudiandae vel.</p>
+                    </div>
+                </div>
+                {% endif %}
+            {% else %}
+
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block js %}
+
+<script>
+    var playCount = ''
+    $('video').on('ended', function () {
+        var video_id = $('#video_id').val();
+        var myObject = {
+          'count':1
+        }
+
+        $.ajax({
+            url: '/count_video/'+'{{data.id}}'+'/',
+            method: 'GET',
+            data: myObject,
+            success: function (response) {
+                var responseData = response;
+                if(responseData.status == 1){
+                   location.reload()
+                }
+            },
+            error: function (xhr, status, error) {
+                // Handle error here
+                console.log(error);
+            }
+        });
+
+    });
+</script>
+{% endblock js %}
+
