@@ -2,5 +2,4 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/ultucpkamgqw/public_html/
-    
     - /bin/cp * $DEPLOYPATH
