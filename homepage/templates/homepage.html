@@ -4,7 +4,7 @@
 {% endblock css %}
 
 {% block content %}
-<div class="col-lg-10 mx-auto p-5">
+<div class="col-lg-10 mx-auto p-1">
     {% for course_data in course_data %}
     <div class="row list-group-item-success mb-3">
 
@@ -28,7 +28,7 @@
             </div>
 
         </div>
-        <div class="col-lg-6 p-5">
+        <div class="col-lg-6 p-2">
             <video class="img-fluid" controls src="{{course_data.demo_video.url}}"></video>
             <button class="btn btn-sm btn-primary w-100 bg-secondary">Watch Demo Video</button>
         </div>
