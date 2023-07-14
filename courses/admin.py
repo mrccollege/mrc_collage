@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import VideoFiles, AudioFiles, Course, UserWatch, VideoInstructions, AudioInstructions, CoursePurchased
+from .models import VideoFiles,UserWatch,  AudioFiles, Course, VideoInstructions, AudioInstructions, CoursePurchased
 
 # Register your models here.
 admin.site.register(VideoFiles)

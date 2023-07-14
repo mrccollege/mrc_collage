@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-
-
+from chunked_upload.models import ChunkedUpload
 # Create your models here.
 
 class Course(models.Model):
@@ -29,20 +28,14 @@ class Course(models.Model):
         return self.name
 
 
-class VideoFiles(models.Model):
+class VideoFiles(ChunkedUpload):
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
     day = models.IntegerField(null=True)
-    video_file = models.FileField(upload_to='video_file', null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(null=True)
-    thumb_video = models.ImageField(upload_to='thumb_image', default='')
-    attr1 = models.CharField(max_length=100, null=True)
-    attr2 = models.CharField(max_length=100, null=True)
-    attr3 = models.CharField(max_length=100, null=True)
 
-    attr4 = models.IntegerField(null=True)
-    attr5 = models.IntegerField(null=True)
-    attr6 = models.IntegerField(null=True)
+    def __str__(self) -> str:
+        return self.day
 
 
 class AudioFiles(models.Model):

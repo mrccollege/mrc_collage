@@ -19,7 +19,7 @@
         <div class="col-lg-3">
             <ul class="list-group">
                 {% for data in data %}
-                <li class="list-group-item pointer" onclick="play_video('{{data.video_file.url}}', {% if data.thumb_video %} '{{data.thumb_video.url}}' {% endif %})">Day : {{data.day}}
+                <li class="list-group-item pointer" onclick="play_video('{{data.file.url}}', {% if data.thumb_video %} '{{data.thumb_video.url}}' {% endif %})">Day : {{data.day}}
                     <input type="hidden" value="{% if data.thumb_video %} {{data.thumb_video.url}} {% endif %}">
                 </li>
                 {% endfor %}
