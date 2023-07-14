@@ -34,9 +34,6 @@ class VideoFiles(ChunkedUpload):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(null=True)
 
-    def __str__(self) -> str:
-        return self.day
-
 
 class AudioFiles(models.Model):
     audio = models.ForeignKey(Course, on_delete=models.PROTECT)
