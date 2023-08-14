@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from chunked_upload.models import ChunkedUpload
 # Create your models here.
 class FileType(models.Model):
     file_type = models.CharField(max_length=20, null=True)

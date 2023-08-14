@@ -20,14 +20,12 @@ ALLOWED_HOSTS = ['*', 'mrccollege.com', 'www.mrccollege.com']
 # Application definition
 
 INSTALLED_APPS = [
-    'chunked_upload',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'video_app',
     'courses',
     'homepage',
     'accounts',
