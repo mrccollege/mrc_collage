@@ -120,9 +120,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Maximum file size for chunked upload (in bytes)
-CHUNKED_UPLOAD_MAX_MEMORY_SIZE = 524288000  # 500MB
 
-CHUNK_SIZE = 8192  # or a larger value
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576000
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000
 
