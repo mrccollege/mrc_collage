@@ -29,7 +29,7 @@
 
         </div>
         <div class="col-lg-6 p-2">
-            <video class="img-fluid" controls src="{{course_data.demo_video.url}}"></video>
+            <video class="img-fluid" controls src="{% if course_data.demo_video %}{{course_data.demo_video.url}}{% endif %}"></video>
             <button class="btn btn-sm btn-primary w-100 bg-secondary">Watch Demo Video</button>
         </div>
 

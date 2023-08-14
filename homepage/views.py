@@ -85,7 +85,11 @@ def watch_video(request, type, id):
     user_id = request.session.get('user_id')
     type = type
     course_id = id
-    thumb = Lookup.objects.get(code='common thumb')
+    file_type = ''
+    try:
+        thumb = Lookup.objects.get(code='common thumb')
+    except:
+        thumb = ''
 
     if user_id is not None:
         if type == 'professional':
@@ -98,15 +102,18 @@ def watch_video(request, type, id):
             if watch_video_ids:
                 try:
                     video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
+                    file_type = video_path.file_type.file_type
                 except:
                     video_path = ''
             else:
                 try:
                     video_path = VideoFiles.objects.filter(course_id=course_id)[0]
+                    file_type = video_path.file_type.file_type
                 except:
                     video_path = ''
             context = {
-                'data': video_path
+                'data': video_path,
+                'file_type': file_type
             }
             print(context)
             return render(request, 'common.html', context)
