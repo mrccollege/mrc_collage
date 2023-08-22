@@ -3,7 +3,7 @@ backports.zoneinfo==0.2.1
 certifi==2023.7.22
 charset-normalizer==3.2.0
 dj-static==0.0.6
-Django==4.2.4
+Django==3.2.20
 idna==3.4
 razorpay==1.4.1
 requests==2.31.0
