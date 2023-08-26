@@ -1,39 +1,167 @@
 {% extends 'base.html' %}
 
 {% block css %}
+<style>
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio (9 / 16 * 100) */
+            margin: 0 auto;
+        }
+
+        .video-container video {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            /* Adjust dimensions for smaller screens */
+            .video-container {
+                padding-bottom: 75%; /* 4:3 aspect ratio (3 / 4 * 100) */
+            }
+        }
+
+
+</style>
+<style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .course-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding-top: 10px; /* Add padding to push content below the navbar */
+        }
+
+        .course-video {
+            flex: 1;
+            max-width: 50%;
+            position: relative;
+        }
+
+        .tv-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('tv-frame.png') no-repeat center center;
+            background-size: contain;
+            z-index: -1;
+        }
+
+        .course-video video {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .course-details {
+            flex: 1;
+            max-width: 50%;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-details h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .course-details p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .enroll-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ff6b6b;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .enroll-btn:hover {
+            background-color: #e74c3c;
+        }
+
+
+</style>
 {% endblock css %}
 
 {% block content %}
+<div class="image-container">
+    <img alt="Image" height="200" class="w-100" src="https://picsum.photos/400/250">
+</div>
 <div class="col-lg-10 mx-auto p-1">
     {% for course_data in course_data %}
-    <div class="row list-group-item-success mb-3">
-
-        <div class="col-lg-6 p-5">
-            <div class="row">
-                <div class="col-lg-6">
-                    <h2>{{course_data.name}}</h2>
-                    <h4>Description : </h4>
-                    <p style="text-align: justify;">{{course_data.description|slice:'100'}} <a href="#">Read more</a></p>
-                </div>
-                <div class="col-lg-6">
-                    <h4>Course Details</h4>
-                    <ul>
-                        <li>Duration: 4 weeks</li>
-                        <li>Level: Intermediate</li>
-                        <li>Language: Hindi</li>
-                        <li>Price: {{course_data.price}} Rs.</li>
-                    </ul>
-                </div>
-                <a href="/cart-page/{{course_data.id}}/" class="btn btn-sm btn-danger w-75">Buy now</a>
+    <div class="container mt-5">
+        <div class="course-list">
+            <div class="course-video">
+                <div class="tv-frame"></div>
+                <!--                <video width="100%" controls poster="{% if course_data.course_image %}{{course_data.course_image.url}}{% endif %}">-->
+                <video controls width="100%">
+                    <source src="{% if course_data.demo_video %}{{course_data.demo_video.url}}{% endif %}"
+                            type="video/mp4">
+                </video>
             </div>
-
-        </div>
-        <div class="col-lg-6 p-2">
-            <video class="img-fluid" controls src="{% if course_data.demo_video %}{{course_data.demo_video.url}}{% endif %}"></video>
-            <button class="btn btn-sm btn-primary w-100 bg-secondary">Watch Demo Video</button>
+            <div class="course-details">
+                <h3>{{course_data.name}}</h3>
+                <p>Learn exciting skills through Course 1. Expertly guided by John Doe.</p>
+                <p><strong>Instructor:</strong> John Doe</p>
+                <p><strong>Duration:</strong> {{course_data.validate_for}} {% if course_data.validate_for == 1 %} Month
+                    {% else %} Months {% endif %}</p>
+                <p>{{course_data.description|slice:'100'}}</p>
+                <button class="enroll-btn" id="enroll_btn" onclick="enroll_now('{{course_data.id}}')">Enroll Now
+                </button>
+            </div>
         </div>
 
     </div>
+
+    <!--    <div class="row list-group-item-success mb-3">-->
+
+    <!--        <div class="col-lg-6 p-5">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-lg-6">-->
+    <!--                    <h2>{{course_data.name}}</h2>-->
+    <!--                    <h4>Description : </h4>-->
+    <!--                    <p style="text-align: justify;">{{course_data.description|slice:'100'}} <a href="#">Read more</a></p>-->
+    <!--                </div>-->
+    <!--                <div class="col-lg-6">-->
+    <!--                    <h4>Course Details</h4>-->
+    <!--                    <ul>-->
+    <!--                        <li>Duration: 4 weeks</li>-->
+    <!--                        <li>Level: Intermediate</li>-->
+    <!--                        <li>Language: Hindi</li>-->
+    <!--                        <li>Price: {{course_data.price}} Rs.</li>-->
+    <!--                    </ul>-->
+    <!--                </div>-->
+    <!--                <a href="/cart-page/{{course_data.id}}/" class="btn btn-sm btn-danger w-75">Buy now</a>-->
+    <!--            </div>-->
+
+    <!--        </div>-->
+
+    <!--        <div class="col-lg-6 p-2">-->
+    <!--            <video class="img-fluid" controls src="{% if course_data.demo_video %}{{course_data.demo_video.url}}{% endif %}"></video>-->
+    <!--            <button class="btn btn-sm btn-primary w-100 bg-secondary">Watch Demo Video</button>-->
+    <!--        </div>-->
+
+    <!--    </div>-->
     {% endfor %}
 </div>
 
@@ -41,4 +169,11 @@
 {% endblock content %}
 
 {% block js %}
+<script>
+    function enroll_now(course_id){
+        window.location.href = '/cart-page/'+course_id+'/';
+    }
+
+
+</script>
 {% endblock js %}

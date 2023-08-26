@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.shortcuts import render,redirect
 from django.http import JsonResponse
+from django.shortcuts import render, redirect
 
 
 # Create your views here.
@@ -37,24 +37,23 @@ def register_account(request):
             id = 0
 
         data_json = {
-            'id':id,
-            'msg':msg,
+            'id': id,
+            'msg': msg,
         }
 
         return JsonResponse(data_json)
 
     else:
-        return render(request,'user_register.html')
+        return render(request, 'user_register.html')
+
 
 def login_account(request):
     if request.method == 'POST':
         form = request.POST
-        username = form.get('username')  # in username email is comming
+        username = form.get('email')
         username = username.strip()
         password = form.get('password')
         password = password.strip()
-        msg = ''
-        status = 'failed'
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
