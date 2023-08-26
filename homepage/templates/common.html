@@ -19,7 +19,7 @@
                 </video>
                 {% else %}
 
-                <audio controls>
+                <audio controls controlsList="nodownload">
                   <source src="{% if data.file %}{{data.file.url}}{% endif %}" type="audio/mpeg">
                 </audio>
                 {% endif %}
