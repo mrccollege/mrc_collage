@@ -1,35 +1,72 @@
 {% extends 'base.html' %}
+
+{% block css %}
+<style>
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            display: flex;-->
+<!--            justify-content: center;-->
+<!--            align-items: center;-->
+<!--            min-height: 100vh;-->
+<!--            margin: 0;-->
+<!--        }-->
+
+        .login-form {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-form .form-control {
+            border-color: #ccc;
+        }
+
+        .login-form .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .login-form .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+</style>
+{% endblock css %}
 {% block content %}
 
-<div class="container">
-  <h2>User Login</h2>
-  <form id="login_form">{% csrf_token %}
-    <div class="form-group mb-3">
-      <label for="username"><i class="fas fa-user"></i> Email</label>
-      <input type="text" class="form-control" name="username" id="username" placeholder="Enter email" required>
-    </div>
-
-    <div class="form-group mb-3">
-      <label for="password"><i class="fas fa-lock"></i> Password</label>
-      <input type="password" class="form-control" name="password" id="password" placeholder="Enter password" required>
-    </div>
-
-    <button type="button" id="login_form_btn" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i>
-      Login</button>
-  </form>
-  <p class="text-center mt-3">Register For new account? <a href="/accounts/register/">Register</a></p>
+<div class="login-form mx-auto">
+    <h2>Login User</h2>
+    <form id="login_form" class="mb-3">{% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-control" id="email" name="email" placeholder="Enter your email" type="email">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" id="password" name="password" placeholder="Enter your password" type="password">
+        </div>
+        <button class="btn btn-primary w-100" id="login_form_btn" type="button">Login</button>
+    </form>
+    <p class=""><a href="/accounts/register/">New User?</a> Please create account</p>
 </div>
-
 {% endblock content %}
 
 {% block js %}
 <script>
   $(document).ready(function () {
     $('#login_form_btn').click(function (e) {
-      username = $('#username').val()
+      email = $('#email').val()
       password = $('#password').val();
 
-      if (username == '' || password == '') {
+      if (email == '' || password == '') {
         Swal.fire({
                 title: 'Error',
                 text: 'Please fill in the required field',
@@ -48,7 +85,6 @@
           type: 'POST',
           data: formData,
           success: function (response) {
-            // Handle the successful response
             console.log(response.status,'----------status');
             if(response.status == 'success'){
               Swal.fire({
@@ -60,7 +96,7 @@
                 confirmButtonText: 'OK'
               }).then((result) => {
                 // Redirect to another page or perform additional actions
-                window.location.href = '/';
+                window.location.href = '/my-courses/';
               });
             }else{
               Swal.fire({
@@ -90,6 +126,7 @@
       }
     });
   });
+
 
 </script>
 {% endblock js %}
