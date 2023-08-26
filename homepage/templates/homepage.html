@@ -114,7 +114,7 @@
             <div class="course-video">
                 <div class="tv-frame"></div>
                 <!--                <video width="100%" controls poster="{% if course_data.course_image %}{{course_data.course_image.url}}{% endif %}">-->
-                <video controls width="100%">
+                <video controls width="100%" controlsList="nodownload">
                     <source src="{% if course_data.demo_video %}{{course_data.demo_video.url}}{% endif %}"
                             type="video/mp4">
                 </video>
