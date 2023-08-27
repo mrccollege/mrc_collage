@@ -96,7 +96,7 @@ def my_courses(request):
         return redirect('/accounts/login/')
 
 
-def watch_video(request, pre_next, type, course_id, file_id=0):
+def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
     try:
         home_banner = Lookup.objects.get(code='home_banner')
     except:
