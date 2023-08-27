@@ -13,8 +13,11 @@ def homepage(request, id=0):
         course_master = Course.objects.filter(course_master_id=id)
     else:
         course_master = CourseMaster.objects.all()
-    print(course_master,'=================couu')
-    context = {'id': id, 'course_master': course_master}
+    try:
+        home_banner = Lookup.objects.get(code='home_banner')
+    except:
+        home_banner = ''
+    context = {'id': id, 'course_master': course_master, 'home_banner': home_banner}
     return render(request, 'homepage.html', context)
 
 
