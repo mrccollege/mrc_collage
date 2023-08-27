@@ -96,14 +96,14 @@ def my_courses(request):
         return redirect('/accounts/login/')
 
 
-def watch_video(request, type, id):
+def watch_video(request,pre_next='',type, course_id, file_id=0):
     try:
         home_banner = Lookup.objects.get(code='home_banner')
     except:
         home_banner = ''
     user_id = request.session.get('user_id')
     type = type
-    course_id = id
+    course_id = course_id
     file_type = ''
     try:
         thumb = Lookup.objects.get(code='common thumb')
@@ -120,13 +120,32 @@ def watch_video(request, type, id):
             watch_video_ids = UserWatch.objects.filter(user_id=user_id, status='complete',
                                                        course_id=course_id).values_list('videofile', flat=True)
             if watch_video_ids:
-                try:
-                    video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
-                    file_id = video_path.id
-                    file_type = video_path.file_type.file_type
-                except:
-                    file_id= 0
-                    video_path = ''
+                if file_id != 0:
+                    if pre_next == 'pre':
+                        try:
+                            video_path = VideoFiles.objects.filter(course_id=course_id).filter(id__lt=file_id)[0]
+                            file_id = video_path.id
+                            file_type = video_path.file_type.file_type
+                        except:
+                            file_id = 0
+                            video_path = ''
+                    else:
+                        if pre_next == 'next':
+                            try:
+                                video_path = VideoFiles.objects.filter(course_id=course_id).filter(id__gt=file_id)[0]
+                                file_id = video_path.id
+                                file_type = video_path.file_type.file_type
+                            except:
+                                file_id = 0
+                                video_path = ''
+                else:
+                    try:
+                        video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
+                        file_id = video_path.id
+                        file_type = video_path.file_type.file_type
+                    except:
+                        file_id= 0
+                        video_path = ''
             else:
                 try:
                     video_path = VideoFiles.objects.filter(course_id=course_id)[0]
@@ -135,7 +154,7 @@ def watch_video(request, type, id):
                 except:
                     file_id = 0
                     video_path = ''
-            context = {'data': video_path, 'file_type': file_type, 'home_banner': home_banner, 'file_id': file_id}
+            context = {'data': video_path, 'file_type': file_type, 'course_id': course_id, 'home_banner': home_banner, 'file_id': file_id}
             return render(request, 'common.html', context)
     else:
         redirect('/accounts/login/')
