@@ -23,6 +23,11 @@ def homepage(request, id=0):
 
 @login_required(login_url='/accounts/login/')
 def cart_page(request, id):
+    try:
+        home_banner = Lookup.objects.get(code='home_banner')
+    except:
+        home_banner = ''
+
     user_id = request.session.get('user_id')
     course = Course.objects.get(id=id)
     course_id = course.id
@@ -40,7 +45,7 @@ def cart_page(request, id):
             CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id)
     else:
         return redirect('/accounts/login/')
-    context = {'payment': payment, 'course': course, }
+    context = {'payment': payment, 'course': course, 'home_banner': home_banner }
     return render(request, 'cart_page.html', context)
 
 
@@ -76,18 +81,26 @@ def success(request):
 
 
 def my_courses(request):
+    try:
+        home_banner = Lookup.objects.get(code='home_banner')
+    except:
+        home_banner = ''
     user_id = request.session.get('user_id')
     if user_id is not None:
         course_purchased = CoursePurchased.objects.filter(user_id=user_id, payment_status='success').values_list(
             'course', flat=True)
         my_pur_cours = Course.objects.filter(id__in=course_purchased)
-        context = {'my_course': my_pur_cours}
+        context = {'my_course': my_pur_cours, 'home_banner': home_banner}
         return render(request, 'my_course.html', context)
     else:
         return redirect('/accounts/login/')
 
 
 def watch_video(request, type, id):
+    try:
+        home_banner = Lookup.objects.get(code='home_banner')
+    except:
+        home_banner = ''
     user_id = request.session.get('user_id')
     type = type
     course_id = id
@@ -118,8 +131,7 @@ def watch_video(request, type, id):
                     file_type = video_path.file_type.file_type
                 except:
                     video_path = ''
-            context = {'data': video_path, 'file_type': file_type}
-            print(context)
+            context = {'data': video_path, 'file_type': file_type, 'home_banner': home_banner}
             return render(request, 'common.html', context)
     else:
         redirect('/accounts/login/')
