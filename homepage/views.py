@@ -1,18 +1,20 @@
 import razorpay
-from courses.models import CoursePurchased, Course, VideoFiles,UserWatch
+from courses.models import CoursePurchased, Course, VideoFiles, UserWatch, CourseMaster
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from homepage.models import Lookup
 
 
-def homepage(request):
-    # thumb = Lookup.objects.get(code='common thumb')
-    course_data = Course.objects.all()
-    context = {'course_data': course_data, }
+def homepage(request, id=0):
+    if id != 0:
+        course_master = Course.objects.filter(course_master_id=id)
+    else:
+        course_master = CourseMaster.objects.all()
+    print(course_master,'=================couu')
+    context = {'id': id, 'course_master': course_master}
     return render(request, 'homepage.html', context)
 
 
@@ -69,17 +71,18 @@ def success(request):
 
         return JsonResponse(json_data)
 
+
 def my_courses(request):
     user_id = request.session.get('user_id')
     if user_id is not None:
-        course_purchased = CoursePurchased.objects.filter(user_id=user_id, payment_status='success').values_list('course', flat=True)
+        course_purchased = CoursePurchased.objects.filter(user_id=user_id, payment_status='success').values_list(
+            'course', flat=True)
         my_pur_cours = Course.objects.filter(id__in=course_purchased)
-        context = {
-            'my_course': my_pur_cours
-        }
+        context = {'my_course': my_pur_cours}
         return render(request, 'my_course.html', context)
     else:
         return redirect('/accounts/login/')
+
 
 def watch_video(request, type, id):
     user_id = request.session.get('user_id')
@@ -98,7 +101,8 @@ def watch_video(request, type, id):
             return render(request, 'professional_course.html', context)
         else:
 
-            watch_video_ids = UserWatch.objects.filter(user_id=user_id, status='complete', course_id=course_id).values_list('videofile', flat=True)
+            watch_video_ids = UserWatch.objects.filter(user_id=user_id, status='complete',
+                                                       course_id=course_id).values_list('videofile', flat=True)
             if watch_video_ids:
                 try:
                     video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
@@ -111,14 +115,12 @@ def watch_video(request, type, id):
                     file_type = video_path.file_type.file_type
                 except:
                     video_path = ''
-            context = {
-                'data': video_path,
-                'file_type': file_type
-            }
+            context = {'data': video_path, 'file_type': file_type}
             print(context)
             return render(request, 'common.html', context)
     else:
         redirect('/accounts/login/')
+
 
 def count_video(request, id):
     if request.method == 'GET':
@@ -152,6 +154,6 @@ def count_video(request, id):
                 print(e, '=====================error in count_video function')
                 msg = 'user not watched video successfully'
 
-            json_data = {'msg': msg,'status':status}
+            json_data = {'msg': msg, 'status': status}
             return JsonResponse(json_data)
         return redirect('/accounts/login/')

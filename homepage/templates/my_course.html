@@ -57,17 +57,6 @@
                 </div>
             </div>
         </div>
-
-<!--        <div class="card col-lg-4">-->
-
-<!--            <div class="card-body">-->
-<!--                <h5 class="card-title">{{course_data.name}}</h5>-->
-<!--                <p class="card-text">This course is valid for {% if course_data.validate_for == 1 %}-->
-<!--                    {{course_data.validate_for}} year {% else %} {{course_data.validate_for}} years {% endif %}</p>-->
-<!--                <a class="btn btn-primary w-100" href="/watch-video/{{course_data.type}}/{{course_data.id}}/">Watch-->
-<!--                    now</a>-->
-<!--            </div>-->
-<!--        </div>-->
         {% empty %}
         <p class="text-center">You don't have any course right now.</p>
         {% endfor %}

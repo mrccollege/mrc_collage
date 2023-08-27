@@ -24,6 +24,9 @@
         }
 
 
+
+
+
 </style>
 <style>
         body {
@@ -99,79 +102,76 @@
             background-color: #e74c3c;
         }
 
+        a{
+            text-decoration:none;
+            color:black;
+        }
 
 </style>
 {% endblock css %}
 
 {% block content %}
 <div class="image-container">
-    <img alt="Image" height="200" class="w-100" src="https://picsum.photos/400/250">
+    <img alt="Image" class="w-100" height="200" src="https://picsum.photos/400/250">
 </div>
+
+{% if id == 0 %}
+<h1 class="text-center mt-3">Our courses</h1>
+<div class="container mt-4">
+    <div class="row mx-auto text-center">
+        {% for course_master in course_master %}
+        <div class="col-lg-4" onclick="get_course('{{course_master.id}}')">
+            <img class="" src="{{course_master.image.url}}" height="250" width="400">
+            <h3><b>{{course_master.name}}</b></h3>
+            <p>{{course_master.description}}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+
 <div class="col-lg-10 mx-auto p-1">
-    {% for course_data in course_data %}
+    {% for course_master in course_master %}
     <div class="container mt-5">
         <div class="course-list">
-            <div class="course-video">
-                <div class="tv-frame"></div>
-                <video controlsList="nodownload" width="100%" controls poster="{% if course_data.course_image %}{{course_data.course_image.url}}{% endif %}"/>
-<!--                <video controls width="100%" controlsList="nodownload">-->
-                    <source src="{% if course_data.demo_video %}{{course_data.demo_video.url}}{% endif %}"
+            <div class="row mx-auto">
+                <div class="course-video">
+                    <video controls controlsList="nodownload" poster="{% if course_master.course_image %}{{course_master.course_image.url}}{% endif %}" width="100%"/>
+                    <source src="{% if course_master.demo_video %}{{course_master.demo_video.url}}{% endif %}"
                             type="video/mp4">
-                </video>
-            </div>
-            <div class="course-details">
-                <h3>{{course_data.name}}</h3>
-                <p>Learn exciting skills through Course 1. Expertly guided by John Doe.</p>
-                <p><strong>Instructor:</strong> John Doe</p>
-                <p><strong>Duration:</strong> {{course_data.validate_for}} {% if course_data.validate_for == 1 %} Month
-                    {% else %} Months {% endif %}</p>
-                <p>{{course_data.description|slice:'100'}}</p>
-                <button class="enroll-btn" id="enroll_btn" onclick="enroll_now('{{course_data.id}}')">Enroll Now
-                </button>
+                    </video>
+                </div>
+                <div class="course-details">
+                    <h3>{{course_master.name}}</h3>
+                    <p>Learn exciting skills through Course 1. Expertly guided by John Doe.</p>
+                    <p><strong>Instructor:</strong> John Doe</p>
+                    <p><strong>Duration:</strong> {{course_master.validate_for}} {% if course_master.validate_for == 1 %}
+                        Month
+                        {% else %} Months {% endif %}</p>
+                    <p>{{course_master.description|slice:'100'}}</p>
+                    <button class="enroll-btn" id="enroll_btn" onclick="enroll_now('{{course_master.id}}')">Enroll Now
+                    </button>
+                </div>
             </div>
         </div>
-
     </div>
-
-    <!--    <div class="row list-group-item-success mb-3">-->
-
-    <!--        <div class="col-lg-6 p-5">-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-lg-6">-->
-    <!--                    <h2>{{course_data.name}}</h2>-->
-    <!--                    <h4>Description : </h4>-->
-    <!--                    <p style="text-align: justify;">{{course_data.description|slice:'100'}} <a href="#">Read more</a></p>-->
-    <!--                </div>-->
-    <!--                <div class="col-lg-6">-->
-    <!--                    <h4>Course Details</h4>-->
-    <!--                    <ul>-->
-    <!--                        <li>Duration: 4 weeks</li>-->
-    <!--                        <li>Level: Intermediate</li>-->
-    <!--                        <li>Language: Hindi</li>-->
-    <!--                        <li>Price: {{course_data.price}} Rs.</li>-->
-    <!--                    </ul>-->
-    <!--                </div>-->
-    <!--                <a href="/cart-page/{{course_data.id}}/" class="btn btn-sm btn-danger w-75">Buy now</a>-->
-    <!--            </div>-->
-
-    <!--        </div>-->
-
-    <!--        <div class="col-lg-6 p-2">-->
-    <!--            <video class="img-fluid" controls src="{% if course_data.demo_video %}{{course_data.demo_video.url}}{% endif %}"></video>-->
-    <!--            <button class="btn btn-sm btn-primary w-100 bg-secondary">Watch Demo Video</button>-->
-    <!--        </div>-->
-
-    <!--    </div>-->
+    {% empty %}
+        <p class="text-center mt-4">No course data available right now.</p>
     {% endfor %}
 </div>
 
-</div>
+{% endif %}
+
 {% endblock content %}
 
 {% block js %}
 <script>
     function enroll_now(course_id){
         window.location.href = '/cart-page/'+course_id+'/';
+    }
+
+    function get_course(course_id){
+        window.location.href = '/'+course_id+'/';
     }
 
 
