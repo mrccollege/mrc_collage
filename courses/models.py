@@ -13,7 +13,7 @@ class CourseMaster(models.Model):
     description = models.TextField(null=True)
     image = models.ImageField(upload_to='course_images/', null=True, default='', blank=True)
     def __str__(self):
-        return
+        return self.name
 
 class Course(models.Model):
     # course_master = models.ForeignKey(CourseMaster, on_delete=models.PROTECT, default='')
