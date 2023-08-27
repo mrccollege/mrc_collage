@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
+from homepage.models import Lookup
+
 
 # Create your views here.
 def register_account(request):
@@ -44,7 +46,12 @@ def register_account(request):
         return JsonResponse(data_json)
 
     else:
-        return render(request, 'user_register.html')
+        try:
+            home_banner = Lookup.objects.get(code='home_banner')
+        except:
+            home_banner = ''
+        context = {'home_banner': home_banner}
+        return render(request, 'user_register.html', context)
 
 
 def login_account(request):
@@ -71,7 +78,12 @@ def login_account(request):
 
         return JsonResponse(json_data)
     else:
-        return render(request, 'login_page.html')
+        try:
+            home_banner = Lookup.objects.get(code='home_banner')
+        except:
+            home_banner = ''
+        context = {'home_banner': home_banner}
+        return render(request, 'login_page.html', context)
 
 
 def logout_account(request):
