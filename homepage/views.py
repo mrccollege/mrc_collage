@@ -123,7 +123,7 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                 if file_id != 0:
                     if pre_next == 'pre':
                         try:
-                            video_path = VideoFiles.objects.filter(course_id=course_id).filter(id__lt=file_id)[0]
+                            video_path = VideoFiles.objects.filter(course_id=course_id, id__lt=file_id)[0]
                             file_id = video_path.id
                             file_type = video_path.file_type.file_type
                         except:
@@ -132,7 +132,7 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                     else:
                         if pre_next == 'next':
                             try:
-                                video_path = VideoFiles.objects.filter(course_id=course_id).filter(id__gt=file_id)[0]
+                                video_path = VideoFiles.objects.filter(course_id=course_id, id__gt=file_id)[0]
                                 file_id = video_path.id
                                 file_type = video_path.file_type.file_type
                             except:
