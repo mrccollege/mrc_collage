@@ -16,7 +16,7 @@ class CourseMaster(models.Model):
         return self.name
 
 class Course(models.Model):
-    # course_master = models.ForeignKey(CourseMaster, on_delete=models.PROTECT, default='')
+    course_master = models.ForeignKey(CourseMaster, on_delete=models.PROTECT, default='')
     name = models.CharField(max_length=1000, null=True)
     description = models.TextField(null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
