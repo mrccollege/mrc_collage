@@ -122,22 +122,15 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
             if watch_video_ids:
                 if file_id != 0:
                     if pre_next == 'pre':
-                        try:
-                            video_path = VideoFiles.objects.filter(course_id=course_id, id__lt=file_id)[0]
+                        video_path = VideoFiles.objects.get(course_id=course_id, id__lt=file_id)[0]
+                        if video_path:
                             file_id = video_path.id
-                            file_type = video_path.file_type.file_type
-                        except:
-                            file_id = 0
-                            video_path = ''
                     else:
                         if pre_next == 'next':
-                            try:
-                                video_path = VideoFiles.objects.filter(course_id=course_id, id__gt=file_id)[0]
+                            video_path = VideoFiles.objects.get(course_id=course_id, id__gt=file_id)[0]
+                            if video_path:
                                 file_id = video_path.id
                                 file_type = video_path.file_type.file_type
-                            except:
-                                file_id = 0
-                                video_path = ''
                 else:
                     try:
                         video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
@@ -154,7 +147,7 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                 except:
                     file_id = 0
                     video_path = ''
-            context = {'data': video_path, 'file_type': file_type, 'course_id': course_id, 'home_banner': home_banner, 'file_id': file_id}
+            context = {'pre_next': pre_next, 'data': video_path, 'file_type': file_type, 'course_id': course_id, 'home_banner': home_banner, 'file_id': file_id}
             return render(request, 'common.html', context)
     else:
         redirect('/accounts/login/')

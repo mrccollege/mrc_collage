@@ -4,8 +4,17 @@
 
 <div class="container">
     <div class="mb-3">
+        {% if pre_next == 'pre' %}
+        <a href="javascript:void(0)" id="prevButton" class="me-2 btn-sm btn-primary">Previous</a>
+        {% else %}
         <a href="/watch-video/pre/{{file_type}}/{{course_id}}/{{file_id}}/" id="prevButton" class="me-2 btn-sm btn-primary">Previous</a>
+        {% endif %}
+
+        {% if pre_next == 'next' %}
+        <a href="javascript:void(0)" id="nextButton" class="m2 btn-sm btn-primary">Next</a>
+        {% else %}
         <a href="/watch-video/next/{{file_type}}/{{course_id}}/{{file_id}}/" id="nextButton" class="m2 btn-sm btn-primary">Next</a>
+        {% endif %}
     </div>
 
     <div class="row">
@@ -48,6 +57,9 @@
 
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.4/dist/plyr.min.js"></script>
+<script>
+
+</script>
 <script>
     var playCount = ''
     $('video, audio').on('ended', function () {
