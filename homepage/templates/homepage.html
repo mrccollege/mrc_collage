@@ -108,13 +108,13 @@
 {% block content %}
 
 {% if id == 0 %}
-<h1 class="text-center mt-3">Our courses</h1>
+<h3 class="text-center mt-3">Our Courses</h3>
 <div class="container mt-4">
     <div class="row mx-auto text-center">
         {% for course_master in course_master %}
         <div class="col-lg-4 col-md-4 col-sm-12" onclick="get_course('{{course_master.id}}')">
-            <img class="" src="{{course_master.image.url}}" height="250" width="400">
-            <h3><b>{{course_master.name}}</b></h3>
+            <img class="mb-2" src="{{course_master.image.url}}" height="250" width="400">
+            <h4><b>{{course_master.name}}</b></h4>
             <p>{{course_master.description}}</p>
         </div>
         {% endfor %}
