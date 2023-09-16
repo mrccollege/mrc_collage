@@ -112,7 +112,7 @@
 <div class="fluid-container mt-4">
     <div class="row mx-auto text-center">
         {% for course_master in course_master %}
-        <div class="col-lg-4 col-md-6 col-sm-12 mb-2" onclick="get_course('{{course_master.id}}')">
+        <div class="col-lg-4 col-md-6 col-sm-12 me-2" onclick="get_course('{{course_master.id}}')">
             <img class="mb-2" src="{{course_master.image.url}}" height="250" width="400">
             <h4><b>{{course_master.name}}</b></h4>
             <p>{{course_master.description}}</p>
