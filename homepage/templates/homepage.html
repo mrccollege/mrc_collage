@@ -113,7 +113,7 @@
     <div class="row mx-auto text-center">
         {% for course_master in course_master %}
         <div class="col-lg-4 col-md-2 col-sm-12 p-4" onclick="get_course('{{course_master.id}}')">
-            <img class="mb-2 img-fluid" src="{{course_master.image.url}}" height="50">
+            <img class="mb-2 img-fluid" src="{{course_master.image.url}}" height="50px">
             <h4><b>{{course_master.name}}</b></h4>
             <p>{{course_master.description}}</p>
         </div>
