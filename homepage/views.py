@@ -124,7 +124,6 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                        'data': video_files,
                        'thumb': thumb,
                        }
-            print('regular----------------------------------')
             return render(request, 'regular.html', context)
         else:
 
@@ -213,12 +212,16 @@ def round_view(request, video_id):
 
     status = ''
     msg = ''
-    user_watch_video = UserWatch.objects.filter(user_id=user_id, videofile_id=video_id)[0]
+    user_watch_video = ''
+
+    try:
+        user_watch_video = UserWatch.objects.get(user_id=user_id, videofile_id=video_id)
+    except Exception as e:
+        print(e, '=================e=================')
+
     if user_watch_video:
         whatch_count = user_watch_video.whatch_count
         round_view = video_obj.round_view
-        print(whatch_count, '===============whatch_count')
-        print(round_view, '===============round_view')
         if round_view > whatch_count:
             user_watch_video.whatch_count = int(whatch_count) + count
             user_watch_video.save()
