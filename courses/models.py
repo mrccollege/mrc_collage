@@ -41,6 +41,8 @@ class VideoFiles(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(null=True, blank=True)
 
+    round_view = models.IntegerField(null=True, default=0, blank=True)
+
 
 class VideoInstructions(models.Model):
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
