@@ -19,7 +19,7 @@
         <div class="col-lg-3">
             <ul class="list-group">
                 {% for data in data %}
-                <li class="list-group-item pointer" onclick="play_video('{{data.file.url}}', {% if data.thumb_video %} '{{data.thumb_video.url}}' {% endif %})">Day : {{data.day}}
+                <li class="list-group-item pointer" onclick="play_video('{{data.file.url}}', '{{data.id}}' ,{% if data.thumb_video %} '{{data.thumb_video.url}}' {% endif %})">Day : {{data.day}}
                     <input type="hidden" value="{% if data.thumb_video %} {{data.thumb_video.url}} {% endif %}">
                 </li>
                 {% endfor %}
@@ -28,6 +28,7 @@
         <div class="col-lg-8">
             <video controls controlsList="nodownload" height="540px" id="video_frame" src="" type="video/mp4" width="960px" poster="{{thumb.file.url}}" class="img-fluid plyr">
             </video>
+            <input type="text" value="" id="video_id">
         </div>
     </div>
 </div>
@@ -36,7 +37,7 @@
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.4/dist/plyr.min.js"></script>
 <script>
-        function play_video(param1, param2) {
+        function play_video(param1, video_id,  param2) {
             if (param1){
                 $('#video_frame').attr('src', param1)
             }else{
@@ -48,10 +49,38 @@
             }else{
                 $('#video_frame').attr('poster', '{{thumb.file.url}}')
             }
+
+            $('#video_id').val(video_id)
         }
 
         document.addEventListener('DOMContentLoaded', function () {
             const players = Plyr.setup('.plyr');
+        });
+
+
+        $('video, audio').on('ended', function () {
+            var video_id = $('#video_id').val();
+            var myObject = {
+              'count':1
+            }
+
+            $.ajax({
+                url: '/round_view/'+video_id+'/',
+                method: 'GET',
+                data: myObject,
+                success: function (response) {
+                    var responseData = response;
+                    console.log(responseData,'==================responseData')
+                    if(responseData.status == 1){
+                       //location.reload()
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error here
+                    console.log(error);
+                }
+            });
+
         });
 
 </script>

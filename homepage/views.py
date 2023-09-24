@@ -113,11 +113,18 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
     if user_id is not None:
         if type == 'professional':
             video_files = VideoFiles.objects.filter(course_id=course_id)
-            context = {'type': type, 'data': video_files, 'thumb': thumb}
+            context = {'type': type,
+                       'data': video_files,
+                       'thumb': thumb
+                       }
             return render(request, 'professional_course.html', context)
         elif type == 'regular':
             video_files = VideoFiles.objects.filter(course_id=course_id)
-            context = {'type': type, 'data': video_files, 'thumb': thumb}
+            context = {'type': type,
+                       'data': video_files,
+                       'thumb': thumb,
+                       }
+            print('regular----------------------------------')
             return render(request, 'regular.html', context)
         else:
 
@@ -193,3 +200,41 @@ def count_video(request, id):
             json_data = {'msg': msg, 'status': status}
             return JsonResponse(json_data)
         return redirect('/accounts/login/')
+
+
+def round_view(request, video_id):
+    form = request.GET
+    user_id = request.session.get('user_id')
+    count = int(form.get('count', None))
+
+    video_obj = VideoFiles.objects.get(id=video_id)
+    course = Course.objects.get(name__iexact=video_obj.course)
+    course_id = course.id
+
+    status = ''
+    msg = ''
+    user_watch_video = UserWatch.objects.filter(user_id=user_id, videofile_id=video_id)[0]
+    if user_watch_video:
+        whatch_count = user_watch_video.whatch_count
+        round_view = video_obj.round_view
+        print(whatch_count, '===============whatch_count')
+        print(round_view, '===============round_view')
+        if round_view > whatch_count:
+            user_watch_video.whatch_count = int(whatch_count) + count
+            user_watch_video.save()
+            status = 1
+            msg = 'Updated user_watched entry'
+
+    else:
+        watch_obj = UserWatch.objects.create(user_id=user_id, course_id=course_id, videofile_id=video_id,
+                                                         whatch_count=count, status='incomplete', )
+        if watch_obj:
+            status = 0
+            msg = 'Created user_watched entry'
+
+    context = {
+        'status': status,
+        'msg': msg,
+    }
+    return JsonResponse(context)
+
