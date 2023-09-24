@@ -115,6 +115,10 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
             video_files = VideoFiles.objects.filter(course_id=course_id)
             context = {'type': type, 'data': video_files, 'thumb': thumb}
             return render(request, 'professional_course.html', context)
+        elif type == 'regular':
+            video_files = VideoFiles.objects.filter(course_id=course_id)
+            context = {'type': type, 'data': video_files, 'thumb': thumb}
+            return render(request, 'regular.html', context)
         else:
 
             watch_video_ids = UserWatch.objects.filter(user_id=user_id, status='complete',
