@@ -52,15 +52,16 @@
                     <li class="nav-item dropdown">
                         <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
                             id="navbarDropdown" role="button">
-                            Dropdown
+                                Privacy and Policy
                         </a>
                         <ul aria-labelledby="navbarDropdown" class="dropdown-menu">
-<!--                            <li><a class="dropdown-item" href="#">Action</a></li>-->
-<!--                            <li><a class="dropdown-item" href="#">Another action</a></li>-->
-<!--                            <li>-->
-<!--                                <hr class="dropdown-divider">-->
-<!--                            </li>-->
-<!--                            <li><a class="dropdown-item" href="#">Something else here</a></li>-->
+                            <li><a class="dropdown-item" href="/accounts/term_condition/">Term and conditions</a></li>
+                            <li><a class="dropdown-item" href="/accounts/cancel_refund/">Cancellation and refund</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/accounts/shiping/">Shiping</a></li>
+                            <li><a class="dropdown-item" href="/accounts/privacy_policy/">Privacy and policy</a></li>
                         </ul>
                     </li>
                     {% if request.user.is_authenticated %}
