@@ -43,6 +43,14 @@ class VideoFiles(models.Model):
 
     round_view = models.IntegerField(null=True, default=0, blank=True)
 
+class MonthMoney(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
+    month = models.IntegerField(null=True, blank=True)
+    money = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.course__name
+
 
 class VideoInstructions(models.Model):
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
