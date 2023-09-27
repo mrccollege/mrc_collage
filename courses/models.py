@@ -49,7 +49,7 @@ class MonthMoney(models.Model):
     money = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return self.course__name
+        return self.course.name
 
 
 class VideoInstructions(models.Model):
