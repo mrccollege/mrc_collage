@@ -1,5 +1,5 @@
 import razorpay
-from courses.models import CoursePurchased, Course, VideoFiles, UserWatch, CourseMaster
+from courses.models import CoursePurchased, Course, VideoFiles, UserWatch, CourseMaster, MonthMoney
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -48,6 +48,25 @@ def cart_page(request, id):
     context = {'payment': payment, 'course': course, 'home_banner': home_banner }
     return render(request, 'cart_page.html', context)
 
+
+def month_amount(request):
+    if request.method == 'GET':
+        course_id = request.GET.get('course_id')
+        print(course_id, '=============course_id')
+        monts = MonthMoney.objects.filter(course_id=course_id)
+        course_month = []
+        for i in monts:
+            data_dict = {}
+            data_dict['id'] = i.id
+            data_dict['month'] = i.month
+            data_dict['money'] = i.money
+
+            course_month.append(data_dict)
+
+        context = {
+            'monts': course_month,
+        }
+        return JsonResponse(context)
 
 def success(request):
     user_id = request.session.get('user_id')

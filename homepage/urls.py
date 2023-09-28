@@ -11,6 +11,8 @@ urlpatterns = [
     path('count_video/<int:id>/', views.count_video, name='count_video'),
 
 
-    path('round_view/<int:video_id>/', views.round_view, name='round_view')
+    path('round_view/<int:video_id>/', views.round_view, name='round_view'),
+
+    path('month_amount/', views.month_amount, name='month_amount')
 
 ]

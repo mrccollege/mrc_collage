@@ -53,6 +53,10 @@
 
     <div class="text-right">
         <button class="btn btn-primary" id="rzp-button1">Checkout</button>
+        <label for="month_money">Select Month</label>
+        <select name="month_money" id="month_money" onchange="change_month()">
+
+        </select>
     </div>
 </div>
 {% endblock content %}
@@ -60,6 +64,16 @@
 {% block js %}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+
+    $(document).ready(function(){
+        get_month_money()
+    });
+
+    function change_month(){
+        get_month_money()
+    }
+
+
     var options = {
       "key": "rzp_test_5oHU1szIwHcSIn", // Enter the Key ID generated from the Dashboard
       "amount": "{{payment.amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -118,6 +132,39 @@
       rzp1.open();
       e.preventDefault();
     }
+
+
+
+function get_month_money(){
+    var myObject = {
+      'course_id':'{{course.id}}',
+    }
+
+    $.ajax({
+        url: '/month_amount/',
+        method: 'GET',
+        // contentType: 'application/json',
+        data: myObject,
+        success: function (response) {
+            var responseData = response;
+            console.log(responseData,'==-----------1')
+            var html = '';
+            $.each(responseData.monts, function(index, element) {
+                if (index == 0){
+                    html +=  '<option selected value="element.month">'+element.month+'</option>';
+                }else{
+                    html +=  '<option value="element.month">'+element.month+'</option>';
+                }
+            });
+            $('#month_money').html(html);
+        },
+        error: function (xhr, status, error) {
+            // Handle error here
+            console.log(error);
+        }
+    });
+}
+
 
 </script>
 {% endblock js %}
