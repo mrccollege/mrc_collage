@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('round_view/<int:video_id>/', views.round_view, name='round_view'),
 
-    path('month_amount/', views.month_amount, name='month_amount')
+    path('month_amount/', views.month_amount, name='month_amount'),
+    path('get_change_month/', views.get_change_month, name='get_change_month'),
 
 ]

@@ -30,29 +30,29 @@ def cart_page(request, id):
 
     user_id = request.session.get('user_id')
     course = Course.objects.get(id=id)
-    course_id = course.id
-    amount = course.totalprice
-    client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-
-    payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
-
-    order_id = payment['id']
-    if user_id is not None:
-        same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
-        if same_user:
-            CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
-        else:
-            CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id)
-    else:
-        return redirect('/accounts/login/')
-    context = {'payment': payment, 'course': course, 'home_banner': home_banner }
+    # course_id = course.id
+    # amount = course.totalprice
+    # client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+    #
+    # payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
+    #
+    # order_id = payment['id']
+    # if user_id is not None:
+    #     same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
+    #     if same_user:
+    #         CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
+    #     else:
+    #         CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id)
+    # else:
+    #     return redirect('/accounts/login/')
+    # context = {'payment': payment, 'course': course, 'home_banner': home_banner }
+    context = {'course': course, 'home_banner': home_banner }
     return render(request, 'cart_page.html', context)
 
 
 def month_amount(request):
     if request.method == 'GET':
         course_id = request.GET.get('course_id')
-        print(course_id, '=============course_id')
         monts = MonthMoney.objects.filter(course_id=course_id)
         course_month = []
         for i in monts:
@@ -67,6 +67,30 @@ def month_amount(request):
             'monts': course_month,
         }
         return JsonResponse(context)
+
+def get_change_month(request):
+    user_id = request.session.get('user_id')
+    course_id = request.GET.get('course_id')
+    money = request.GET.get('money')
+    print(money, '===================money')
+    amount = money
+
+    client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+
+    payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
+
+    order_id = payment['id']
+    if user_id is not None:
+        same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
+        if same_user:
+            CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
+        else:
+            CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id)
+    else:
+        return redirect('/accounts/login/')
+    context = {'payment': payment, 'order_id': order_id}
+    return JsonResponse(context)
+
 
 def success(request):
     user_id = request.session.get('user_id')
