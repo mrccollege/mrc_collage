@@ -104,6 +104,7 @@ def month_amount(request):
 def success(request):
     user_id = request.session.get('user_id')
     if request.method == 'GET':
+        course_obj = ''
         form = request.GET
         razorpay_order_id = form.get('razorpay_order_id', None)
         razorpay_payment_id = form.get('razorpay_payment_id', None)
