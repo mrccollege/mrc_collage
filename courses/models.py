@@ -66,9 +66,9 @@ class VideoInstructions(models.Model):
 class CoursePurchased(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    price = models.IntegerField(null=True)
     discount = models.CharField(max_length=10, null=True, default=0, blank=True)
-    totalprice = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    totalprice = models.IntegerField(null=True)
     quantity = models.PositiveIntegerField(default=1, null=True, blank=True)
 
     razorpay_payment_id = models.CharField(max_length=100, null=True)

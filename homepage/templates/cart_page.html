@@ -120,17 +120,21 @@
       "handler": function (response) {
 
         console.log(response);
+
         var url = '/success/';
+
         var myObject = {
+
           'razorpay_order_id': response.razorpay_order_id,
           'razorpay_payment_id': response.razorpay_payment_id,
           'razorpay_signature':response.razorpay_signature,
           'course_id':'{{course.id}}',
-          'price':'{{course.price}}',
-          'discount':'{{course.discount}}',
-          'totalprice':'{{course.totalprice}}',
+          'price':'{{pay_amt}}',
+          'discount':50,
+          'totalprice':'{{pay_amt}}',
           'quantity':'1',
           'payment_status':'success'
+
         }
 
         $.ajax({
