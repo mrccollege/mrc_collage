@@ -41,7 +41,7 @@ def cart_page(request, id, month=1):
     already_purchased = ''
     if user_id is not None:
         try:
-            already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id)
+            already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id, payment_status='success')
             if already_purchased:
                 return redirect('/')
         except:
