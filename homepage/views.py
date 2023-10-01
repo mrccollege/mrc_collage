@@ -26,6 +26,7 @@ def cart_page(request, id, month=1):
 
     if month:
         month = month
+
     try:
         home_banner = Lookup.objects.get(code='home_banner')
     except:
@@ -33,23 +34,33 @@ def cart_page(request, id, month=1):
 
     user_id = request.session.get('user_id')
     course = Course.objects.get(id=id)
-
-    monts = MonthMoney.objects.filter(course_id=id, month=month)[0]
-
-    amount = monts.money
-    client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-
-    payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
-
-    order_id = payment['id']
+    monts = ''
+    amount = ''
+    payment = ''
+    order_id = ''
     if user_id is not None:
-        same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
-        if same_user:
-            CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
-        else:
-            CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=id)
+
+        try:
+            monts = MonthMoney.objects.get(course_id=id, month=month)
+            amount = monts.money
+
+            client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+            if amount:
+                payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
+
+                order_id = payment['id']
+
+                same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
+                if same_user:
+                    CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
+                else:
+                    CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=id)
+        except Exception as e:
+            print(e, '------e---------')
+
     else:
         return redirect('/accounts/login/')
+
     pay_amt = amount
     context = {
         'id': id,
