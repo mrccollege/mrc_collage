@@ -1,19 +1,25 @@
 from django.contrib.auth.models import User
 from django.db import models
+
+
 # Create your models here.
 class FileType(models.Model):
     file_type = models.CharField(max_length=20, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(null=True, blank=True)
+
     def __str__(self):
         return self.file_type
+
 
 class CourseMaster(models.Model):
     name = models.CharField(max_length=1000, null=True)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='course_images/', null=True, blank=True)
+
     def __str__(self):
         return self.name
+
 
 class Course(models.Model):
     course_master = models.ForeignKey(CourseMaster, on_delete=models.PROTECT, null=True)
@@ -29,6 +35,7 @@ class Course(models.Model):
     validate_for = models.IntegerField(default=1, null=True, blank=True)
     course_lang = models.CharField(max_length=100, null=True, default='Hindi', blank=True)
     type = models.CharField(max_length=50, null=True, default='common', blank=True)
+
     def __str__(self):
         return self.name
 
@@ -43,13 +50,17 @@ class VideoFiles(models.Model):
 
     round_view = models.IntegerField(null=True, default=0, blank=True)
 
+    def __str__(self):
+        return self.course
+
+
 class MonthMoney(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     month = models.IntegerField(null=True, blank=True)
     money = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return self.course.name
+        return self.course
 
 
 class VideoInstructions(models.Model):
@@ -79,6 +90,9 @@ class CoursePurchased(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
 
+    def __str__(self):
+        return self.course
+
 
 class UserWatch(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -86,3 +100,6 @@ class UserWatch(models.Model):
     videofile = models.ForeignKey(VideoFiles, on_delete=models.PROTECT)
     whatch_count = models.IntegerField(default=0)
     status = models.CharField(max_length=25, default='incomplete')
+
+    def __str__(self):
+        return self.user
