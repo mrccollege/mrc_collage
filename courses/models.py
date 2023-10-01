@@ -51,7 +51,7 @@ class VideoFiles(models.Model):
     round_view = models.IntegerField(null=True, default=0, blank=True)
 
     def __str__(self):
-        return self.course
+        return self.course.name
 
 
 class MonthMoney(models.Model):
@@ -60,7 +60,7 @@ class MonthMoney(models.Model):
     money = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return self.course
+        return self.course.name
 
 
 class VideoInstructions(models.Model):
@@ -91,7 +91,7 @@ class CoursePurchased(models.Model):
     end_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return self.course
+        return self.course.name
 
 
 class UserWatch(models.Model):
