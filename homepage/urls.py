@@ -4,6 +4,7 @@ urlpatterns = [
     path('', views.homepage, name='homepage'),
     path('<int:id>/', views.homepage, name='homepage'),
     path('cart-page/<int:id>/', views.cart_page, name='cart_page'),
+    path('cart-page/<int:month>/<int:id>/', views.cart_page, name='cart_page'),
     path('success/', views.success, name='success'),
     path('my-courses/', views.my_courses, name='my_courses'),
     path('watch-video/<str:type>/<int:course_id>/', views.watch_video, name='watch_video'),
@@ -14,6 +15,5 @@ urlpatterns = [
     path('round_view/<int:video_id>/', views.round_view, name='round_view'),
 
     path('month_amount/', views.month_amount, name='month_amount'),
-    path('get_change_month/', views.get_change_month, name='get_change_month'),
 
 ]

@@ -6,14 +6,13 @@
       overflow-x: auto;
     }
 
+
 </style>
 {% endblock css %}
 
 {% block content %}
 <div class="container p-5">
     <h5 class="mt-5 mb-3">Shopping Cart</h5>
-    <input type="text" name="amount" id="amount">
-    <input type="text" name="payment_id" id="payment_id">
 
     <div class="table-responsive">
         <table class="table table-striped">
@@ -21,52 +20,43 @@
             <tr>
                 <th>Product</th>
                 <th>Price</th>
-                <th>Quantity</th>
+                <th>Selet Months for Purchasing Course</th>
                 <th>Total</th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td>{{course.name}}</td>
-                <td>{{course.price}}</td>
+                <td>{{pay_amt|add:pay_amt}}</td>
                 <td>
-                    <input class="form-control" min="1" readonly type="number" value="1">
+                    <select class="form-control" name="month_money" id="month_money">
+                    </select>
                 </td>
-                <td>{{course.price}}</td>
+                <td>{{pay_amt|add:pay_amt}}</td>
             </tr>
 
             </tbody>
             <tfoot>
             <tr>
                 <td class="text-right" colspan="3">Subtotal:</td>
-                <td>{{course.price}}</td>
+                <td>{{pay_amt|add:pay_amt}}</td>
             </tr>
             <tr>
                 <td class="text-right" colspan="3">Discount:</td>
-                <td>{{course.discount}}</td>
+                <td>50 % Off</td>
             </tr>
             <tr>
-                <td class="text-right" colspan="3">Total:</td>
-                <td>{{course.totalprice}}</td>
+                <td>Final Amount to Pay:</td>
+                <td class="text-end"> You have selected for </td>
+                <td class="text-end"> {{month}} {% if month == 1 %} Month {% else %} Months {% endif %} : </td>
+                <td>INR - {{pay_amt}}</td>
             </tr>
             </tfoot>
         </table>
     </div>
 
-    <div class="text-right">
-        <div class="row">
-            <div class="col-lg-2">
-                <label for="month_money">Select Month</label>
-            </div>
-            <div class="col-lg-2">
-                <select class="form-control" name="month_money" id="month_money" onchange="get_change_month()">
-                </select>
-            </div>
-
-            <div class="col-lg-6">
-                <button class="form-control btn btn-primary" id="rzp-button1">Checkout</button>
-            </div>
-        </div>
+    <div class="mx-auto col-lg-6">
+        <button class="w-100 form-control btn btn-success mx-auto" id="rzp-button1">Checkout</button>
     </div>
 </div>
 {% endblock content %}
@@ -74,27 +64,43 @@
 {% block js %}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-
+    var index_id = 1
     $(document).ready(function(){
         get_month_money()
     });
 
-    function get_change_month(){
+    $("#month_money").on("change", function() {
+        var selectedValue = $(this).val();
+        var selectedText = $(this).find("option:selected").text();
+        console.log("Selected value: " + selectedValue);
+        console.log("Selected text: " + selectedText);
+
+        window.location.href = '/cart-page/'+selectedValue+'/'+{{id}}+'/'
+
+    });
+
+    function get_month_money(){
         var myObject = {
           'course_id':'{{course.id}}',
-          'money': 1000,
         }
-
         $.ajax({
-            url: '/get_change_month/',
+            url: '/month_amount/',
             method: 'GET',
             // contentType: 'application/json',
             data: myObject,
             success: function (response) {
                 var responseData = response;
-                console.log(responseData.payment.amount,'==-----------1')
-                $('#amount').val(responseData.payment.amount);
-                $('#payment_id').val(responseData.payment.orderid);
+                //console.log(responseData,'==-----------1')
+
+                var html = '';
+                var html = '<option>Select Month</option>';
+
+                $.each(responseData.monts, function(index, element) {
+                    html += '<option id="select_month'+index_id+'" value="'+element.month+'">'+element.month+'</option>';
+                    index_id++
+                });
+
+                $('#month_money').html(html);
             },
             error: function (xhr, status, error) {
                 // Handle error here
@@ -105,12 +111,12 @@
 
     var options = {
       "key": "rzp_test_5oHU1szIwHcSIn", // Enter the Key ID generated from the Dashboard
-      "amount": $('#amount').val(), // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      "amount": '{{amount}}', // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
       "currency": "INR",
       "name": "Mrc Vrindavan",
       "description": "Medical Facilities for all",
       "image": "https://example.com/your_logo",
-      "order_id": $('#order_id').val(), //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      "order_id": '{{order_id}}', //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
       "handler": function (response) {
 
         console.log(response);
@@ -165,39 +171,6 @@
       e.preventDefault();
       console.log(options)
     }
-
-
-
-function get_month_money(){
-    var myObject = {
-      'course_id':'{{course.id}}',
-    }
-
-    $.ajax({
-        url: '/month_amount/',
-        method: 'GET',
-        // contentType: 'application/json',
-        data: myObject,
-        success: function (response) {
-            var responseData = response;
-            //console.log(responseData,'==-----------1')
-            var html = '';
-            $.each(responseData.monts, function(index, element) {
-                if (index == 0){
-                    html +=  '<option selected value="element.money">'+element.month+'</option>';
-                }else{
-                    html +=  '<option value="element.money">'+element.month+'</option>';
-                }
-            });
-            $('#month_money').html(html);
-        },
-        error: function (xhr, status, error) {
-            // Handle error here
-            console.log(error);
-        }
-    });
-}
-
 
 </script>
 {% endblock js %}
