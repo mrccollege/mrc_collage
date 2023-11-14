@@ -13,28 +13,52 @@ SECRET_KEY = 'django-insecure-%p3gz$(%5puo(183jo-xyb!#nt=f86b-83w%^@lhct2jbl#@i$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', 'mrccollege.com', 'www.mrccollege.com']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
-INSTALLED_APPS = ['django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
-    'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles', 'courses', 'homepage',
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'courses',
+    'homepage',
     'accounts',
 
 ]
 
-MIDDLEWARE = ['django.middleware.gzip.GZipMiddleware', 'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware', 'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware', 'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware', 'django.middleware.clickjacking.XFrameOptionsMiddleware', ]
+MIDDLEWARE = [
+    'django.middleware.gzip.GZipMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
 ROOT_URLCONF = 'video_course.urls'
 
-TEMPLATES = [{'BACKEND': 'django.template.backends.django.DjangoTemplates', 'DIRS': ['templates'], 'APP_DIRS': True,
-    'OPTIONS': {
-        'context_processors': ['django.template.context_processors.debug', 'django.template.context_processors.request',
-            'django.contrib.auth.context_processors.auth',
-            'django.contrib.messages.context_processors.messages', ], }, }, ]
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors':
+                [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+        },
+    },
+]
 
 WSGI_APPLICATION = 'video_course.wsgi.application'
 
@@ -51,9 +75,9 @@ WSGI_APPLICATION = 'video_course.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mrcDB',
-        'USER': 'mrcUSER',
-        'PASSWORD': 'qwerty123',
+        'NAME': 'mrc_college',
+        'USER': 'mrc_college',
+        'PASSWORD': 'Hello123456#',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -90,8 +114,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Maximum file size for chunked upload (in bytes)
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576000
-FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
