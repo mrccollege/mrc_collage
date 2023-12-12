@@ -19,7 +19,7 @@
         <div class="col-lg-3">
             <ul class="list-group">
                 {% for data in data %}
-                <li class="list-group-item pointer" onclick="play_video('{{data.file.url}}', '{{data.id}}' ,{% if data.thumb_video %} '{{data.thumb_video.url}}' {% endif %})">Day : {{data.day}}
+                <li class="list-group-item pointer" onclick="play_video({% if data.title %} '{{data.title}}', {% else %} '', {% endif %} '{{data.file.url}}', '{{data.id}}' ,{% if data.thumb_video %} '{{data.thumb_video.url}}' {% endif %})">Day : {{data.day}}
                     <input type="hidden" value="{% if data.thumb_video %} {{data.thumb_video.url}} {% endif %}">
                 </li>
                 {% endfor %}
@@ -28,6 +28,7 @@
         <div class="col-lg-8">
             <video controls controlsList="nodownload" height="540px" id="video_frame" src="" type="video/mp4" width="960px" poster="{{thumb.file.url}}" class="img-fluid plyr">
             </video>
+            <h3 class="text-center" id="video_title"></h3>
             <input type="hidden" value="" id="video_id">
         </div>
     </div>
@@ -37,11 +38,13 @@
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.4/dist/plyr.min.js"></script>
 <script>
-        function play_video(param1, video_id,  param2) {
+        function play_video(title, param1, video_id,  param2) {
             if (param1){
                 $('#video_frame').attr('src', param1)
+                $('#video_title').html(title)
             }else{
                 $('#video_frame').attr('src', '')
+                $('#video_title').html('')
             }
 
             if(param2){

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-
+import hashlib
 from homepage.models import Lookup
 
 
@@ -17,16 +17,83 @@ def homepage(request, id=0):
         home_banner = Lookup.objects.get(code='home_banner')
     except:
         home_banner = ''
-    context = {'id': id, 'course_master': course_master, 'home_banner': home_banner}
+
+    context = {
+        'id': id,
+        'course_master': course_master,
+        'home_banner': home_banner,
+    }
     return render(request, 'homepage.html', context)
+
+
+#
+# @login_required(login_url='/accounts/login/')
+# def cart_page(request, id, month=1):
+#
+#     if month:
+#         month = month
+#
+#     try:
+#         home_banner = Lookup.objects.get(code='home_banner')
+#     except:
+#         home_banner = ''
+#
+#     user_id = request.session.get('user_id')
+#     course = Course.objects.get(id=id)
+#     monts = ''
+#     amount = ''
+#     payment = ''
+#     order_id = ''
+#     already_purchased = ''
+#     if user_id is not None:
+#         try:
+#             already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id, payment_status='success')
+#             if already_purchased:
+#                 return redirect('/')
+#         except:
+#             pass
+#
+#         try:
+#             monts = MonthMoney.objects.get(course_id=id, month=month)
+#             amount = monts.money
+#
+#             client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+#             if amount:
+#                 payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
+#
+#                 order_id = payment['id']
+#
+#                 same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
+#                 if same_user:
+#                     CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
+#                 else:
+#                     CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=id)
+#         except Exception as e:
+#             print(e, '------e---------')
+#
+#     else:
+#         return redirect('/accounts/login/')
+#
+#     pay_amt = amount
+#     context = {
+#         'id': id,
+#         'payment': payment,
+#         'order_id': order_id,
+#         'pay_amt': pay_amt,
+#         'course': course,
+#         'home_banner': home_banner,
+#         'month': month
+#     }
+#
+#     return render(request, 'cart_page.html', context)
+
+def generate_hash(params, salt):
+    hash_string = hashlib.sha512(params.encode('utf-8') + salt.encode('utf-8')).hexdigest()
+    return hash_string
 
 
 @login_required(login_url='/accounts/login/')
 def cart_page(request, id, month=1):
-
-    if month:
-        month = month
-
     try:
         home_banner = Lookup.objects.get(code='home_banner')
     except:
@@ -34,11 +101,6 @@ def cart_page(request, id, month=1):
 
     user_id = request.session.get('user_id')
     course = Course.objects.get(id=id)
-    monts = ''
-    amount = ''
-    payment = ''
-    order_id = ''
-    already_purchased = ''
     if user_id is not None:
         try:
             already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id, payment_status='success')
@@ -46,40 +108,45 @@ def cart_page(request, id, month=1):
                 return redirect('/')
         except:
             pass
+        order_id = "order123"  # Replace with your logic to generate order_id
+        monts = MonthMoney.objects.get(course_id=id, month=month)
+        amount = monts.money
 
-        try:
-            monts = MonthMoney.objects.get(course_id=id, month=month)
-            amount = monts.money
+        # Save payment details to the database
+        same_user = CoursePurchased.objects.filter(totalprice=amount, course_id=id, user_id=user_id)
+        if same_user:
+            CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id, totalprice=amount)
+        else:
+            CoursePurchased.objects.create(razorpay_order_id=order_id, totalprice=amount, course_id=id, user_id=user_id)
 
-            client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-            if amount:
-                payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
+        params = {
+            'key': settings.PAYU_MERCHANT_KEY,
+            'txnid': order_id,
+            'amount': amount*100,
+            'productinfo': f'{course.name}',
+            'firstname': 'sanjay',
+            'email': 'srbc@email.com',
+            'phone': '8279408396',
+            'surl': settings.PAYU_SUCCESS_URL,
+        }
 
-                order_id = payment['id']
-
-                same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
-                if same_user:
-                    CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
-                else:
-                    CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=id)
-        except Exception as e:
-            print(e, '------e---------')
+        # Generate hash and add it to the parameters
+        hash_string = generate_hash(f"{params['key']}|{params['txnid']}|{params['amount']}|{params['productinfo']}|{params['firstname']}|{params['email']}|||||||||||{settings.PAYU_MERCHANT_SALT}", settings.PAYU_MERCHANT_SALT)
+        params['hash'] = hash_string
 
     else:
         return redirect('/accounts/login/')
 
-    pay_amt = amount
     context = {
         'id': id,
-        'payment': payment,
-        'order_id': order_id,
-        'pay_amt': pay_amt,
         'course': course,
         'home_banner': home_banner,
-        'month': month
+        'month': month,
+        'params': params,
+        'amount': amount,
     }
 
-    return render(request, 'cart_page.html', context)
+    return render(request, 'new_cart.html', context)
 
 
 def month_amount(request):
@@ -154,6 +221,7 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
         home_banner = Lookup.objects.get(code='home_banner')
     except:
         home_banner = ''
+
     user_id = request.session.get('user_id')
     type = type
     course_id = course_id
@@ -201,7 +269,7 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                         file_id = video_path.id
                         file_type = video_path.file_type.file_type
                     except:
-                        file_id= 0
+                        file_id = 0
                         video_path = ''
             else:
                 try:
@@ -211,7 +279,8 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                 except:
                     file_id = 0
                     video_path = ''
-            context = {'pre_next': pre_next, 'data': video_path, 'file_type': file_type, 'course_id': course_id, 'home_banner': home_banner, 'file_id': file_id}
+            context = {'pre_next': pre_next, 'data': video_path, 'file_type': file_type, 'course_id': course_id,
+                       'home_banner': home_banner, 'file_id': file_id}
             return render(request, 'common.html', context)
     else:
         redirect('/accounts/login/')
@@ -283,7 +352,7 @@ def round_view(request, video_id):
 
     else:
         watch_obj = UserWatch.objects.create(user_id=user_id, course_id=course_id, videofile_id=video_id,
-                                                         whatch_count=count, status='incomplete', )
+                                             whatch_count=count, status='incomplete', )
         if watch_obj:
             status = 0
             msg = 'Created user_watched entry'
@@ -293,4 +362,3 @@ def round_view(request, video_id):
         'msg': msg,
     }
     return JsonResponse(context)
-

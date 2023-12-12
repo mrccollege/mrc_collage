@@ -44,6 +44,7 @@ class VideoFiles(models.Model):
     file_type = models.ForeignKey(FileType, on_delete=models.CASCADE, default=1)
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
     day = models.IntegerField(null=True)
+    title = models.CharField(max_length=1000, null=True)
     file = models.FileField(upload_to='course_files', default='')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(null=True, blank=True)
