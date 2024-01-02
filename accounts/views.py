@@ -109,3 +109,8 @@ def shiping(request):
 def privacy_policy(request):
     logout(request)
     return render(request, 'privacy_policy.html')
+
+
+def contact_us(request):
+    logout(request)
+    return render(request, 'contact_us.html')

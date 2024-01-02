@@ -11,5 +11,6 @@ urlpatterns = [
     path('cancel_refund/', views.cancel_refund, name='cancel_refund'),
     path('shiping/', views.shiping, name='shiping'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
+    path('contact_us/', views.contact_us, name='contact_us'),
 
 ]
