@@ -1,7 +1,10 @@
+import datetime
+
 import razorpay
 from courses.models import CoursePurchased, Course, VideoFiles, UserWatch, CourseMaster, MonthMoney
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites import requests
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import hashlib
@@ -26,74 +29,13 @@ def homepage(request, id=0):
     return render(request, 'homepage.html', context)
 
 
-#
-# @login_required(login_url='/accounts/login/')
-# def cart_page(request, id, month=1):
-#
-#     if month:
-#         month = month
-#
-#     try:
-#         home_banner = Lookup.objects.get(code='home_banner')
-#     except:
-#         home_banner = ''
-#
-#     user_id = request.session.get('user_id')
-#     course = Course.objects.get(id=id)
-#     monts = ''
-#     amount = ''
-#     payment = ''
-#     order_id = ''
-#     already_purchased = ''
-#     if user_id is not None:
-#         try:
-#             already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id, payment_status='success')
-#             if already_purchased:
-#                 return redirect('/')
-#         except:
-#             pass
-#
-#         try:
-#             monts = MonthMoney.objects.get(course_id=id, month=month)
-#             amount = monts.money
-#
-#             client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-#             if amount:
-#                 payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
-#
-#                 order_id = payment['id']
-#
-#                 same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
-#                 if same_user:
-#                     CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
-#                 else:
-#                     CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=id)
-#         except Exception as e:
-#             print(e, '------e---------')
-#
-#     else:
-#         return redirect('/accounts/login/')
-#
-#     pay_amt = amount
-#     context = {
-#         'id': id,
-#         'payment': payment,
-#         'order_id': order_id,
-#         'pay_amt': pay_amt,
-#         'course': course,
-#         'home_banner': home_banner,
-#         'month': month
-#     }
-#
-#     return render(request, 'cart_page.html', context)
-
-def generate_hash(params, salt):
-    hash_string = hashlib.sha512(params.encode('utf-8') + salt.encode('utf-8')).hexdigest()
-    return hash_string
-
 
 @login_required(login_url='/accounts/login/')
 def cart_page(request, id, month=1):
+
+    if month:
+        month = month
+
     try:
         home_banner = Lookup.objects.get(code='home_banner')
     except:
@@ -101,6 +43,11 @@ def cart_page(request, id, month=1):
 
     user_id = request.session.get('user_id')
     course = Course.objects.get(id=id)
+    monts = ''
+    amount = ''
+    payment = ''
+    order_id = ''
+    already_purchased = ''
     if user_id is not None:
         try:
             already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id, payment_status='success')
@@ -108,45 +55,147 @@ def cart_page(request, id, month=1):
                 return redirect('/')
         except:
             pass
-        order_id = "order123"  # Replace with your logic to generate order_id
-        monts = MonthMoney.objects.get(course_id=id, month=month)
-        amount = monts.money
 
-        # Save payment details to the database
-        same_user = CoursePurchased.objects.filter(totalprice=amount, course_id=id, user_id=user_id)
-        if same_user:
-            CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id, totalprice=amount)
-        else:
-            CoursePurchased.objects.create(razorpay_order_id=order_id, totalprice=amount, course_id=id, user_id=user_id)
+        try:
+            monts = MonthMoney.objects.get(course_id=id, month=month)
+            amount = monts.money
 
-        params = {
-            'key': settings.PAYU_MERCHANT_KEY,
-            'txnid': order_id,
-            'amount': amount*100,
-            'productinfo': f'{course.name}',
-            'firstname': 'sanjay',
-            'email': 'srbc@email.com',
-            'phone': '8279408396',
-            'surl': settings.PAYU_SUCCESS_URL,
-        }
+            client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+            if amount:
+                payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
 
-        # Generate hash and add it to the parameters
-        hash_string = generate_hash(f"{params['key']}|{params['txnid']}|{params['amount']}|{params['productinfo']}|{params['firstname']}|{params['email']}|||||||||||{settings.PAYU_MERCHANT_SALT}", settings.PAYU_MERCHANT_SALT)
-        params['hash'] = hash_string
+                order_id = payment['id']
+
+                same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
+                if same_user:
+                    CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
+                else:
+                    CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=id)
+        except Exception as e:
+            print(e, '------e---------')
 
     else:
         return redirect('/accounts/login/')
 
+    pay_amt = amount
     context = {
         'id': id,
+        'payment': payment,
+        'order_id': order_id,
+        'pay_amt': pay_amt,
         'course': course,
         'home_banner': home_banner,
-        'month': month,
-        'params': params,
-        'amount': amount,
+        'month': month
     }
 
-    return render(request, 'new_cart.html', context)
+    return render(request, 'cart_page.html', context)
+
+# def generate_hash(params, salt):
+#     hash_string = hashlib.sha512(params.encode('utf-8') + salt.encode('utf-8')).hexdigest()
+#     return hash_string
+#
+#
+# @login_required(login_url='/accounts/login/')
+# def cart_page(request, id, month=1):
+#     try:
+#         home_banner = Lookup.objects.get(code='home_banner')
+#     except:
+#         home_banner = ''
+#
+#     user_id = request.session.get('user_id')
+#     course = Course.objects.get(id=id)
+#     if user_id is not None:
+#         try:
+#             already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id, payment_status='success')
+#             if already_purchased:
+#                 return redirect('/')
+#         except:
+#             pass
+#         order_id = "order123"  # Replace with your logic to generate order_id
+#         monts = MonthMoney.objects.get(course_id=id, month=month)
+#         amount = monts.money
+#
+#         # Save payment details to the database
+#         same_user = CoursePurchased.objects.filter(totalprice=amount, course_id=id, user_id=user_id)
+#         if same_user:
+#             CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id, totalprice=amount)
+#         else:
+#             CoursePurchased.objects.create(razorpay_order_id=order_id, totalprice=amount, course_id=id, user_id=user_id)
+#
+#         params = {
+#             'key': settings.PAYU_MERCHANT_KEY,
+#             'txnid': order_id,
+#             'amount': amount,
+#             'productinfo': f'{course.name}',
+#             'firstname': 'sanjay',
+#             'email': 'srbc@email.com',
+#             'phone': '8279408396',
+#             'surl': settings.PAYU_SUCCESS_URL,
+#         }
+#
+#         # Generate hash and add it to the parameters
+#         hash_string = generate_hash(
+#             f"{params['key']}|{params['txnid']}|{params['amount']}|{params['productinfo']}|{params['firstname']}|{params['email']}|||||||||||{settings.PAYU_MERCHANT_SALT}",
+#             settings.PAYU_MERCHANT_SALT)
+#         params['hash'] = hash_string
+#
+#     else:
+#         return redirect('/accounts/login/')
+#
+#     context = {
+#         'id': id,
+#         'course': course,
+#         'home_banner': home_banner,
+#         'month': month,
+#         'params': params,
+#         'amount': amount,
+#     }
+#
+#     return render(request, 'new_cart.html', context)
+#
+#
+# def initiate_payment(request):
+#     try:
+#         home_banner = Lookup.objects.get(code='home_banner')
+#     except:
+#         home_banner = ''
+#
+#     user_id = request.session.get('user_id')
+#     course = Course.objects.get(id=id)
+#     if user_id is not None:
+#         try:
+#             already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id, payment_status='success')
+#             if already_purchased:
+#                 return redirect('/')
+#         except:
+#             pass
+#         order_id = datetime.datetime.now()  # Replace with your logic to generate order_id
+#         monts = MonthMoney.objects.get(course_id=id, month=month)
+#         amount = monts.money
+#
+#         # Save payment details to the database
+#         same_user = CoursePurchased.objects.filter(totalprice=amount, course_id=id, user_id=user_id)
+#         if same_user:
+#             CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id, totalprice=amount)
+#         else:
+#             CoursePurchased.objects.create(razorpay_order_id=order_id, totalprice=amount, course_id=id, user_id=user_id)
+#     # Collect order information and create a PayU payment request
+#     # (Refer to PayU documentation for creating an order)
+#     payu_request_data = {
+#         'key': settings.PAYU_MERCHANT_KEY,
+#         'txnid': order_id,
+#         'amount': amount,
+#         'productinfo': f'{course.name}',
+#         'firstname': 'sanjay',
+#         'email': 'srbc@email.com',
+#         'phone': '8279408396',
+#         'surl': settings.PAYU_SUCCESS_URL,
+#     }
+#     # Send payment request to PayU
+#     response = requests.post(settings.PAYU_BASE_URL, data=payu_request_data)
+#
+#     # Redirect the user to the PayU payment page
+#     return render(request, 'new_cart.html', {'payment_form': response.text})
 
 
 def month_amount(request):
