@@ -90,15 +90,22 @@ def logout_account(request):
     logout(request)
     return redirect('/accounts/login/')
 
+
 def term_condition(request):
     logout(request)
     return render(request, 'term_condition.html')
+
+
 def cancel_refund(request):
     logout(request)
     return render(request, 'cancel_refund.html')
+
+
 def shiping(request):
     logout(request)
     return render(request, 'shiping.html')
+
+
 def privacy_policy(request):
     logout(request)
     return render(request, 'privacy_policy.html')
