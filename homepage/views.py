@@ -64,7 +64,7 @@ def cart_page(request, id, month=1):
                 payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
 
                 order_id = payment['id']
-
+                print(order_id,'==============order_id')
                 same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
                 if same_user:
                     CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
