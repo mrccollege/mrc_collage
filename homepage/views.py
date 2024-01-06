@@ -59,7 +59,6 @@ def cart_page(request, id, month=1):
         try:
             monts = MonthMoney.objects.get(course_id=id, month=month)
             amount = monts.money
-
             client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
             if amount:
                 payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
@@ -78,6 +77,7 @@ def cart_page(request, id, month=1):
         return redirect('/accounts/login/')
 
     pay_amt = amount
+    print(amount,'===================amount')
     context = {
         'id': id,
         'payment': payment,
