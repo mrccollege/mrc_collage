@@ -45,7 +45,7 @@ def cart_page(request, id, month=1):
     course = Course.objects.get(id=id)
     monts = ''
     amount = ''
-    payment = 100
+    payment = 1000
     order_id = ''
     already_purchased = ''
     if user_id is not None:
