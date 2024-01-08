@@ -45,7 +45,7 @@ def cart_page(request, id, month=1):
     course = Course.objects.get(id=id)
     monts = ''
     amount = ''
-    payment = 1000
+    payment = ''
     order_id = ''
     already_purchased = ''
     if user_id is not None:
@@ -64,7 +64,6 @@ def cart_page(request, id, month=1):
                 payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
 
                 order_id = payment['id']
-                print(order_id,'==============order_id')
                 same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
                 if same_user:
                     CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
@@ -77,7 +76,7 @@ def cart_page(request, id, month=1):
         return redirect('/accounts/login/')
 
     pay_amt = amount
-    print(amount,'===================amount')
+    print(amount, '===================amount')
     context = {
         'id': id,
         'payment': payment,
