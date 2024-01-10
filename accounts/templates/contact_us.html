@@ -65,7 +65,8 @@
 
     <section>
         <h2>Contact Form</h2>
-        <form action="mailto:your-email@example.com" method="post" enctype="text/plain">
+        <form id="query_form" enctype="text/plain">
+            {% csrf_token %}
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
                 <input type="text" class="form-control" id="name" name="name" required>
@@ -81,11 +82,31 @@
                 <textarea class="form-control" id="message" name="message" required></textarea>
             </div>
 
-            <button type="submit" class="btn btn-dark">Submit</button>
+            <button type="button" id="submit-btn" class="btn btn-dark">Submit</button>
         </form>
     </section>
 </div>
 {% endblock content %}
 
 {% block js %}
+<script>
+    $(document).ready(function () {
+        $('#submit-btn').on('click', function () {
+            var formData = $('#myForm').serialize();
+
+            // Make the AJAX request
+            $.ajax({
+                url: '/accounts/contact_us/',
+                type: 'POST',
+                data: formData,
+                success: function (data) {
+                    console.log(data.message);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+</script>
 {% endblock js %}

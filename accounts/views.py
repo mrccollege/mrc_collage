@@ -5,8 +5,10 @@ from django.shortcuts import render, redirect
 
 from homepage.models import Lookup
 
-
 # Create your views here.
+from .models import UserQuery
+
+
 def register_account(request):
     if request.method == 'POST':
         form = request.POST
@@ -112,6 +114,27 @@ def privacy_policy(request):
 
 
 def contact_us(request):
+    if request.method == 'POST':
+        form = request.POST
+        name = form.get('name')
+        email = form.get('email')
+        message = form.get('message')
+        status = 0
+        try:
+            q_obj = UserQuery.objects.create(name=name,
+                                             email=email,
+                                             message=message,
+                                             )
+            if q_obj:
+                status = 1
+        except:
+            pass
+
+        context = {
+            'status': status
+        }
+        return JsonResponse(context)
+
     try:
         home_banner = Lookup.objects.get(code='home_banner')
     except:
