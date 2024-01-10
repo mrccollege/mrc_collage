@@ -26,7 +26,7 @@
 <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
+            background: linear-gradient(to right, #f8f9fa, #acd8aa);
         }
 
         .navbar {
@@ -122,7 +122,7 @@
 <div class="fluid-container mt-4">
     <div class="row mx-auto text-center">
         {% for course_master in course_master %}
-        <div class="col-lg-4 col-md-2 col-sm-12 p-4 custom-card" onclick="get_course('{{course_master.id}}')">
+        <div class="col-lg-4 col-md-2 col-sm-12 p-4 custom-card bg-light" onclick="get_course('{{course_master.id}}')">
             <img class="mb-2 img-fluid" src="{{course_master.image.url}}">
             <h4><b>{{course_master.name}}</b></h4>
             <p>{{course_master.description}}</p>
