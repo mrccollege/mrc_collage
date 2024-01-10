@@ -4,8 +4,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
             margin: 0;
             padding: 0;
         }
@@ -20,13 +18,14 @@
         section {
             margin: 20px;
             padding: 20px;
-            background-color: #fff;
+            background: linear-gradient(to right, #4b6cb7, #182848);
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #fff;
         }
 
         h2 {
-            color: #333;
+            color: #fff;
         }
 
         address {
@@ -45,7 +44,6 @@
         form {
             margin-top: 20px;
         }
-
     </style>
 {% endblock css %}
 
@@ -60,7 +58,7 @@
         </address>
 
         <div class="contact-info">
-            <p>Email: <a href="mailto:mrctherapy2023@gmail.com">mrctherapy2023@gmail.com</a></p>
+            <p>Email: <a class="text-light" href="mailto:mrctherapy2023@gmail.com">mrctherapy2023@gmail.com</a></p>
             <p>Phone: 9837164790</p>
         </div>
     </section>
@@ -91,4 +89,3 @@
 
 {% block js %}
 {% endblock js %}
-
