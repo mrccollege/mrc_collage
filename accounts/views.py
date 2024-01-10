@@ -112,5 +112,12 @@ def privacy_policy(request):
 
 
 def contact_us(request):
-    logout(request)
-    return render(request, 'contact_us.html')
+    try:
+        home_banner = Lookup.objects.get(code='home_banner')
+    except:
+        home_banner = ''
+
+    context = {
+        'home_banner': home_banner,
+    }
+    return render(request, 'contact_us.html', context)
