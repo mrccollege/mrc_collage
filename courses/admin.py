@@ -8,8 +8,12 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
 
 
+class VideoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'course')
+
+
 # Register your models here.
-admin.site.register(VideoFiles)
+admin.site.register(VideoFiles, VideoAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(VideoInstructions)
 admin.site.register(CoursePurchased)
