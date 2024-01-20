@@ -315,6 +315,11 @@ def add_course(request):
     except:
         home_banner = ''
 
+    try:
+        loader_img = Lookup.objects.get(code='loader_img')
+    except:
+        loader_img = ''
+
     file_type = FileType.objects.all()
     course = Course.objects.all()
 
@@ -322,6 +327,7 @@ def add_course(request):
         'home_banner': home_banner,
         'file_type': file_type,
         'course': course,
+        'loader_img': loader_img,
     }
     return render(request, 'add_course.html', context)
 

@@ -1,9 +1,23 @@
 {% extends 'base.html' %}
 
 {% block css %}
+<style>
+    #loader{
+            position: fixed;
+            left: 0%;
+            top: 0%;
+            z-index: 9999;
+            height: 100%;
+            width: 100%;
+            opacity: .5;
+            background-size: 50px auto !important;
+            background:url("{{loader_img}}") 50% 50% no-repeat rgb(0, 0, 0);
+        }
+</style>
 {% endblock css %}
 
 {% block content %}
+<div id="loader" class="d-none"></div>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -43,6 +57,7 @@
         </div>
     </div>
 </div>
+
 {% endblock content %}
 
 {% block js %}
@@ -58,8 +73,14 @@
         data: formData,
         contentType: false,
         processData: false,
+        beforeSend:function(){
+            $('#loader').removeClass('d-none')
+        },
         success: function (data) {
           console.log(data, '===============data')
+        },
+        complete:function(){
+            $('#loader').addClass('d-none')
         },
         error: function (error) {
           console.log(error)
