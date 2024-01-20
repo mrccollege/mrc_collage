@@ -1,7 +1,7 @@
 import datetime
 
 import razorpay
-from courses.models import CoursePurchased, Course, VideoFiles, UserWatch, CourseMaster, MonthMoney
+from courses.models import CoursePurchased, Course, VideoFiles, UserWatch, CourseMaster, MonthMoney, FileType
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites import requests
@@ -9,6 +9,12 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import hashlib
 from homepage.models import Lookup
+
+import os
+import qrcode
+from django.urls import reverse
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def homepage(request, id=0):
@@ -29,10 +35,8 @@ def homepage(request, id=0):
     return render(request, 'homepage.html', context)
 
 
-
 @login_required(login_url='/accounts/login/')
 def cart_page(request, id, month=1):
-
     if month:
         month = month
 
@@ -88,7 +92,6 @@ def cart_page(request, id, month=1):
     }
 
     return render(request, 'cart_page.html', context)
-
 
 
 def month_amount(request):
@@ -304,3 +307,80 @@ def round_view(request, video_id):
         'msg': msg,
     }
     return JsonResponse(context)
+
+
+def add_course(request):
+    try:
+        home_banner = Lookup.objects.get(code='home_banner')
+    except:
+        home_banner = ''
+
+    file_type = FileType.objects.all()
+    course = Course.objects.all()
+
+    context = {
+        'home_banner': home_banner,
+        'file_type': file_type,
+        'course': course,
+    }
+    return render(request, 'add_course.html', context)
+
+
+def upload_video(request):
+    if request.method == 'POST':
+        form = request.POST
+        form1 = request.FILES
+        file_type = form.get('file_type')
+        course = form.get('courseName')
+        video = form1.getlist('videoFile')
+
+        for i in range(len(video)):
+            pro_count = VideoFiles.objects.filter(course_id=1).count()
+            pro_count = pro_count + 1
+            new_product = VideoFiles.objects.create(file_type_id=file_type,
+                                                    course_id=course,
+                                                    day=pro_count,
+                                                    title='title' + str(pro_count),
+                                                    file=video[i],
+                                                    code_no=pro_count,
+                                                    )
+
+            video_detail_url = request.build_absolute_uri(reverse('video_detail', args=[pro_count]))
+
+            qr = qrcode.QRCode(version=1,
+                               error_correction=qrcode.constants.ERROR_CORRECT_L,
+                               box_size=10,
+                               border=4,
+                               )
+            qr.add_data(video_detail_url)
+            qr.make(fit=True)
+
+            img = qr.make_image(fill_color="black", back_color="white")
+
+            qr_codes_dir = os.path.join(BASE_DIR, 'media', 'qr_codes')
+            os.makedirs(qr_codes_dir, exist_ok=True)
+
+            qr_code_path = f"qr_codes/video_{pro_count}.png"
+            img.save(os.path.join(BASE_DIR, 'media', qr_code_path))
+
+            new_product.qr_code = qr_code_path
+            new_product.save()
+
+    context = {
+        'status': 'success'
+    }
+    return JsonResponse(context)
+
+
+def video_detail(request, id):
+    try:
+        home_banner = Lookup.objects.get(code='home_banner')
+    except:
+        home_banner = ''
+    video = VideoFiles.objects.get(code_no=id)
+    context = {
+        'home_banner': home_banner,
+        'video': video,
+
+    }
+    return render(request, 'video_detail.html', context)

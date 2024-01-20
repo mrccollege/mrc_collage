@@ -46,6 +46,8 @@ class VideoFiles(models.Model):
     day = models.IntegerField(null=True)
     title = models.CharField(max_length=1000, null=True)
     file = models.FileField(upload_to='course_files', default='')
+    code_no = models.IntegerField(null=True, blank=True)
+    qr_code = models.ImageField(upload_to='qr_codes', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(null=True, blank=True)
 

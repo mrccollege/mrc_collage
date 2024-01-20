@@ -1,4 +1,4 @@
-from django.urls import path,include
+from django.urls import path
 from . import views
 urlpatterns = [
     path('', views.homepage, name='homepage'),
@@ -15,5 +15,10 @@ urlpatterns = [
     path('round_view/<int:video_id>/', views.round_view, name='round_view'),
 
     path('month_amount/', views.month_amount, name='month_amount'),
+
+    path('add_course/', views.add_course, name='add_course'),
+    path('upload_video/', views.upload_video, name='upload_video'),
+    path('video_detail/<int:id>/', views.video_detail, name='video_detail'),
+
 
 ]
