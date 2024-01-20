@@ -9,7 +9,7 @@ class CourseAdmin(admin.ModelAdmin):
 
 
 class VideoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'course', 'file', 'code_no', 'qr_code')
+    list_display = ('id', 'course', 'file', 'code_no', 'qr_code', 'created_at')
 
 
 # Register your models here.
