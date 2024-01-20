@@ -335,7 +335,7 @@ def upload_video(request):
         video = form1.getlist('videoFile')
 
         for i in range(len(video)):
-            pro_count = VideoFiles.objects.filter(course_id=1).count()
+            pro_count = VideoFiles.objects.filter(course_id=4).count()
             pro_count = pro_count + 1
             new_product = VideoFiles.objects.create(file_type_id=file_type,
                                                     course_id=course,
