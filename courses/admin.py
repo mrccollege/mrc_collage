@@ -1,10 +1,16 @@
 from django.contrib import admin
 
-from .models import VideoFiles,UserWatch, Course, VideoInstructions, CoursePurchased, FileType,CourseMaster, MonthMoney
+from .models import VideoFiles, UserWatch, Course, VideoInstructions, CoursePurchased, FileType, CourseMaster, \
+    MonthMoney
+
+
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
 
 # Register your models here.
 admin.site.register(VideoFiles)
-admin.site.register(Course)
+admin.site.register(Course, CourseAdmin)
 admin.site.register(VideoInstructions)
 admin.site.register(CoursePurchased)
 admin.site.register(UserWatch)
