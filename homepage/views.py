@@ -339,41 +339,47 @@ def upload_video(request):
         file_type = form.get('file_type')
         course = form.get('courseName')
         video = form1.getlist('videoFile')
+        try:
+            for i in range(len(video)):
+                pro_count = VideoFiles.objects.filter(course_id=4).count()
+                pro_count = pro_count + 1
+                new_product = VideoFiles.objects.create(file_type_id=file_type,
+                                                        course_id=course,
+                                                        day=pro_count,
+                                                        title='title' + str(pro_count),
+                                                        file=video[i],
+                                                        code_no=pro_count,
+                                                        )
+                if new_product:
+                    video_detail_url = request.build_absolute_uri(reverse('video_detail', args=[pro_count]))
 
-        for i in range(len(video)):
-            pro_count = VideoFiles.objects.filter(course_id=4).count()
-            pro_count = pro_count + 1
-            new_product = VideoFiles.objects.create(file_type_id=file_type,
-                                                    course_id=course,
-                                                    day=pro_count,
-                                                    title='title' + str(pro_count),
-                                                    file=video[i],
-                                                    code_no=pro_count,
-                                                    )
+                    qr = qrcode.QRCode(version=1,
+                                       error_correction=qrcode.constants.ERROR_CORRECT_L,
+                                       box_size=10,
+                                       border=4,
+                                       )
+                    qr.add_data(video_detail_url)
+                    qr.make(fit=True)
 
-            video_detail_url = request.build_absolute_uri(reverse('video_detail', args=[pro_count]))
+                    img = qr.make_image(fill_color="black", back_color="white")
 
-            qr = qrcode.QRCode(version=1,
-                               error_correction=qrcode.constants.ERROR_CORRECT_L,
-                               box_size=10,
-                               border=4,
-                               )
-            qr.add_data(video_detail_url)
-            qr.make(fit=True)
+                    qr_codes_dir = os.path.join(BASE_DIR, 'media', 'qr_codes')
+                    os.makedirs(qr_codes_dir, exist_ok=True)
 
-            img = qr.make_image(fill_color="black", back_color="white")
+                    qr_code_path = f"qr_codes/video_{pro_count}.png"
+                    img.save(os.path.join(BASE_DIR, 'media', qr_code_path))
 
-            qr_codes_dir = os.path.join(BASE_DIR, 'media', 'qr_codes')
-            os.makedirs(qr_codes_dir, exist_ok=True)
-
-            qr_code_path = f"qr_codes/video_{pro_count}.png"
-            img.save(os.path.join(BASE_DIR, 'media', qr_code_path))
-
-            new_product.qr_code = qr_code_path
-            new_product.save()
+                    new_product.qr_code = qr_code_path
+                    new_product.save()
+            status = 'success'
+            msg = 'video files uploaded.'
+        except Exception as e:
+            msg = str(e)
+            status = 'error'
 
     context = {
-        'status': 'success'
+        'status': status,
+        'msg': msg,
     }
     return JsonResponse(context)
 
