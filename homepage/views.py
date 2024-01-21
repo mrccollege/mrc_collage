@@ -317,6 +317,7 @@ def add_course(request):
 
     try:
         loader_img = Lookup.objects.get(code='loader_img')
+        loader_img = loader_img.file.url
     except:
         loader_img = ''
 
