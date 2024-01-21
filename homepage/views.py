@@ -9,7 +9,6 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import hashlib
 from homepage.models import Lookup
-from moviepy.video.io.VideoFileClip import VideoFileClip
 import os
 import qrcode
 from django.urls import reverse
