@@ -20,5 +20,9 @@ urlpatterns = [
     path('upload_video/', views.upload_video, name='upload_video'),
     path('video_detail/<int:id>/', views.video_detail, name='video_detail'),
 
+    path('view_list/<int:course_id>/', views.view_list, name='view_list'),
+    path('get_kshar_sutra_videos/', views.get_kshar_sutra_videos, name='get_kshar_sutra_videos'),
+    path('delete_files/', views.delete_files, name='delete_files'),
+
 
 ]

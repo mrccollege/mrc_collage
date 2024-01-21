@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import hashlib
 from homepage.models import Lookup
-
+from moviepy.video.io.VideoFileClip import VideoFileClip
 import os
 import qrcode
 from django.urls import reverse
@@ -347,7 +347,7 @@ def upload_video(request):
                 new_product = VideoFiles.objects.create(file_type_id=file_type,
                                                         course_id=course,
                                                         day=pro_count,
-                                                        title='title' + str(pro_count),
+                                                        title=video[i],
                                                         file=video[i],
                                                         code_no=pro_count,
                                                         )
@@ -397,3 +397,71 @@ def video_detail(request, id):
 
     }
     return render(request, 'video_detail.html', context)
+
+
+def view_list(request, course_id):
+    try:
+        home_banner = Lookup.objects.get(code='home_banner')
+    except:
+        home_banner = ''
+    context = {
+        'home_banner': home_banner,
+        'course_id': course_id,
+    }
+    return render(request, 'view_list_kshar_sutra.html', context)
+
+
+def get_kshar_sutra_videos(request):
+    if request.method == 'GET':
+        course_id = request.GET.get('course_id')
+        video_list = []
+        videos = VideoFiles.objects.filter(course_id=course_id)
+        for i in videos:
+            video_dict = {}
+            video_dict['id'] = i.id
+            video_dict['course'] = i.course.name
+            video_dict['day'] = i.day
+            video_dict['title'] = i.title
+            video_dict['code_no'] = i.code_no
+            video_dict['qr_code'] = i.qr_code.url
+            video_list.append(video_dict)
+        context = {
+            'video_list': video_list
+        }
+        return JsonResponse(context)
+
+
+def delete_files(request):
+    video_id = request.GET.get('video_id')
+    try:
+        video = VideoFiles.objects.get(id=video_id)
+
+        try:
+            video_file_path = video.file.url
+            video_file_path = os.path.join(BASE_DIR + video_file_path)
+            if os.path.exists(video_file_path):
+                os.remove(video_file_path)
+        except Exception as e:
+            print(e)
+
+        try:
+            qr_code_file_path = video.qr_code.url
+            qr_code_file_path = os.path.join(BASE_DIR + qr_code_file_path)
+            if os.path.exists(qr_code_file_path):
+                os.remove(qr_code_file_path)
+        except Exception as e:
+            print(e)
+
+        video.delete()
+
+        status = 'success'
+        msg = 'Deleted file.'
+    except Exception as e:
+        print(e)
+        status = 'error'
+        msg = 'No file deleted!'
+    context = {
+        'status': status,
+        'msg': msg,
+    }
+    return JsonResponse(context)

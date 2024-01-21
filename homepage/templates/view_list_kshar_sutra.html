@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block css %}
+
+<style>
+    #loader{
+            position: fixed;
+            left: 0%;
+            top: 0%;
+            z-index: 9999;
+            height: 100%;
+            width: 100%;
+            opacity: .5;
+            background-size: 50px auto !important;
+            background:url("{{loader_img}}") 50% 50% no-repeat rgb(0, 0, 0);
+        }
+
+
+
+</style>
+<style>
+        /* Style for the product container */
+        #productContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* Style for each product item */
+        .productItem {
+            border: 1px solid #ddd;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+        }
+
+        .productItem img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock css %}
+
+{% block content %}
+<div id="loader" class="d-none"></div>
+<div class="container">
+    <div id="productContainer">
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $.ajax({
+        url: "/get_kshar_sutra_videos/",
+        data:{
+            'course_id': '{{course_id}}'
+        },
+        beforeSend:function(){
+            $('#loader').removeClass('d-none')
+        },
+        success: function (response) {
+            console.log(response.video_list)
+            $.each(response.video_list, function(index, item){
+                html = ''
+                html += '<div class="productItem">';
+                html += '<img src="'+item.qr_code+'" alt="">';
+                html += '<p>'+item.title+'</p>';
+                html += '<p>'+item.course+'</p>';
+                html += '<button type="button" onclick="delete_video('+item.id+')">delete</button>';
+                html += '</div>';
+                $('#productContainer').append(html)
+            });
+        },
+        complete:function(){
+            $('#loader').addClass('d-none')
+        },
+        error: function (error) {
+          console.log(error)
+        }
+    });
+
+  });
+
+  function delete_video(video_id){
+    $.ajax({
+        url: "/delete_files/",
+        data:{
+            'video_id': video_id,
+        },
+        beforeSend:function(){
+            $('#loader').removeClass('d-none')
+        },
+        success: function (response) {
+            if(response.status == 'success'){
+                Swal.fire({
+                    title: 'Success',
+                    text: response.msg,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    location.reload();
+                });
+            }else{
+                Swal.fire({
+                    title: 'Error',
+                    text: response.msg,
+                    icon: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                })
+                return false
+            }
+
+        },
+        complete:function(){
+            $('#loader').addClass('d-none')
+        },
+        error: function (error) {
+          console.log(error)
+        }
+    });
+  }
+
+
+</script>
+{% endblock js %}
