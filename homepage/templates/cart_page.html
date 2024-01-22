@@ -5,8 +5,15 @@
     .table-responsive {
       overflow-x: auto;
     }
-
-
+</style>
+<style>
+    .custom-card {
+        background: linear-gradient(to right, #f5f5f5, #e0e0e0); /* Adjust colors as needed for a light background */
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        color: #333; /* Adjust text color for better contrast on a light background */
+    }
 </style>
 {% endblock css %}
 
@@ -14,50 +21,106 @@
 <div class="container p-5">
     <h5 class="mt-5 mb-3">Shopping Cart</h5>
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Selet Months for Purchasing Course</th>
-                <th>Total</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>{{course.name}}</td>
-                <td>{{pay_amt|add:pay_amt}}</td>
-                <td>
+    <div class="card custom-card">
+        <div class="card-body">
+            <h5 class="card-title">Product Details</h5>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <strong>Product:</strong> {{course.name}}
+                </div>
+                <div class="col-md-6">
+                    <strong>Price: INR</strong> {{pay_amt|add:pay_amt}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <strong>Select Months for Purchasing Course:</strong>
                     <select class="form-control" name="month_money" id="month_money">
+                        <!-- Add your options here -->
                     </select>
-                </td>
-                <td>{{pay_amt|add:pay_amt}}</td>
-            </tr>
+                </div>
+                <div class="col-md-6">
+                    <strong>Total: INR</strong> {{pay_amt|add:pay_amt}}
+                </div>
+            </div>
 
-            </tbody>
-            <tfoot>
-            <tr>
-                <td class="text-right" colspan="3">Subtotal:</td>
-                <td>{{pay_amt|add:pay_amt}}</td>
-            </tr>
-            <tr>
-                <td class="text-right" colspan="3">Discount:</td>
-                <td>50 % Off</td>
-            </tr>
-            <tr>
-                <td>Final Amount to Pay:</td>
-                <td class="text-end"> You have selected for </td>
-                <td class="text-end"> {{month}} {% if month == 1 %} Month {% else %} Months {% endif %} : </td>
-                <td>INR - {{pay_amt}}</td>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <strong>Subtotal: INR</strong> {{pay_amt|add:pay_amt}}
+                </div>
+            </div>
 
-    <div class="mx-auto col-lg-6">
-        <button class="w-100 form-control btn btn-success mx-auto" id="rzp-button1">Checkout</button>
+            <div class="row">
+                <div class="col-md-12">
+                    <strong>Discount:</strong> 50 % Off
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <strong>Final Amount to Pay:</strong> INR - {{pay_amt}}
+                </div>
+                <div class="col-md-6">
+                    <p class="text-end">
+                        You have selected for {{month}}
+                        {% if month == 1 %}
+                        Month
+                        {% else %}
+                        Months
+                        {% endif %} :
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
+<!--    <div class="col-lg-6 table-responsive">-->
+<!--        <table class="table table-striped">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>Product</th>-->
+<!--                <th>Price</th>-->
+<!--                <th>Selet Months for Purchasing Course</th>-->
+<!--                <th>Total</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr>-->
+<!--                <td>{{course.name}}</td>-->
+<!--                <td>{{pay_amt|add:pay_amt}}</td>-->
+<!--                <td>-->
+<!--                    <select class="form-control" name="month_money" id="month_money">-->
+<!--                    </select>-->
+<!--                </td>-->
+<!--                <td>{{pay_amt|add:pay_amt}}</td>-->
+<!--            </tr>-->
+
+<!--            </tbody>-->
+<!--            <tfoot>-->
+<!--            <tr>-->
+<!--                <td class="text-right" colspan="3">Subtotal:</td>-->
+<!--                <td>{{pay_amt|add:pay_amt}}</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td class="text-right" colspan="3">Discount:</td>-->
+<!--                <td>50 % Off</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>Final Amount to Pay:</td>-->
+<!--                <td class="text-end"> You have selected for </td>-->
+<!--                <td class="text-end"> {{month}} {% if month == 1 %} Month {% else %} Months {% endif %} : </td>-->
+<!--                <td>INR - {{pay_amt}}</td>-->
+<!--            </tr>-->
+<!--            </tfoot>-->
+<!--        </table>-->
+<!--    </div>-->
+
+<div class="col-lg-6 mx-auto ">
+    <button class="w-100 form-control btn btn-success mx-auto" id="rzp-button1">Checkout</button>
+</div>
 </div>
 {% endblock content %}
 
@@ -174,6 +237,8 @@
       e.preventDefault();
       console.log(options)
     }
+
+
 
 </script>
 {% endblock js %}
