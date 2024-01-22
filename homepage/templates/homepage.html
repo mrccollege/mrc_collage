@@ -149,7 +149,7 @@
                     <p><strong>Duration:</strong> {{course_master.validate_for}} {% if course_master.validate_for == 1 %}
                         Month
                         {% else %} Months {% endif %}</p>
-                    <p>{{course_master.description|slice:'100'}}</p>
+                    <p><strong>Description:</strong>{{course_master.description}}</p>
                     <button class="enroll-btn" id="enroll_btn" onclick="enroll_now('{{course_master.id}}')">Enroll Now
                     </button>
                 </div>
