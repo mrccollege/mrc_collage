@@ -24,10 +24,9 @@ class CourseMaster(models.Model):
 class Course(models.Model):
     course_master = models.ForeignKey(CourseMaster, on_delete=models.PROTECT, null=True)
     name = models.CharField(max_length=1000, null=True)
+    instructor = models.CharField(max_length=1000, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    # price = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.CharField(max_length=10, default=0, blank=True, null=True)
-    # totalprice = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     course_image = models.ImageField(upload_to='course_images/', null=True, blank=True)
     demo_video = models.FileField(upload_to='course_demo', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
