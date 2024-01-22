@@ -137,13 +137,13 @@
     <div class="container mt-5">
         <div class="course-list">
             <div class="row mx-auto">
-                <div class="course-video">
+                <div class="col-lg-6">
                     <video controls controlsList="nodownload" poster="{% if course_master.course_image %}{{course_master.course_image.url}}{% endif %}" width="100%"/>
                     <source src="{% if course_master.demo_video %}{{course_master.demo_video.url}}{% endif %}"
                             type="video/mp4">
                     </video>
                 </div>
-                <div class="course-details">
+                <div class="col-lg-6 bg-light">
                     <h3>{{course_master.name}}</h3>
                     <p><strong>Instructor:</strong> {{course_master.instructor}}</p>
                     <p><strong>Duration:</strong> {{course_master.validate_for}} {% if course_master.validate_for == 1 %}
