@@ -20,7 +20,7 @@ def homepage(request, id=0):
     if id != 0:
         course_master = Course.objects.filter(course_master_id=id)
     else:
-        course_master = CourseMaster.objects.all()
+        course_master = CourseMaster.objects.all().order_by('-id')
     try:
         home_banner = Lookup.objects.get(code='home_banner')
     except:
