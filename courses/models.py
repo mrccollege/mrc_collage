@@ -83,7 +83,7 @@ class CoursePurchased(models.Model):
     discount = models.CharField(max_length=10, null=True, default=0, blank=True)
     totalprice = models.IntegerField(null=True)
     quantity = models.PositiveIntegerField(default=1, null=True, blank=True)
-
+    month = models.IntegerField(null=True, blank=True)
     razorpay_payment_id = models.CharField(max_length=100, null=True)
     razorpay_order_id = models.CharField(max_length=100, null=True)
     razorpay_signature = models.CharField(max_length=100, null=True)
