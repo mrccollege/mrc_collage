@@ -107,7 +107,7 @@ def month_amount(request):
             course_month.append(data_dict)
 
         context = {
-            'monts': course_month,
+            'month': course_month,
         }
         return JsonResponse(context)
 
@@ -126,11 +126,21 @@ def success(request):
         totalprice = form.get('totalprice', None)
         quantity = form.get('quantity', None)
         payment_status = form.get('payment_status', None)
+        months = int(form.get('month', 0))
+
+        from datetime import datetime, timedelta
+
+        def calculate_future_date(months):
+            current_date = datetime.now()
+            future_date = current_date + timedelta(days=30 * months)  # Assuming a month has 30 days for simplicity
+            return future_date
+
+        future_date = calculate_future_date(months)
         try:
             course_obj = CoursePurchased.objects.filter(user_id=user_id, razorpay_order_id=razorpay_order_id).update(
                 course_id=course_id, price=price, discount=discount, totalprice=totalprice, quantity=quantity,
                 razorpay_payment_id=razorpay_payment_id, razorpay_signature=razorpay_signature,
-                payment_status=payment_status, )
+                payment_status=payment_status, end_date=future_date)
         except Exception as e:
             print(e, '=====================error in payment success function')
 
