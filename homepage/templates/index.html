@@ -1,0 +1,157 @@
+{% extends 'new_base.html' %}
+{% block css %}
+<style>
+    .banner-img{
+        margin-top:100px;
+    }
+
+
+</style>
+{% endblock css %}
+
+{% block content %}
+<!-- Banner Area Start-->
+<img alt="Image" class="banner-img w-100" height="200" src="{{ home_banner }}">
+<!--<section class="banner-area mt-5" style="background-image: url(/static/assets/img/banner/0.jpg);">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-lg-6 col-md-8 align-self-center">-->
+<!--                <div class="banner-inner text-md-start text-center">-->
+<!--                    <h1>Find the Best <span>Courses</span> & Upgrade <span>Your Skills.</span></h1>-->
+<!--                    <div class="banner-content">-->
+<!--                        <p>Mrc therapy offers professional training classes and special features to help you improve-->
+<!--                            your skills.</p>-->
+<!--                    </div>-->
+<!--                    <div class="single-input-wrap">-->
+<!--                        <input type="text" placeholder="Search your best courses">-->
+<!--                        <button><i class="fa fa-search"></i></button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+<!-- Banner Area End -->
+
+{% if id == 0 %}
+<!-- trending courses Area Start-->
+<section class="trending-courses-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h4 class="text-center p-3">Our Therapy Most Trending Courses</h4>
+            </div>
+            <div class="col-lg-12">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="">
+                        <div class="row">
+                            {% for course_master in course_master %}
+                            <div class="item col-lg-3" onclick="get_course('{{course_master.id}}')">
+                                <div class="single-course-wrap">
+                                    <div class="thumb">
+                                        <img class="img-fluid" src="{{course_master.image.url}}" alt="img">
+                                    </div>
+                                    <div class="wrap-details">
+                                        <h6>{{course_master.name|title}}</h6>
+                                        <!--                                        <div class="user-area">-->
+                                        <!--                                            <div class="user-details">-->
+                                        <!--                                                <img src="/static/assets/img/author/1.png" alt="img">-->
+                                        <!--                                                <a href="#">{{course_master.instructor}}</a>-->
+                                        <!--                                            </div>-->
+                                        <!--                                            <div class="user-rating">-->
+                                        <!--                                                    <span><i class="fa fa-star"></i>4.9</span>(76)-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
+                                        <!--                                        <div class="price-wrap">-->
+                                        <!--                                            <div class="row align-items-center">-->
+                                        <!--                                                <div class="col-6">-->
+                                        <!--                                                    <a href="#">Development</a>-->
+                                        <!--                                                </div>-->
+                                        <!--                                                <div class="col-6 text-end">-->
+                                        <!--                                                    <div class="price">$30</div>-->
+                                        <!--                                                </div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- trending courses Area End -->
+{% else %}
+
+<!-- trending courses Area Start-->
+<section class="trending-courses-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h4 class="text-center p-3">Our Therapy</h4>
+            </div>
+            <div class="col-lg-12">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="pills-1">
+                        <div class="row">
+                            {% for course_master in course_master %}
+                            <div class="item col-lg-3">
+                                <div class="single-course-wrap">
+                                    <div class="thumb">
+                                        <img class="img-fluid" src="{{course_master.course_image.url}}" alt="img">
+                                    </div>
+                                    <div class="wrap-details">
+                                        <h6>{{course_master.name|title}}</h6>
+                                        <div class="user-area">
+                                            <div class="user-details">
+                                                <img src="/static/assets/img/author/1.png" alt="img">
+                                                <p>{{course_master.instructor}}</p>
+                                            </div>
+                                            <div class="user-rating">
+                                                <span><i class="fa fa-star"></i>4.1</span>(196)
+                                            </div>
+                                        </div>
+                                        <div class="price-wrap">
+                                            <div class="row align-items-center">
+<!--                                                <div class="col-6">-->
+<!--                                                    <a href="#">Development</a>-->
+<!--                                                </div>-->
+<!--                                                <div class="col-6 text-end">-->
+<!--                                                    <div class="price">$30</div>-->
+<!--                                                </div>-->
+                                                <button type="button" class="btn-primary rounded" onclick="enroll_now('{{course_master.id}}')">
+                                                    Enroll Now
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- trending courses Area End -->
+
+
+{% endif %}
+
+{% endblock content %}
+
+{% block js %}
+<script>
+    function get_course(course_id){
+        window.location.href = '/'+course_id+'/';
+    }
+    function enroll_now(course_id){
+        window.location.href = '/cart-page/'+course_id+'/';
+    }
+</script>
+{% endblock js %}

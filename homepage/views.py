@@ -29,9 +29,10 @@ def homepage(request, id=0):
     context = {
         'id': id,
         'course_master': course_master,
-        'home_banner': home_banner,
+        'home_banner': home_banner.file.url,
     }
-    return render(request, 'homepage.html', context)
+    # return render(request, 'homepage.html', context)
+    return render(request, 'index.html', context)
 
 
 @login_required(login_url='/accounts/login/')
