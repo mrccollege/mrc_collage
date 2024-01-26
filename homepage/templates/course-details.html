@@ -1,0 +1,98 @@
+{% extends 'new_base.html' %}
+{% block content %}
+<!-- courses-details Area Start-->
+<section class="courses-details-area pd-top-135 pd-bottom-130">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="single-course-wrap mb-0">
+                    <div class="thumb">
+                        <video controls autoplay controlsList="nodownload" id="video_frame"
+                               src="/media/course_files/A_Condyloma.mp4" type="video/mp4" class="img-fluid plyr">
+                        </video>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 sidebar-area">
+                <div class="widget widget-accordion-inner">
+                    <h5 class="widget-title border-0">Course Syllabus</h5>
+                    <div class="accordion" id="accordionExample">
+                        <!--<div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Introduction
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                 data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>
+                                            <a class="play-btn" href="#"><i class="fa fa-play"></i></a>
+                                            <span>
+                                                <p>Welcome to strategic thinking</p>
+                                                <span>1m 24s</span>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>-->
+
+
+                        {% for data in data %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{forloop.counter}}" aria-expanded="false"
+                                        aria-controls="collapseTwo">
+                                    {{data.title}}
+                                </button>
+                            </h2>
+                            <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse"
+                                 aria-labelledby="headingTwo"
+                                 data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>
+                                            <!--<a class="play-btn" href="{{data.file.url}}"><i class="fa fa-play"></i></a>-->
+                                            <i class="fa fa-play"
+                                               onclick="play_video('{{data.title}}', '{{data.file.url}}')"></i>
+                                            <span>
+                                                <p>{{data.title}}</p>
+                                                <span>1m 24s</span>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- courses-details Area End -->
+{% endblock content %}
+
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const players = Plyr.setup('.plyr');
+    });
+
+    function play_video(title, file) {
+        if (file){
+            $('#video_frame').attr('src', file)
+            $('#video_title').html(title)
+        }else{
+            $('#video_frame').attr('src', '')
+            $('#video_title').html('')
+        }
+    }
+
+</script>
+{% endblock js %}

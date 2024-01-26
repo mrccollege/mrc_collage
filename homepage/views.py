@@ -193,7 +193,8 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                        'thumb': thumb,
                        'home_banner': home_banner,
                        }
-            return render(request, 'professional_course.html', context)
+            # return render(request, 'professional_course.html', context)
+            return render(request, 'course-details.html', context)
         elif type == 'regular':
             video_files = VideoFiles.objects.filter(course_id=course_id)
             context = {'type': type,
