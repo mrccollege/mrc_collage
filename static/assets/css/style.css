@@ -1719,7 +1719,7 @@ ul {
 .navbar-area {
   padding: 0;
   top: 0;
-  position: fixed;
+  position: sticky;
   z-index: 98;
   width: 100% !important;
   -webkit-transition: all 0.4s;
