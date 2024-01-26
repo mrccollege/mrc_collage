@@ -12,6 +12,7 @@
 {% block content %}
 <!-- Banner Area Start-->
 <!--<img alt="Image" class="banner-img w-100" height="200" src="{{ home_banner }}">-->
+{% if id == 0 %}
 <section class="banner-area mt-5" style="background-image: url(/static/assets/img/banner/0.jpg);">
     <div class="container">
         <div class="row">
@@ -32,6 +33,7 @@
     </div>
 </section>
 <!-- Banner Area End -->
+{% endif %}
 
 {% if id == 0 %}
 <!-- trending courses Area Start-->
