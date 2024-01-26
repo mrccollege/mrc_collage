@@ -482,12 +482,9 @@ def buy_course_detail(request, course_id):
     user_id = request.session.get('user_id')
     course_data = Course.objects.get(id=course_id)
 
-    try:
-        already_purchased = CoursePurchased.objects.get(course_id=course_id, user_id=user_id, payment_status='success')
-        if already_purchased:
-            return redirect('/')
-    except Exception as e:
-        print(e, '====e====')
+    already_purchased = CoursePurchased.objects.filter(course_id=course_id, user_id=user_id, payment_status='success')
+    if already_purchased:
+        return redirect('/')
 
     context = {
         'course_data': course_data
