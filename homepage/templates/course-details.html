@@ -1,46 +1,62 @@
 {% extends 'new_base.html' %}
+{% block css %}
+<style>
+     .scrollableDiv {
+          height: 540px;
+          overflow-y: scroll;
+     }
+     .cursor-pointer{
+        cursor:pointer;
+     }
+</style>
+{% endblock css %}
+
 {% block content %}
 <!-- courses-details Area Start-->
+
+
 <section class="courses-details-area pd-top-135 pd-bottom-130">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-8 mb-3">
                 <div class="single-course-wrap mb-0">
                     <div class="thumb">
                         <video controls autoplay controlsList="nodownload" id="video_frame"
                                src="" type="video/mp4" class="img-fluid plyr">
                         </video>
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-4 sidebar-area">
-                <div class="widget widget-accordion-inner">
-                    <h5 class="widget-title border-0">Course Syllabus</h5>
-                    <div class="accordion" id="accordionExample">
-                        <!--<div class="accordion-item">
-                            <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Introduction
-                                </button>
-                            </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                        <li>
-                                            <a class="play-btn" href="#"><i class="fa fa-play"></i></a>
-                                            <span>
-                                                <p>Welcome to strategic thinking</p>
-                                                <span>1m 24s</span>
-                                            </span>
-                                        </li>
-                                    </ul>
+                    <div class="wrap-details">
+                            <h5 id="video_title">First select Course Syllabus video or audio.</h5>
+                            <!--<p>Learn Python like a Professional Start from the basics</p>-->
+                            <div class="user-area">
+                                <div class="user-details">
+                                    <!--<img src="assets/img/author/1.png" alt="img">-->
+                                    <p><strong>Instructor:</strong> Dr. Abhishek Sharma</p>
+                                </div>
+                                <div class="date ms-auto">
+                                    <i class="fa fa-calendar-alt me-2" style="color: var(--main-color);"></i>Last updated 1/2024
+                                </div>
+                                <div class="ms-auto">
+                                    <i class="fa fa-user me-2" style="color: var(--main-color);"></i>5k already enrolled
+                                </div>
+                                <div class="user-rating">
+                                    <span>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-half-alt"></i>
+                                    4.9</span>(1.7k)
                                 </div>
                             </div>
-                        </div>-->
 
-
+                        </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-3 sidebar-area">
+                <div class="widget widget-accordion-inner scrollableDiv">
+                    <h5 class="widget-title border-0">Course Syllabus</h5>
+                    <div class="accordion" id="accordionExample">
                         {% for data in data %}
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingTwo">
@@ -55,10 +71,8 @@
                                  data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     <ul>
-                                        <li>
-                                            <!--<a class="play-btn" href="{{data.file.url}}"><i class="fa fa-play"></i></a>-->
-                                            <i class="fa fa-play"
-                                               onclick="play_video('{{data.title}}', '{{data.file.url}}')"></i>
+                                        <li class="cursor-pointer" onclick="play_video('{{data.title}}', '{{data.file.url}}')">
+                                            <i class="fa fa-play"></i>
                                             <span>
                                                 <p>{{data.title}}</p>
                                                 <span>1m 24s</span>
@@ -93,6 +107,8 @@
             $('#video_title').html('')
         }
     }
+
+
 
 </script>
 {% endblock js %}

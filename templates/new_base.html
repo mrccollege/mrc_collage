@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Edufie - Online Courses Html Template</title>
+    <title>Mrc Therapy - Online Courses</title>
     <!--fivicon icon-->
     <link rel="icon" href="/static/assets/img/icon/mrcLOGO.jpeg">
 
@@ -24,7 +24,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet">
 
-
+    {% block css %}
+    {% endblock css %}
 </head>
 <body class='sc5'>
 <!-- preloader area start -->
@@ -52,7 +53,7 @@
 </div>
 <!-- //. search Popup -->
 <header class="navbar-area">
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg shadow">
         <div class="container nav-container">
             <div class="responsive-mobile-menu">
                 <button class="menu toggle-btn d-block d-lg-none" data-target="#themefie_main_menu"
@@ -62,9 +63,12 @@
                 </button>
             </div>
             <div class="logo">
-                <a class="main-logo" href="home.html"><img src="/static/assets/img/logo.png" alt="img"></a>
+                <a class="main-logo" href="home.html">
+                    <img src="/static/assets/img/logo.png" alt="img">
+                </a>
             </div>
             <div class="nav-right-part nav-right-part-mobile">
+                <span><b>Mrc Therapy</b></span>
                 <ul>
                     <li><a class="search header-search" href="#"><i class="fa fa-search"></i></a></li>
                 </ul>
