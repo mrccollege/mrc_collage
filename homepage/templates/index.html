@@ -130,6 +130,9 @@
                                     </div>
                                 </div>
                             </div>
+
+                            {% empty %}
+                                <p class="text-center mt-4">No course data available right now.</p>
                             {% endfor %}
                         </div>
                     </div>
@@ -151,7 +154,8 @@
         window.location.href = '/'+course_id+'/';
     }
     function enroll_now(course_id){
-        window.location.href = '/cart-page/'+course_id+'/';
+        //window.location.href = '/cart-page/'+course_id+'/';
+        window.location.href = '/buy_course_detail/'+course_id+'/';
     }
 </script>
 {% endblock js %}

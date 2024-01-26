@@ -113,7 +113,7 @@ def month_amount(request):
         return JsonResponse(context)
 
 
-def success(request):
+def payment_success(request):
     user_id = request.session.get('user_id')
     if request.method == 'GET':
         course_obj = ''
@@ -128,7 +128,7 @@ def success(request):
         quantity = form.get('quantity', None)
         payment_status = form.get('payment_status', None)
         months = int(form.get('month', 0))
-
+        status = 0
         from datetime import datetime, timedelta
 
         def calculate_future_date(months):
@@ -141,16 +141,13 @@ def success(request):
             course_obj = CoursePurchased.objects.filter(user_id=user_id, razorpay_order_id=razorpay_order_id).update(
                 course_id=course_id, price=price, discount=discount, totalprice=totalprice, quantity=quantity,
                 razorpay_payment_id=razorpay_payment_id, razorpay_signature=razorpay_signature,
-                payment_status=payment_status, end_date=future_date)
+                payment_status=payment_status, end_date=future_date, month=months)
+            if course_obj:
+                status = 1
         except Exception as e:
-            print(e, '=====================error in payment success function')
+            print(e, '=====error in payment success function')
 
-        if course_obj:
-            msg = 'success'
-        else:
-            msg = 'failed'
-
-        json_data = {'msg': msg}
+        json_data = {'status': status}
 
         return JsonResponse(json_data)
 
@@ -478,3 +475,71 @@ def delete_files(request):
         'msg': msg,
     }
     return JsonResponse(context)
+
+
+@login_required(login_url='/accounts/login/')
+def buy_course_detail(request, course_id):
+    user_id = request.session.get('user_id')
+    course_data = Course.objects.get(id=course_id)
+
+    try:
+        already_purchased = CoursePurchased.objects.get(course_id=course_id, user_id=user_id, payment_status='success')
+        if already_purchased:
+            return redirect('/')
+    except Exception as e:
+        print(e, '====e====')
+
+    context = {
+        'course_data': course_data
+    }
+    return render(request, 'new_cart_page.html', context)
+
+
+def get_service_month(request):
+    if request.method == 'GET':
+        form = request.GET
+        course_id = form.get('course_id')
+        price_data = MonthMoney.objects.filter(course_id=course_id)
+        data_list = []
+        if price_data:
+            for i in price_data:
+                data_dict = {}
+                data_dict['id'] = i.id
+                data_dict['month'] = i.month
+                data_dict['price'] = i.money
+                data_list.append(data_dict)
+
+        context = {
+            'data': data_list
+        }
+        return JsonResponse(context)
+
+
+def get_service_price(request):
+    if request.method == 'GET':
+        form = request.GET
+        user_id = request.session.get('user_id')
+        course_id = form.get('course_id')
+        month_id = form.get('month_id')
+        data_dict = {}
+        price_data = MonthMoney.objects.get(id=month_id)
+
+        data_dict['month'] = price_data.month
+        data_dict['price'] = price_data.money
+
+        client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+        payment = client.order.create(
+            {'amount': int(data_dict['price']) * 100, 'currency': 'INR', 'payment_capture': '1'})
+        order_id = payment['id']
+
+        same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
+        if same_user:
+            CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
+        else:
+            CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id)
+        context = {
+            'data': data_dict,
+            'payment': payment,
+            'order_id': order_id,
+        }
+        return JsonResponse(context)
