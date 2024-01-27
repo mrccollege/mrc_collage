@@ -79,7 +79,7 @@
     margin-bottom: 20px;
   }
   .banner-area {
-    padding: 150px 0 65px;
+    padding: 65px 0 65px;
   }
   .single-intro-wrap {
     display: block;
@@ -274,8 +274,8 @@
     border-bottom: 0;
   }
   .banner-area {
-    padding: 100px 0 65px;
-    background-size: 123%;
+    padding: 70px 0 0px;
+    background-size: 161%;
     background-position: 48% bottom;
   }
   .edl-nav {
