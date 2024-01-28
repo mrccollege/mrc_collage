@@ -437,10 +437,10 @@ def get_kshar_sutra_videos(request):
             video_dict = {}
             video_dict['id'] = i.id
             video_dict['course'] = i.course.name
-            video_dict['day'] = i.day
-            video_dict['title'] = i.title
-            video_dict['code_no'] = i.code_no
-            video_dict['qr_code'] = i.qr_code.url
+            video_dict['day'] = i.day if i.day else ''
+            video_dict['title'] = i.title if i.title else ''
+            video_dict['code_no'] = i.code_no if i.code_no else ''
+            video_dict['qr_code'] = i.qr_code.url if i.qr_code.url else ''
             video_list.append(video_dict)
         context = {
             'video_list': video_list
