@@ -22,7 +22,7 @@
                 <div class="single-course-wrap mb-0">
                     <div class="thumb">
                         <video controls autoplay controlsList="nodownload" id="video_frame"
-                               src="" type="video/mp4" class="img-fluid plyr">
+                               src="" type="video/mp4" class="img-fluid plyr" poster="">
                         </video>
                     </div>
                     <div class="wrap-details">
@@ -71,7 +71,7 @@
                                  data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     <ul>
-                                        <li class="cursor-pointer" onclick="play_video('{{data.title}}', '{{data.file.url}}')">
+                                        <li class="cursor-pointer" onclick="play_video('{{data.title}}', '{{data.file.url}}', '{{data.file_type}}')">
                                             <i class="fa fa-play"></i>
                                             <span>
                                                 <p>{{data.title}}</p>
@@ -97,12 +97,16 @@
     document.addEventListener('DOMContentLoaded', function () {
         const players = Plyr.setup('.plyr');
     });
-
-    function play_video(title, file) {
-        if (file){
+    var sleep_headphone = '/static/assets/img/sleep_headphone.jpg'
+    function play_video(title, file, file_type) {
+        if (file, file_type){
+            if (file_type == 'audio'){
+                $('#video_frame').attr('poster', sleep_headphone)
+            }
             $('#video_frame').attr('src', file)
             $('#video_title').html(title)
         }else{
+            $('#video_frame').attr('poster', '')
             $('#video_frame').attr('src', '')
             $('#video_title').html('')
         }

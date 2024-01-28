@@ -436,6 +436,7 @@ def get_kshar_sutra_videos(request):
         for i in videos:
             video_dict = {}
             video_dict['id'] = i.id
+            video_dict['file_type'] = i.file_type.file_type
             video_dict['course'] = i.course.name
             video_dict['day'] = i.day if i.day else ''
             video_dict['title'] = i.title if i.title else ''
