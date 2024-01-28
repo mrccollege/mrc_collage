@@ -16,6 +16,7 @@ class Lookup(models.Model):
 class CouponCode(models.Model):
     coupon_name = models.CharField(max_length=100, null=True)
     coupon_code = models.IntegerField(null=True)
+    percent = models.IntegerField(null=True)
 
     def __str__(self):
         return str(self.coupon_code)
