@@ -101,7 +101,11 @@
                             <div class="item col-lg-3">
                                 <div class="single-course-wrap">
                                     <div class="thumb">
+                                        {% if course_master.demo_video %}
+                                        <video class="img-fluid" src="{{course_master.demo_video.url}}" controls controlsList="nodownload">
+                                        {% else %}
                                         <img class="img-fluid" src="{{course_master.course_image.url}}" alt="img">
+                                        {% endif %}
                                     </div>
                                     <div class="wrap-details">
                                         <h6>{{course_master.name|title}}</h6>
