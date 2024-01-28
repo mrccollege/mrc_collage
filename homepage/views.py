@@ -4,7 +4,9 @@ import razorpay
 from courses.models import CoursePurchased, Course, VideoFiles, UserWatch, CourseMaster, MonthMoney, FileType
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib.sites import requests
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import hashlib
@@ -34,64 +36,64 @@ def homepage(request, id=0):
     # return render(request, 'homepage.html', context)
     return render(request, 'index.html', context)
 
-
-@login_required(login_url='/accounts/login/')
-def cart_page(request, id, month=1):
-    if month:
-        month = month
-
-    try:
-        home_banner = Lookup.objects.get(code='home_banner')
-    except:
-        home_banner = ''
-
-    user_id = request.session.get('user_id')
-    course = Course.objects.get(id=id)
-    monts = ''
-    amount = ''
-    payment = ''
-    order_id = ''
-    already_purchased = ''
-    if user_id is not None:
-        try:
-            already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id, payment_status='success')
-            if already_purchased:
-                return redirect('/')
-        except:
-            pass
-
-        try:
-            monts = MonthMoney.objects.get(course_id=id, month=month)
-            amount = monts.money
-            client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-            if amount:
-                payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
-
-                order_id = payment['id']
-                same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
-                if same_user:
-                    CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
-                else:
-                    CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=id)
-        except Exception as e:
-            print(e, '------e---------')
-
-    else:
-        return redirect('/accounts/login/')
-
-    pay_amt = amount
-    print(amount, '===================amount')
-    context = {
-        'id': id,
-        'payment': payment,
-        'order_id': order_id,
-        'pay_amt': pay_amt,
-        'course': course,
-        'home_banner': home_banner,
-        'month': month
-    }
-
-    return render(request, 'cart_page.html', context)
+#
+# @login_required(login_url='/accounts/login/')
+# def cart_page(request, id, month=1):
+#     if month:
+#         month = month
+#
+#     try:
+#         home_banner = Lookup.objects.get(code='home_banner')
+#     except:
+#         home_banner = ''
+#
+#     user_id = request.session.get('user_id')
+#     course = Course.objects.get(id=id)
+#     monts = ''
+#     amount = ''
+#     payment = ''
+#     order_id = ''
+#     already_purchased = ''
+#     if user_id is not None:
+#         try:
+#             already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id, payment_status='success')
+#             if already_purchased:
+#                 return redirect('/')
+#         except:
+#             pass
+#
+#         try:
+#             monts = MonthMoney.objects.get(course_id=id, month=month)
+#             amount = monts.money
+#             client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+#             if amount:
+#                 payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
+#
+#                 order_id = payment['id']
+#                 same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
+#                 if same_user:
+#                     CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
+#                 else:
+#                     CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=id)
+#         except Exception as e:
+#             print(e, '------e---------')
+#
+#     else:
+#         return redirect('/accounts/login/')
+#
+#     pay_amt = amount
+#     print(amount, '===================amount')
+#     context = {
+#         'id': id,
+#         'payment': payment,
+#         'order_id': order_id,
+#         'pay_amt': pay_amt,
+#         'course': course,
+#         'home_banner': home_banner,
+#         'month': month
+#     }
+#
+#     return render(request, 'cart_page.html', context)
 
 
 def month_amount(request):
@@ -159,9 +161,14 @@ def my_courses(request):
         home_banner = ''
     user_id = request.session.get('user_id')
     if user_id is not None:
-        course_purchased = CoursePurchased.objects.filter(user_id=user_id, payment_status='success').values_list(
-            'course', flat=True)
-        my_pur_cours = Course.objects.filter(id__in=course_purchased)
+        is_admin = User.objects.filter(id=user_id, username='admin')
+        if is_admin:
+            query = Q()
+        else:
+            course_purchased = CoursePurchased.objects.filter(user_id=user_id, payment_status='success').values_list(
+                'course', flat=True)
+            query = Q(id__in=course_purchased)
+        my_pur_cours = Course.objects.filter(query)
         context = {'my_course': my_pur_cours, 'home_banner': home_banner}
         return render(request, 'my_course.html', context)
     else:
