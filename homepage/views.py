@@ -432,7 +432,6 @@ def get_kshar_sutra_videos(request):
     if request.method == 'GET':
         course_id = request.GET.get('course_id')
         video_list = []
-        qr_code = ''
         videos = VideoFiles.objects.filter(course_id=course_id)
         for i in videos:
             video_dict = {}
@@ -442,10 +441,6 @@ def get_kshar_sutra_videos(request):
             video_dict['day'] = i.day if i.day else ''
             video_dict['title'] = i.title if i.title else ''
             video_dict['code_no'] = i.code_no if i.code_no else ''
-            if i.qr_code:
-                qr_code = qr_code.url
-
-            video_dict['qr_code'] = qr_code
             video_list.append(video_dict)
         context = {
             'video_list': video_list

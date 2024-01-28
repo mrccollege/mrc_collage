@@ -68,7 +68,6 @@
             $.each(response.video_list, function(index, item){
                 html = ''
                 html += '<div class="productItem">';
-                html += '<img src="'+item.qr_code+'" alt="">';
                 html += '<p>'+item.title+'</p>';
                 html += '<p>'+item.course+'</p>';
                 html += '<button type="button" onclick="delete_video('+item.id+')">delete</button>';
