@@ -496,7 +496,7 @@ def get_service_month(request):
     if request.method == 'GET':
         form = request.GET
         course_id = form.get('course_id')
-        price_data = MonthMoney.objects.filter(course_id=course_id).order_by('-month')
+        price_data = MonthMoney.objects.filter(course_id=course_id).order_by('month')
         data_list = []
         if price_data:
             for i in price_data:
