@@ -10,7 +10,7 @@
             width: 100%;
             opacity: .5;
             background-size: 50px auto !important;
-            background:url(static/assets/img/ajax_loder.gif) 50% 50% no-repeat rgb(0, 0, 0);
+            background:url("{{loader_img}}") 50% 50% no-repeat rgb(0, 0, 0);
         }
         .title{
             margin-bottom: 5vh;
@@ -323,101 +323,234 @@
 
 
 
-        function get_price_service() {
-        var month_id = $('#select_month').val();
+<!--        function get_price_service() {-->
+<!--        var month_id = $('#select_month').val();-->
 
-        if (month_id) {
-            // Show loader
-            $('#payment-loader').removeClass('d-none');
+<!--        if (month_id) {-->
+<!--            // Show loader-->
+<!--            $('#payment-loader').removeClass('d-none');-->
 
+<!--            $.ajax({-->
+<!--                url: '/get_service_price/',-->
+<!--                data: {-->
+<!--                    'month_id': month_id,-->
+<!--                    'course_id': '{{course_data.id}}',-->
+<!--                },-->
+<!--                beforeSend: function () {-->
+<!--                    // Show loader before making the AJAX request-->
+<!--                    $('#loader').removeClass('d-none');-->
+<!--                },-->
+<!--                success: function (response) {-->
+<!--                    var month = response.data.month;-->
+<!--                    var price = response.data.price;-->
+<!--                    var order_id = response.order_id;-->
+
+<!--                    // Update HTML elements with the received data-->
+<!--                    $('.service_price').html(price);-->
+<!--                    $('#total_price').html(price);-->
+
+<!--                    // Define 'price' outside the success callback-->
+<!--                    var myObject = {-->
+<!--                        'razorpay_order_id': '',-->
+<!--                        'razorpay_payment_id': '',-->
+<!--                        'razorpay_signature': '',-->
+<!--                        'course_id': '{{course_data.id}}',-->
+<!--                        'price': price,  // Access 'price' here-->
+<!--                        'discount': 50,-->
+<!--                        'totalprice': price,-->
+<!--                        'quantity': '1',-->
+<!--                        'payment_status': 'success',-->
+<!--                        'month': month,-->
+<!--                    };-->
+
+<!--                    var options = {-->
+<!--                        "key": "rzp_live_Ap1PwlFBhamMza",-->
+<!--                        "amount": price * 100,-->
+<!--                        "currency": "INR",-->
+<!--                        "name": "Mrc College",-->
+<!--                        "description": "It Service Solution",-->
+<!--                        "image": "https://example.com/your_logo",-->
+<!--                        "order_id": order_id,-->
+<!--                        "handler": function (response) {-->
+<!--                            myObject.razorpay_order_id = response.razorpay_order_id;-->
+<!--                            myObject.razorpay_payment_id = response.razorpay_payment_id;-->
+<!--                            myObject.razorpay_signature = response.razorpay_signature;-->
+
+<!--                            var url = '/payment_success/';-->
+<!--                            $.ajax({-->
+<!--                                url: url,-->
+<!--                                method: 'GET',-->
+<!--                                data: myObject,-->
+<!--                                success: function (response) {-->
+<!--                                    var responseData = response;-->
+<!--                                    if (responseData.status == 1) {-->
+<!--                                        // Redirect to '/my-courses/' on successful payment-->
+<!--                                        window.location.href = '/my-courses/';-->
+<!--                                    }-->
+<!--                                },-->
+<!--                                error: function (xhr, status, error) {-->
+<!--                                    console.log(error);-->
+<!--                                }-->
+<!--                            });-->
+<!--                        },-->
+<!--                    };-->
+
+<!--                    var rzp1 = new Razorpay(options);-->
+
+<!--                    rzp1.on('payment.failed', function (response) {-->
+<!--                        alert(response.error.code);-->
+<!--                        alert(response.error.description);-->
+<!--                        alert(response.error.source);-->
+<!--                        alert(response.error.step);-->
+<!--                        alert(response.error.reason);-->
+<!--                        alert(response.error.metadata.order_id);-->
+<!--                        alert(response.error.metadata.payment_id);-->
+<!--                    });-->
+
+<!--                    rzp1.on('payment.success', function (response) {-->
+<!--                        alert('Payment Successful');-->
+<!--                        // You can access the details of the successful payment from the 'response' object-->
+<!--                        alert('Payment ID: ' + response.razorpay_payment_id);-->
+<!--                        alert('Order ID: ' + response.razorpay_order_id);-->
+<!--                        alert('Signature: ' + response.razorpay_signature);-->
+<!--                    });-->
+
+<!--                    $('#rzp-button1').on('click', function (e) {-->
+<!--                        rzp1.open();-->
+<!--                        e.preventDefault();-->
+<!--                    });-->
+
+<!--                },-->
+<!--                complete: function () {-->
+<!--                    $('#loader, #payment-loader').addClass('d-none');-->
+<!--                },-->
+<!--            });-->
+<!--        }-->
+<!--    }-->
+</script>
+
+<script>
+    // Define 'price' outside the success callback
+var myObject = {
+    'razorpay_order_id': '',
+    'razorpay_payment_id': '',
+    'razorpay_signature': '',
+    'course_id': '{{course_data.id}}',
+    'price': 0,  // Placeholder, should be updated in success callback
+    'discount': 50,
+    'totalprice': 0,  // Placeholder, should be updated in success callback
+    'quantity': '1',
+    'payment_status': 'success',
+    'month': '',  // Placeholder, should be updated in success callback
+};
+
+
+// Function to create a new Razorpay instance
+function createRazorpayInstance(orderId) {
+    return new Razorpay({
+        "key": "rzp_live_Ap1PwlFBhamMza",
+        "amount": myObject.totalprice * 100,
+        "currency": "INR",
+        "name": "Mrc College",
+        "description": "Research and therapy center",
+        "image": "https://example.com/your_logo",
+        "order_id": orderId,
+        "handler": function (response) {
+            myObject.razorpay_order_id = response.razorpay_order_id;
+            myObject.razorpay_payment_id = response.razorpay_payment_id;
+            myObject.razorpay_signature = response.razorpay_signature;
+            var url = '/payment_success/';
             $.ajax({
-                url: '/get_service_price/',
-                data: {
-                    'month_id': month_id,
-                    'course_id': '{{course_data.id}}',
-                },
-                beforeSend: function () {
-                    // Show loader before making the AJAX request
-                    $('#loader').removeClass('d-none');
-                },
+                url: url,
+                method: 'GET',
+                data: myObject,
                 success: function (response) {
-                    var month = response.data.month;
-                    var price = response.data.price;
-                    var order_id = response.order_id;
-
-                    // Update HTML elements with the received data
-                    $('.service_price').html(price);
-                    $('#total_price').html(price);
-
-                    // Define 'price' outside the success callback
-                    var myObject = {
-                        'razorpay_order_id': '',
-                        'razorpay_payment_id': '',
-                        'razorpay_signature': '',
-                        'course_id': '{{course_data.id}}',
-                        'price': price,  // Access 'price' here
-                        'discount': 50,
-                        'totalprice': price,
-                        'quantity': '1',
-                        'payment_status': 'success',
-                        'month': month,
-                    };
-
-                    var options = {
-                        "key": "rzp_live_Ap1PwlFBhamMza",
-                        "amount": price * 100,
-                        "currency": "INR",
-                        "name": "Mrc College",
-                        "description": "It Service Solution",
-                        "image": "https://example.com/your_logo",
-                        "order_id": order_id,
-                        "handler": function (response) {
-                            myObject.razorpay_order_id = response.razorpay_order_id;
-                            myObject.razorpay_payment_id = response.razorpay_payment_id;
-                            myObject.razorpay_signature = response.razorpay_signature;
-
-                            var url = '/payment_success/';
-                            $.ajax({
-                                url: url,
-                                method: 'GET',
-                                data: myObject,
-                                success: function (response) {
-                                    var responseData = response;
-                                    if (responseData.status == 1) {
-                                        // Redirect to '/my-courses/' on successful payment
-                                        window.location.href = '/my-courses/';
-                                    }
-                                },
-                                error: function (xhr, status, error) {
-                                    console.log(error);
-                                }
-                            });
-                        },
-                    };
-
-                    var rzp1 = new Razorpay(options);
-
-                    rzp1.on('payment.failed', function (response) {
-                        alert(response.error.code);
-                        alert(response.error.description);
-                        alert(response.error.source);
-                        alert(response.error.step);
-                        alert(response.error.reason);
-                        alert(response.error.metadata.order_id);
-                        alert(response.error.metadata.payment_id);
-                    });
-
-                    $('#rzp-button1').on('click', function (e) {
-                        rzp1.open();
-                        e.preventDefault();
-                    });
+                    var responseData = response;
+                    if (responseData.status == 1) {
+                        // Redirect to '/my-courses/' on successful payment
+                        window.location.href = '/my-courses/';
+                    }
                 },
-                complete: function () {
-                    $('#loader, #payment-loader').addClass('d-none');
-                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                    // Handle the error appropriately
+                }
             });
-        }
+        },
+    });
+}
+
+// Initial Razorpay instance
+var rzp1 = createRazorpayInstance('');
+
+rzp1.on('payment.failed', function (response) {
+    alert(response.error.code);
+    alert(response.error.description);
+    alert(response.error.source);
+    alert(response.error.step);
+    alert(response.error.reason);
+    alert(response.error.metadata.order_id);
+    alert(response.error.metadata.payment_id);
+});
+
+rzp1.on('payment.success', function (response) {
+    // You can access the details of the successful payment from the 'response' object
+    alert('Payment ID: ' + response.razorpay_payment_id);
+    alert('Order ID: ' + response.razorpay_order_id);
+    alert('Signature: ' + response.razorpay_signature);
+
+    // Update 'order_id', 'totalprice', and 'month' in myObject
+    myObject.razorpay_order_id = response.razorpay_order_id;
+    myObject.totalprice = myObject.price - myObject.discount;
+    myObject.month = response.data.month;  // Update with actual property name from your response
+
+    // Update the Razorpay amount based on the updated price
+    rzp1.update({ amount: myObject.totalprice * 100 });
+});
+
+$('#rzp-button1').on('click', function (e) {
+    rzp1.open();
+    e.preventDefault();
+});
+
+function get_price_service() {
+    var month_id = $('#select_month').val();
+
+    if (month_id) {
+        // Show loader
+        $('#loader').removeClass('d-none');
+
+        $.ajax({
+            url: '/get_service_price/',
+            data: {
+                'month_id': month_id,
+                'course_id': '{{course_data.id}}',
+            },
+            beforeSend: function () {
+                $('#loader').removeClass('d-none');
+            },
+            success: function (response) {
+                var month = response.data.month;
+                var price = response.data.price;
+                var order_id = response.order_id;
+
+                // Update HTML elements with the received data
+                $('.service_price').html(price);
+                $('#total_price').html(price);
+
+                // Update 'price' in the myObject
+                myObject.price = price;
+                myObject.month = month;
+
+                // Create a new Razorpay instance with the updated 'order_id'
+                rzp1 = createRazorpayInstance(order_id);
+            },
+            complete: function () {
+                $('#loader').addClass('d-none');
+            },
+        });
     }
+}
 
 
 </script>

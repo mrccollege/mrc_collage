@@ -493,8 +493,15 @@ def buy_course_detail(request, course_id):
     if already_purchased:
         return redirect('/')
 
+    try:
+        loader_img = Lookup.objects.get(code='loader_img')
+        loader_img = loader_img.file.url
+    except:
+        loader_img = ''
+
     context = {
-        'course_data': course_data
+        'course_data': course_data,
+        'loader_img': loader_img,
     }
     return render(request, 'new_cart_page.html', context)
 
