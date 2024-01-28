@@ -232,90 +232,188 @@
         });
     });
 
-    function get_price_service(){
+<!--    function get_price_service(){-->
+<!--        var month_id = $('#select_month').val();-->
+<!--        if (month_id){-->
+<!--            $.ajax({-->
+<!--                url: '/get_service_price/',-->
+<!--                data:{-->
+<!--                    'month_id': month_id,-->
+<!--                    'course_id': '{{course_data.id}}',-->
+<!--                },-->
+<!--                beforeSend:function(){-->
+<!--                    $('#loader').removeClass('d-none')-->
+<!--                },-->
+<!--                success: function(response){-->
+<!--                    //console.log(response.data)-->
+<!--                    var month = response.data.month-->
+<!--                    var price = response.data.price-->
+<!--                    var order_id = response.order_id-->
+<!--                    $('.service_price').html(price)-->
+<!--                    $('#total_price').html(price)-->
+
+<!--                    var options =-->
+<!--                    {-->
+<!--                          "key": "rzp_live_Ap1PwlFBhamMza",-->
+<!--                          "amount": response.data.price * 100,-->
+<!--                          "currency": "INR",-->
+<!--                          "name": "Mrc College",-->
+<!--                          "description": "It Service Solution",-->
+<!--                          "image": "https://example.com/your_logo",-->
+<!--                          "order_id": order_id,-->
+<!--                          "handler": function (response) {-->
+<!--                                //console.log(response);-->
+
+<!--                                var myObject = {-->
+
+<!--                                  'razorpay_order_id': response.razorpay_order_id,-->
+<!--                                  'razorpay_payment_id': response.razorpay_payment_id,-->
+<!--                                  'razorpay_signature':response.razorpay_signature,-->
+<!--                                  'course_id':'{{course_data.id}}',-->
+<!--                                  'price':price,-->
+<!--                                  'discount':50,-->
+<!--                                  'totalprice':price,-->
+<!--                                  'quantity':'1',-->
+<!--                                  'payment_status':'success',-->
+<!--                                  'month':month,-->
+
+<!--                                }-->
+
+<!--                                var url = '/payment_success/';-->
+<!--                                $.ajax({-->
+<!--                                    url: url,-->
+<!--                                    method: 'GET',-->
+<!--                                    data: myObject,-->
+<!--                                    success: function (response) {-->
+<!--                                        var responseData = response;-->
+<!--                                        if(responseData.status == 1){-->
+<!--                                          window.location.href = '/my-courses/';-->
+<!--                                        }-->
+<!--                                    },-->
+<!--                                    error: function (xhr, status, error) {-->
+<!--                                        console.log(error);-->
+<!--                                    }-->
+<!--                                });-->
+
+<!--                          },-->
+<!--                    };-->
+
+<!--                    var rzp1 = new Razorpay(options);-->
+
+<!--                    rzp1.on('payment.failed', function (response) {-->
+<!--                      alert(response.error.code);-->
+<!--                      alert(response.error.description);-->
+<!--                      alert(response.error.source);-->
+<!--                      alert(response.error.step);-->
+<!--                      alert(response.error.reason);-->
+<!--                      alert(response.error.metadata.order_id);-->
+<!--                      alert(response.error.metadata.payment_id);-->
+<!--                    });-->
+
+<!--                    $('#rzp-button1').on('click', function (e) {-->
+<!--                        rzp1.open();-->
+<!--                        e.preventDefault();-->
+<!--                    });-->
+<!--                },complete:function(){-->
+<!--                    $('#loader').addClass('d-none')-->
+<!--                },-->
+<!--            });-->
+<!--        }-->
+<!--    }-->
+
+
+
+        function get_price_service() {
         var month_id = $('#select_month').val();
-        if (month_id){
+
+        if (month_id) {
+            // Show loader
+            $('#payment-loader').removeClass('d-none');
+
             $.ajax({
                 url: '/get_service_price/',
-                data:{
+                data: {
                     'month_id': month_id,
                     'course_id': '{{course_data.id}}',
                 },
-                beforeSend:function(){
-                    $('#loader').removeClass('d-none')
+                beforeSend: function () {
+                    // Show loader before making the AJAX request
+                    $('#loader').removeClass('d-none');
                 },
-                success: function(response){
-                    //console.log(response.data)
-                    var month = response.data.month
-                    var price = response.data.price
-                    var order_id = response.order_id
-                    $('.service_price').html(price)
-                    $('#total_price').html(price)
+                success: function (response) {
+                    var month = response.data.month;
+                    var price = response.data.price;
+                    var order_id = response.order_id;
 
-                    var options =
-                    {
-                      "key": "rzp_live_Ap1PwlFBhamMza",
-                      "amount": response.data.price * 100,
-                      "currency": "INR",
-                      "name": "Shri Infotech Solution",
-                      "description": "It Service Solution",
-                      "image": "https://example.com/your_logo",
-                      "order_id": order_id,
-                      "handler": function (response) {
-                        //console.log(response);
+                    // Update HTML elements with the received data
+                    $('.service_price').html(price);
+                    $('#total_price').html(price);
 
-                        var myObject = {
+                    // Define 'price' outside the success callback
+                    var myObject = {
+                        'razorpay_order_id': '',
+                        'razorpay_payment_id': '',
+                        'razorpay_signature': '',
+                        'course_id': '{{course_data.id}}',
+                        'price': price,  // Access 'price' here
+                        'discount': 50,
+                        'totalprice': price,
+                        'quantity': '1',
+                        'payment_status': 'success',
+                        'month': month,
+                    };
 
-                          'razorpay_order_id': response.razorpay_order_id,
-                          'razorpay_payment_id': response.razorpay_payment_id,
-                          'razorpay_signature':response.razorpay_signature,
-                          'course_id':'{{course_data.id}}',
-                          'price':price,
-                          'discount':50,
-                          'totalprice':price,
-                          'quantity':'1',
-                          'payment_status':'success',
-                          'month':month,
+                    var options = {
+                        "key": "rzp_live_Ap1PwlFBhamMza",
+                        "amount": price * 100,
+                        "currency": "INR",
+                        "name": "Mrc College",
+                        "description": "It Service Solution",
+                        "image": "https://example.com/your_logo",
+                        "order_id": order_id,
+                        "handler": function (response) {
+                            myObject.razorpay_order_id = response.razorpay_order_id;
+                            myObject.razorpay_payment_id = response.razorpay_payment_id;
+                            myObject.razorpay_signature = response.razorpay_signature;
 
-                        }
-
-                        var url = '/payment_success/';
-                        $.ajax({
-                            url: url,
-                            method: 'GET',
-                            data: myObject,
-                            success: function (response) {
-                                var responseData = response;
-                                if(responseData.status == 1){
-                                  window.location.href = '/my-courses/';
+                            var url = '/payment_success/';
+                            $.ajax({
+                                url: url,
+                                method: 'GET',
+                                data: myObject,
+                                success: function (response) {
+                                    var responseData = response;
+                                    if (responseData.status == 1) {
+                                        // Redirect to '/my-courses/' on successful payment
+                                        window.location.href = '/my-courses/';
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log(error);
                                 }
-                            },
-                            error: function (xhr, status, error) {
-                                console.log(error);
-                            }
-                        });
-
-                      },
+                            });
+                        },
                     };
 
                     var rzp1 = new Razorpay(options);
+
                     rzp1.on('payment.failed', function (response) {
-                      alert(response.error.code);
-                      alert(response.error.description);
-                      alert(response.error.source);
-                      alert(response.error.step);
-                      alert(response.error.reason);
-                      alert(response.error.metadata.order_id);
-                      alert(response.error.metadata.payment_id);
+                        alert(response.error.code);
+                        alert(response.error.description);
+                        alert(response.error.source);
+                        alert(response.error.step);
+                        alert(response.error.reason);
+                        alert(response.error.metadata.order_id);
+                        alert(response.error.metadata.payment_id);
                     });
 
-                    document.getElementById('rzp-button1').onclick = function (e) {
-                      rzp1.open();
-                      e.preventDefault();
-                      //console.log(options)
-                    }
-                },complete:function(){
-                    $('#loader').addClass('d-none')
+                    $('#rzp-button1').on('click', function (e) {
+                        rzp1.open();
+                        e.preventDefault();
+                    });
+                },
+                complete: function () {
+                    $('#loader, #payment-loader').addClass('d-none');
                 },
             });
         }
