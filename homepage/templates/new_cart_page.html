@@ -189,18 +189,28 @@
                 <hr>
                 <div class="row">
                     <div class="col" style="padding-left:0;">ITEMS 1</div>
-                    <div class="col text-right">Price ₹ <span class="service_price">0.00</span></div>
+                    <div class="col text-right">Price ₹ <span id="service_price" class="service_price">0.00</span></div>
                 </div>
+
                 <form>
                     <p>Duration</p>
                     <select id="select_month" onchange="get_price_service()">
                     </select>
+
                     <p>GIVE CODE</p>
-                    <input id="code" placeholder="Enter your code">
+                    <input id="coupon_code" placeholder="Enter your code">
                 </form>
                 <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
-                    <div class="col">TOTAL PRICE</div>
-                    <div class="col text-right">₹ <span id="total_price">0.00</span></div>
+                    <div class="col-lg-12">
+                        <label>DISCOUNT</label>
+                        <div class="col text-right"><span id="discount_price">0</span>%</div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <label>TOTAL PRICE</label>
+                        <div class="col text-right">₹ <span id="total_price">0.00</span></div>
+                    </div>
+
                 </div>
                 <button class="btn check-out-btn" id="rzp-button1">CHECKOUT</button>
             </div>
@@ -430,20 +440,46 @@
 </script>
 
 <script>
-    // Define 'price' outside the success callback
+
 var myObject = {
     'razorpay_order_id': '',
     'razorpay_payment_id': '',
     'razorpay_signature': '',
     'course_id': '{{course_data.id}}',
-    'price': 0,  // Placeholder, should be updated in success callback
-    'discount': 50,
-    'totalprice': 0,  // Placeholder, should be updated in success callback
+    'price': 0,
+    'discount': 0,
+    'totalprice': 0,
     'quantity': '1',
     'payment_status': 'success',
-    'month': '',  // Placeholder, should be updated in success callback
+    'month': '',
 };
 
+
+$('#coupon_code').on('keyup', function(){
+    var coupon_code = $(this).val();
+    var initialAmount = $('#service_price').html();
+    $.ajax({
+        url: '/apply_coupon_code/',
+        data: {
+            'coupon_code': coupon_code,
+        },
+        success: function (response) {
+            var percent = response.coupon_data
+            if (percent){
+                console.log(initialAmount, '=============initialAmount')
+                $('#discount_price').html(parseInt(percent.percent));
+                var result = (parseInt(initialAmount) * parseInt(percent.percent)) / 100;
+                myObject.totalprice = result;
+                myObject.discount = parseInt(percent.percent);
+                console.log(result, '=============result')
+                if (!isNaN(result)){
+                    $('#total_price').html(result.toFixed(2));
+                }
+            }
+        },
+
+    });
+})
 
 // Function to create a new Razorpay instance
 function createRazorpayInstance(orderId) {
@@ -491,21 +527,6 @@ rzp1.on('payment.failed', function (response) {
     alert(response.error.reason);
     alert(response.error.metadata.order_id);
     alert(response.error.metadata.payment_id);
-});
-
-rzp1.on('payment.success', function (response) {
-    // You can access the details of the successful payment from the 'response' object
-    alert('Payment ID: ' + response.razorpay_payment_id);
-    alert('Order ID: ' + response.razorpay_order_id);
-    alert('Signature: ' + response.razorpay_signature);
-
-    // Update 'order_id', 'totalprice', and 'month' in myObject
-    myObject.razorpay_order_id = response.razorpay_order_id;
-    myObject.totalprice = myObject.price - myObject.discount;
-    myObject.month = response.data.month;  // Update with actual property name from your response
-
-    // Update the Razorpay amount based on the updated price
-    rzp1.update({ amount: myObject.totalprice * 100 });
 });
 
 $('#rzp-button1').on('click', function (e) {

@@ -10,10 +10,11 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import hashlib
-from homepage.models import Lookup
+from homepage.models import Lookup, CouponCode
 import os
 import qrcode
 from django.urls import reverse
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -553,5 +554,20 @@ def get_service_price(request):
             'data': data_dict,
             'payment': payment,
             'order_id': order_id,
+        }
+        return JsonResponse(context)
+
+
+@login_required(login_url='/accounts/login/')
+def apply_coupon_code(request):
+    if request.method == 'GET':
+        form = request.GET
+        coupon_code = form.get('coupon_code')
+        coupon_data = CouponCode.objects.filter(coupon_code__exact=coupon_code)
+        coupon_dict = {}
+        if coupon_data:
+            coupon_dict['percent'] = coupon_data[0].percent
+        context = {
+            'coupon_data': coupon_dict
         }
         return JsonResponse(context)
