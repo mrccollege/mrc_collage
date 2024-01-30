@@ -447,10 +447,6 @@ def payment_success(request):
         payment_status = form.get('payment_status', None)
         month = int(form.get('month', 0))
         status = 0
-        print(form, '================my form')
-        print(razorpay_order_id, '==================razorpay_order_id')
-        print(razorpay_payment_id, '==================razorpay_payment_id')
-        print(razorpay_signature, '==================razorpay_signature')
         from datetime import datetime, timedelta
 
         def calculate_future_date(month):
@@ -467,7 +463,7 @@ def payment_success(request):
                                                                       totalprice=totalprice,
                                                                       quantity=quantity,
                                                                       razorpay_payment_id=razorpay_payment_id,
-                                                                      # razorpay_signature=razorpay_signature,
+                                                                      razorpay_signature=razorpay_signature,
                                                                       payment_status=payment_status,
                                                                       end_date=future_date,
                                                                       month=month)
