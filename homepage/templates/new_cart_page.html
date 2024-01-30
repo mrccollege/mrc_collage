@@ -286,9 +286,9 @@ function get_price_service() {
                 $('#razorpay_order_id').val(order_id)
                 $('#course_id').val(course_id)
 
-                var dis_count = parsFloat($('#discount_price').html());
+                var dis_count = Number($('#discount_price').html());
                 if(dis_count){
-                   var result = (parsFloat(price) * parsFloat(dis_count)) / 100;
+                   var result = (Number(price) * Number(dis_count)) / 100;
                    $('#totalprice').val(result);
                    $('#total_price').html(result.toFixed(2));
                 }
@@ -317,9 +317,9 @@ $('#coupon_code').on('keyup', function(){
                 var percent = response.coupon_data
                 if (percent.percent != '' && percent.percent != undefined){
                     console.log(percent.percent, '====================1')
-                    $('#discount_price').html(parsFloat(percent.percent));
-                    var result = (parsFloat(initialAmount) * parsFloat(percent.percent)) / 100;
-                    discount = parsFloat(percent.percent);
+                    $('#discount_price').html(Number(percent.percent));
+                    var result = (Number(initialAmount) * Number(percent.percent)) / 100;
+                    discount = Number(percent.percent);
                     $('#totalprice').val(result)
                     $('#discount').val(discount)
                     if (!isNaN(result)){
