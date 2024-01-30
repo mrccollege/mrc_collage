@@ -407,7 +407,6 @@ def buy_course_detail(request, course_id):
             'course_id': course_id,
             'razorkey': settings.RAZOR_KEY_ID,
         }
-        print(context, '=============context')
         return render(request, 'final_pay.html', context)
 
     else:
