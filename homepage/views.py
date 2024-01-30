@@ -468,7 +468,7 @@ def payment_success(request):
                                                                       totalprice=totalprice,
                                                                       quantity=quantity,
                                                                       razorpay_payment_id=razorpay_payment_id,
-                                                                      razorpay_signature=razorpay_signature,
+                                                                      # razorpay_signature=razorpay_signature,
                                                                       payment_status=payment_status,
                                                                       end_date=future_date,
                                                                       month=month)
