@@ -33,9 +33,6 @@
                   'payment_status':'success',
                   'month':'{{month}}',
                 }
-                console.log(myObject.razorpay_order_id, '=================razorpay_order_id')
-                console.log(myObject.razorpay_payment_id, '=============razorpay_payment_id')
-                console.log(myObject.razorpay_signature, '=============razorpay_signature')
                 $.ajax({
                     url:'/payment_success/',
                     method: 'GET',
