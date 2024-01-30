@@ -400,7 +400,7 @@ def buy_course_detail(request, course_id):
 
         context = {
             'course_price': course_price,
-            'totalprice': int(totalprice),
+            'totalprice': float(totalprice),
             'discount': discount,
             'month': month,
             'razorpay_order_id': razorpay_order_id,
