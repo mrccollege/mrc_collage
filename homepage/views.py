@@ -15,7 +15,6 @@ import os
 import qrcode
 from django.urls import reverse
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -37,65 +36,6 @@ def homepage(request, id=0):
     # return render(request, 'homepage.html', context)
     return render(request, 'index.html', context)
 
-#
-# @login_required(login_url='/accounts/login/')
-# def cart_page(request, id, month=1):
-#     if month:
-#         month = month
-#
-#     try:
-#         home_banner = Lookup.objects.get(code='home_banner')
-#     except:
-#         home_banner = ''
-#
-#     user_id = request.session.get('user_id')
-#     course = Course.objects.get(id=id)
-#     monts = ''
-#     amount = ''
-#     payment = ''
-#     order_id = ''
-#     already_purchased = ''
-#     if user_id is not None:
-#         try:
-#             already_purchased = CoursePurchased.objects.get(course_id=id, user_id=user_id, payment_status='success')
-#             if already_purchased:
-#                 return redirect('/')
-#         except:
-#             pass
-#
-#         try:
-#             monts = MonthMoney.objects.get(course_id=id, month=month)
-#             amount = monts.money
-#             client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-#             if amount:
-#                 payment = client.order.create({'amount': int(amount) * 100, 'currency': 'INR', 'payment_capture': '1'})
-#
-#                 order_id = payment['id']
-#                 same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=id)
-#                 if same_user:
-#                     CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
-#                 else:
-#                     CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=id)
-#         except Exception as e:
-#             print(e, '------e---------')
-#
-#     else:
-#         return redirect('/accounts/login/')
-#
-#     pay_amt = amount
-#     print(amount, '===================amount')
-#     context = {
-#         'id': id,
-#         'payment': payment,
-#         'order_id': order_id,
-#         'pay_amt': pay_amt,
-#         'course': course,
-#         'home_banner': home_banner,
-#         'month': month
-#     }
-#
-#     return render(request, 'cart_page.html', context)
-
 
 def month_amount(request):
     if request.method == 'GET':
@@ -114,45 +54,6 @@ def month_amount(request):
             'month': course_month,
         }
         return JsonResponse(context)
-
-
-def payment_success(request):
-    user_id = request.session.get('user_id')
-    if request.method == 'GET':
-        course_obj = ''
-        form = request.GET
-        razorpay_order_id = form.get('razorpay_order_id', None)
-        razorpay_payment_id = form.get('razorpay_payment_id', None)
-        razorpay_signature = form.get('razorpay_signature', None)
-        course_id = form.get('course_id', None)
-        price = form.get('price', None)
-        discount = form.get('discount', None)
-        totalprice = form.get('totalprice', None)
-        quantity = form.get('quantity', None)
-        payment_status = form.get('payment_status', None)
-        months = int(form.get('month', 0))
-        status = 0
-        from datetime import datetime, timedelta
-
-        def calculate_future_date(months):
-            current_date = datetime.now()
-            future_date = current_date + timedelta(days=30 * months)  # Assuming a month has 30 days for simplicity
-            return future_date
-
-        future_date = calculate_future_date(months)
-        try:
-            course_obj = CoursePurchased.objects.filter(user_id=user_id, razorpay_order_id=razorpay_order_id).update(
-                course_id=course_id, price=price, discount=discount, totalprice=totalprice, quantity=quantity,
-                razorpay_payment_id=razorpay_payment_id, razorpay_signature=razorpay_signature,
-                payment_status=payment_status, end_date=future_date, month=months)
-            if course_obj:
-                status = 1
-        except Exception as e:
-            print(e, '=====error in payment success function')
-
-        json_data = {'status': status}
-
-        return JsonResponse(json_data)
 
 
 def my_courses(request):
@@ -371,26 +272,26 @@ def upload_video(request):
                                                         # code_no=pro_count,
                                                         )
                 # if new_product:
-                    # video_detail_url = request.build_absolute_uri(reverse('video_detail', args=[pro_count]))
-                    #
-                    # qr = qrcode.QRCode(version=1,
-                    #                    error_correction=qrcode.constants.ERROR_CORRECT_L,
-                    #                    box_size=10,
-                    #                    border=4,
-                    #                    )
-                    # qr.add_data(video_detail_url)
-                    # qr.make(fit=True)
-                    #
-                    # img = qr.make_image(fill_color="black", back_color="white")
-                    #
-                    # qr_codes_dir = os.path.join(BASE_DIR, 'media', 'qr_codes')
-                    # os.makedirs(qr_codes_dir, exist_ok=True)
-                    #
-                    # qr_code_path = f"qr_codes/video_{pro_count}.png"
-                    # img.save(os.path.join(BASE_DIR, 'media', qr_code_path))
-                    #
-                    # new_product.qr_code = qr_code_path
-                    # new_product.save()
+                # video_detail_url = request.build_absolute_uri(reverse('video_detail', args=[pro_count]))
+                #
+                # qr = qrcode.QRCode(version=1,
+                #                    error_correction=qrcode.constants.ERROR_CORRECT_L,
+                #                    box_size=10,
+                #                    border=4,
+                #                    )
+                # qr.add_data(video_detail_url)
+                # qr.make(fit=True)
+                #
+                # img = qr.make_image(fill_color="black", back_color="white")
+                #
+                # qr_codes_dir = os.path.join(BASE_DIR, 'media', 'qr_codes')
+                # os.makedirs(qr_codes_dir, exist_ok=True)
+                #
+                # qr_code_path = f"qr_codes/video_{pro_count}.png"
+                # img.save(os.path.join(BASE_DIR, 'media', qr_code_path))
+                #
+                # new_product.qr_code = qr_code_path
+                # new_product.save()
             status = 'success'
             msg = 'video files uploaded.'
         except Exception as e:
@@ -488,24 +389,97 @@ def delete_files(request):
 
 @login_required(login_url='/accounts/login/')
 def buy_course_detail(request, course_id):
+    if request.method == 'POST':
+        form = request.POST
+        price = form.get('price')
+        totalprice = form.get('totalprice')
+        discount = form.get('discount')
+        month = form.get('month')
+        course_id = form.get('course_id')
+        razorpay_order_id = form.get('razorpay_order_id')
+
+        context = {
+            'price': price,
+            'totalprice': int(totalprice),
+            'discount': discount,
+            'month': month,
+            'razorpay_order_id': razorpay_order_id,
+            'course_id': course_id,
+            'razorkey': settings.RAZOR_KEY_ID,
+        }
+        print(context, '=============context')
+        return render(request, 'final_pay.html', context)
+
+    else:
+        user_id = request.session.get('user_id')
+        course_data = Course.objects.get(id=course_id)
+
+        already_purchased = CoursePurchased.objects.filter(course_id=course_id, user_id=user_id,
+                                                           payment_status='success')
+        if already_purchased:
+            return redirect('/')
+
+        try:
+            loader_img = Lookup.objects.get(code='loader_img')
+            loader_img = loader_img.file.url
+        except:
+            loader_img = ''
+
+        context = {
+            'course_data': course_data,
+            'loader_img': loader_img,
+        }
+        return render(request, 'new_cart_page.html', context)
+
+
+def payment_success(request):
     user_id = request.session.get('user_id')
-    course_data = Course.objects.get(id=course_id)
+    if request.method == 'GET':
+        course_obj = ''
+        form = request.GET
+        razorpay_order_id = form.get('razorpay_order_id', None)
+        razorpay_payment_id = form.get('razorpay_payment_id', None)
+        razorpay_signature = form.get('razorpay_signature', None)
+        course_id = form.get('course_id', None)
+        price = form.get('price', None)
+        discount = form.get('discount', None)
+        totalprice = form.get('totalprice', None)
+        quantity = form.get('quantity', None)
+        payment_status = form.get('payment_status', None)
+        month = int(form.get('month', 0))
+        status = 0
+        print(form, '================my form')
+        print(razorpay_order_id, '==================razorpay_order_id')
+        print(razorpay_payment_id, '==================razorpay_payment_id')
+        print(razorpay_signature, '==================razorpay_signature')
+        from datetime import datetime, timedelta
 
-    already_purchased = CoursePurchased.objects.filter(course_id=course_id, user_id=user_id, payment_status='success')
-    if already_purchased:
-        return redirect('/')
+        def calculate_future_date(month):
+            current_date = datetime.now()
+            future_date = current_date + timedelta(days=30 * month)  # Assuming a month has 30 days for simplicity
+            return future_date
 
-    try:
-        loader_img = Lookup.objects.get(code='loader_img')
-        loader_img = loader_img.file.url
-    except:
-        loader_img = ''
+        future_date = calculate_future_date(month)
+        try:
+            query = Q(user_id=user_id, razorpay_order_id=razorpay_order_id)
+            course_obj = CoursePurchased.objects.filter(query).update(course_id=course_id,
+                                                                      price=price,
+                                                                      discount=discount,
+                                                                      totalprice=totalprice,
+                                                                      quantity=quantity,
+                                                                      razorpay_payment_id=razorpay_payment_id,
+                                                                      razorpay_signature=razorpay_signature,
+                                                                      payment_status=payment_status,
+                                                                      end_date=future_date,
+                                                                      month=month)
+            if course_obj:
+                status = 1
+        except Exception as e:
+            print(e, '=====error in payment success function')
+            status = 0
+        json_data = {'status': status}
 
-    context = {
-        'course_data': course_data,
-        'loader_img': loader_img,
-    }
-    return render(request, 'new_cart_page.html', context)
+        return JsonResponse(json_data)
 
 
 def get_service_month(request):
@@ -554,6 +528,7 @@ def get_service_price(request):
             'data': data_dict,
             'payment': payment,
             'order_id': order_id,
+            'course_id': course_id
         }
         return JsonResponse(context)
 

@@ -1,0 +1,86 @@
+{% extends 'new_base.html' %}
+
+{% block content %}
+<!--<form action="">-->
+<!--    <input type="text" name="" id="" value="{{price}}">-->
+<!--    <input type="text" name="" id="" value="{{totalprice}}">-->
+<!--    <input type="text" name="" id="" value="{{discount}}">-->
+<!--    <input type="text" name="" id="" value="{{month}}">-->
+<!--    <input type="text" name="" id="" value="{{razorpay_order_id}}">-->
+<!--    <input type="text" name="" id="" value="{{course_id}}">-->
+<!--    <input type="text" name="" id="" value="{{razorkey}}">-->
+<!--</form>-->
+<div class="col-lg-6 m-5 mx-auto text-center">
+    <button type="button" class="btn btn-primary btn-sm w-50" id="rzp-button1">Final Pay</button>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+      var options = {
+          "key": '{{razorkey}}',
+          "amount": parseInt('{{totalprice}}') * 100,
+          "currency": "INR",
+          "name": "Mrc Vrindavan",
+          "description": "Medical Facilities for all",
+          "image": "https://example.com/your_logo",
+          "order_id": '{{order_id}}',
+          "handler": function (response) {
+                console.log(response);
+                var myObject = {
+                  'razorpay_order_id': response.razorpay_order_id,
+                  'razorpay_payment_id': response.razorpay_payment_id,
+                  'razorpay_signature':response.razorpay_signature,
+                  'course_id':'{{course_id}}',
+                  'price':'{{price}}',
+                  'discount':'{{discount}}',
+                  'totalprice':'{{totalprice}}',
+                  'quantity':'1',
+                  'payment_status':'success',
+                  'month':'{{month}}',
+                }
+                console.log(myObject.razorpay_order_id, '=================razorpay_order_id')
+                console.log(myObject.razorpay_payment_id, '=============razorpay_payment_id')
+                console.log(myObject.razorpay_signature, '=============razorpay_signature')
+                $.ajax({
+                    url:'/payment_success/',
+                    method: 'GET',
+                    data: myObject,
+                    success: function (response) {
+                        var responseData = response;
+                        if(responseData.status == 1){
+                          window.location.href = '/my-courses/';
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error here
+                        console.log(error);
+                    }
+                });
+
+          },
+    };
+
+    var rzp1 = new Razorpay(options);
+
+    rzp1.on('payment.failed', function (response) {
+      alert(response.error.code);
+      alert(response.error.description);
+      alert(response.error.source);
+      alert(response.error.step);
+      alert(response.error.reason);
+      alert(response.error.metadata.order_id);
+      alert(response.error.metadata.payment_id);
+    });
+
+
+    document.getElementById('rzp-button1').onclick = function (e) {
+      rzp1.open();
+      e.preventDefault();
+    }
+
+</script>
+
+{% endblock js %}
