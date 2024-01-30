@@ -391,7 +391,7 @@ def delete_files(request):
 def buy_course_detail(request, course_id):
     if request.method == 'POST':
         form = request.POST
-        price = form.get('price')
+        course_price = form.get('price')
         totalprice = form.get('totalprice')
         discount = form.get('discount')
         month = form.get('month')
@@ -399,7 +399,7 @@ def buy_course_detail(request, course_id):
         razorpay_order_id = form.get('razorpay_order_id')
 
         context = {
-            'price': price,
+            'course_price': course_price,
             'totalprice': int(totalprice),
             'discount': discount,
             'month': month,
@@ -440,7 +440,7 @@ def payment_success(request):
         razorpay_payment_id = form.get('razorpay_payment_id', None)
         razorpay_signature = form.get('razorpay_signature', None)
         course_id = form.get('course_id', None)
-        price = form.get('price', None)
+        price = form.get('course_price', None)
         discount = form.get('discount', None)
         totalprice = form.get('totalprice', None)
         quantity = form.get('quantity', None)

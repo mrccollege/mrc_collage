@@ -1,15 +1,6 @@
 {% extends 'new_base.html' %}
 
 {% block content %}
-<!--<form action="">-->
-<!--    <input type="text" name="" id="" value="{{price}}">-->
-<!--    <input type="text" name="" id="" value="{{totalprice}}">-->
-<!--    <input type="text" name="" id="" value="{{discount}}">-->
-<!--    <input type="text" name="" id="" value="{{month}}">-->
-<!--    <input type="text" name="" id="" value="{{razorpay_order_id}}">-->
-<!--    <input type="text" name="" id="" value="{{course_id}}">-->
-<!--    <input type="text" name="" id="" value="{{razorkey}}">-->
-<!--</form>-->
 <div class="col-lg-6 m-5 mx-auto text-center">
     <button type="button" class="btn btn-primary btn-sm w-50" id="rzp-button1">Final Pay</button>
 </div>
@@ -35,7 +26,7 @@
                   'razorpay_payment_id': response.razorpay_payment_id,
                   'razorpay_signature':response.razorpay_signature,
                   'course_id':'{{course_id}}',
-                  'price':'{{price}}',
+                  'course_price':'{{course_price}}',
                   'discount':'{{discount}}',
                   'totalprice':'{{totalprice}}',
                   'quantity':'1',
