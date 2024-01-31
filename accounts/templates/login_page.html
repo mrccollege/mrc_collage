@@ -85,7 +85,6 @@
           type: 'POST',
           data: formData,
           success: function (response) {
-            console.log(response.status,'----------status');
             if(response.status == 'success'){
               Swal.fire({
                 title: 'Success',
@@ -96,7 +95,7 @@
                 confirmButtonText: 'OK'
               }).then((result) => {
                 // Redirect to another page or perform additional actions
-                window.location.href = '/my-courses/';
+                window.location.href = '/';
               });
             }else{
               Swal.fire({
