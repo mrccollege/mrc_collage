@@ -468,9 +468,9 @@ def payment_success(request):
         try:
             query = Q(user_id=user_id, razorpay_order_id=razorpay_order_id)
             course_obj = CoursePurchased.objects.filter(query).update(course_id=course_id,
-                                                                      price=price,
+                                                                      price=int(price),
                                                                       discount=discount,
-                                                                      totalprice=totalprice,
+                                                                      totalprice=int(totalprice),
                                                                       quantity=quantity,
                                                                       razorpay_payment_id=razorpay_payment_id,
                                                                       razorpay_signature=razorpay_signature,
