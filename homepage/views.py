@@ -19,8 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def homepage(request, id=0):
+    user_id = request.session.get('user_id')
     if id != 0:
-        course_master = Course.objects.filter(course_master_id=id)
+        if user_id:
+            course_master = Course.objects.filter(course_master_id=id)
+        else:
+            return redirect('/accounts/login/')
     else:
         course_master = CourseMaster.objects.all().order_by('-id')
     try:
