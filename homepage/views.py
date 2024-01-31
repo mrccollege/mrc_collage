@@ -393,13 +393,13 @@ def buy_course_detail(request, course_id):
     if request.method == 'POST':
         form = request.POST
         course_price = form.get('price')
-        totalprice = form.get('totalprice')
+        totalprice = float(form.get('totalprice'))
         discount = form.get('discount')
         month = form.get('month')
         course_id = form.get('course_id')
 
         client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-        payment = client.order.create({'amount': int(totalprice) * 100, 'currency': 'INR', 'payment_capture': '1'})
+        payment = client.order.create({'amount': totalprice * 100, 'currency': 'INR', 'payment_capture': '1'})
         order_id = payment['id']
 
         same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
@@ -509,7 +509,6 @@ def get_service_month(request):
 def get_service_price(request):
     if request.method == 'GET':
         form = request.GET
-        user_id = request.session.get('user_id')
         course_id = form.get('course_id')
         month_id = form.get('month_id')
         data_dict = {}
