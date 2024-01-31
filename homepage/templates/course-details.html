@@ -105,6 +105,10 @@
             }
             $('#video_frame').attr('src', file)
             $('#video_title').html(title)
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Optional: for smooth scrolling
+            });
         }else{
             $('#video_frame').attr('poster', '')
             $('#video_frame').attr('src', '')
