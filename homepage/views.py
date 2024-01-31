@@ -450,9 +450,9 @@ def payment_success(request):
         razorpay_payment_id = form.get('razorpay_payment_id', None)
         razorpay_signature = form.get('razorpay_signature', None)
         course_id = form.get('course_id', None)
-        price = form.get('course_price', None)
+        price = int(float(form.get('course_price', None)))
         discount = form.get('discount', None)
-        totalprice = form.get('totalprice', None)
+        totalprice = int(float(form.get('totalprice', None)))
         quantity = form.get('quantity', None)
         payment_status = form.get('payment_status', None)
         month = int(form.get('month', 0))
@@ -466,11 +466,10 @@ def payment_success(request):
 
         future_date = calculate_future_date(month)
         try:
-            query = Q(user_id=user_id, razorpay_order_id=razorpay_order_id)
-            course_obj = CoursePurchased.objects.filter(query).update(course_id=course_id,
-                                                                      price=int(price),
+            query = Q(user_id=user_id, razorpay_order_id=razorpay_order_id, course_id=course_id)
+            course_obj = CoursePurchased.objects.filter(query).update(price=price,
                                                                       discount=discount,
-                                                                      totalprice=int(totalprice),
+                                                                      totalprice=totalprice,
                                                                       quantity=quantity,
                                                                       razorpay_payment_id=razorpay_payment_id,
                                                                       razorpay_signature=razorpay_signature,

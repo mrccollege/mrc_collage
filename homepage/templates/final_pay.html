@@ -33,6 +33,8 @@
                   'payment_status':'success',
                   'month':'{{month}}',
                 }
+
+                console.log(myObject, '===========myObject')
                 $.ajax({
                     url:'/payment_success/',
                     method: 'GET',
