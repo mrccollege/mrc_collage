@@ -288,7 +288,7 @@ function get_price_service() {
                 if(dis_count){
                    var result = (Number(price) * Number(dis_count)) / 100;
                    $('#totalprice').val(result);
-                   $('#total_price').html(result.toFixed(2));
+                   $('#total_price').html(result.toFixed(1));
                 }
 
             },
@@ -321,7 +321,7 @@ $('#coupon_code').on('keyup', function(){
                     $('#totalprice').val(result)
                     $('#discount').val(discount)
                     if (!isNaN(result)){
-                        $('#total_price').html(result.toFixed(2));
+                        $('#total_price').html(result.toFixed(1));
                     }
                 }else{
                     console.log('====================2')
