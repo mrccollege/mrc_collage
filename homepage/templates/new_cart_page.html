@@ -314,9 +314,9 @@ $('#coupon_code').on('keyup', function(){
             success: function (response) {
                 var percent = response.coupon_data
                 if (percent.percent != '' && percent.percent != undefined){
-                    console.log(percent.percent, '====================1')
                     $('#discount_price').html(Number(percent.percent));
                     var result = (Number(initialAmount) * Number(percent.percent)) / 100;
+                    var result = Number(initialAmount) - Number(result)
                     discount = Number(percent.percent);
                     $('#totalprice').val(result)
                     $('#discount').val(discount)
@@ -324,7 +324,6 @@ $('#coupon_code').on('keyup', function(){
                         $('#total_price').html(result.toFixed(2));
                     }
                 }else{
-                    console.log('====================2')
                     $('#totalprice').val($('#price').val());
                     $('#discount').val(0);
                     $('#discount_price').html(0);
