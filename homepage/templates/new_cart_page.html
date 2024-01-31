@@ -259,7 +259,6 @@ function get_price_service() {
     var month_id = $('#select_month').val();
     if (month_id) {
         $('#loader').removeClass('d-none');
-
         $.ajax({
             url: '/get_service_price/',
             data: {
@@ -304,6 +303,7 @@ function get_price_service() {
 $('#coupon_code').on('keyup', function(){
     select_month = $('#select_month').val()
     if(select_month){
+        $('#loader').removeClass('d-none');
         var coupon_code = $(this).val();
         var initialAmount = $('#service_price').html();
         $.ajax({
@@ -330,6 +330,9 @@ $('#coupon_code').on('keyup', function(){
                     $('#discount_price').html(0);
                     $('#total_price').html($('#price').val());
                 }
+            },
+            complete: function () {
+                $('#loader').addClass('d-none');
             },
         });
     }else{
