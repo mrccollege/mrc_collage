@@ -389,6 +389,7 @@ def delete_files(request):
 
 @login_required(login_url='/accounts/login/')
 def buy_course_detail(request, course_id):
+    user_id = request.session.get('user_id')
     if request.method == 'POST':
         form = request.POST
         course_price = form.get('price')
@@ -396,21 +397,29 @@ def buy_course_detail(request, course_id):
         discount = form.get('discount')
         month = form.get('month')
         course_id = form.get('course_id')
-        razorpay_order_id = form.get('razorpay_order_id')
+
+        client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+        payment = client.order.create({'amount': int(totalprice) * 100, 'currency': 'INR', 'payment_capture': '1'})
+        order_id = payment['id']
+
+        same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
+        if same_user:
+            CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
+        else:
+            CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id)
 
         context = {
+            'payment': payment,
             'course_price': course_price,
             'totalprice': totalprice,
             'discount': discount,
             'month': month,
-            'razorpay_order_id': razorpay_order_id,
             'course_id': course_id,
             'razorkey': settings.RAZOR_KEY_ID,
         }
         return render(request, 'final_pay.html', context)
 
     else:
-        user_id = request.session.get('user_id')
         course_data = Course.objects.get(id=course_id)
 
         already_purchased = CoursePurchased.objects.filter(course_id=course_id, user_id=user_id,
@@ -509,20 +518,8 @@ def get_service_price(request):
         data_dict['month'] = price_data.month
         data_dict['price'] = price_data.money
 
-        client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-        payment = client.order.create(
-            {'amount': int(data_dict['price']) * 100, 'currency': 'INR', 'payment_capture': '1'})
-        order_id = payment['id']
-
-        same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
-        if same_user:
-            CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
-        else:
-            CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id)
         context = {
             'data': data_dict,
-            'payment': payment,
-            'order_id': order_id,
             'course_id': course_id
         }
         return JsonResponse(context)

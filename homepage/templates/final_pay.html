@@ -12,12 +12,12 @@
 <script>
       var options = {
           "key": '{{razorkey}}',
-          "amount": Number('{{totalprice}}') * 100,
+          "amount": {{payment.amount}},
           "currency": "INR",
           "name": "Mrc Vrindavan",
           "description": "Medical Facilities for all",
           "image": "https://example.com/your_logo",
-          "order_id": '{{razorpay_order_id}}',
+          "order_id": '{{payment.id}}',
           "handler": function (response) {
 
                 console.log(response);
