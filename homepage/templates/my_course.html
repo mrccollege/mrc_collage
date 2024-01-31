@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'new_base.html' %}
 
 {% block css %}
 <style>
@@ -51,8 +51,6 @@
                 <img alt="" class="card-img-top"src="{% if course_data.course_image %} {{course_data.course_image.url}} {% endif %}"/>
                 <div class="course-details">
                     <h2 class="course-title">{{course_data.name}}</h2>
-                    <p class="card-text">This course is valid for
-                        {% if course_data.validate_for == 1 %} {{course_data.validate_for}} Month {% else %} {{course_data.validate_for}} Months {% endif %}</p>
                     <a class="btn btn-primary w-100" href="/watch-video/{{course_data.type}}/{{course_data.id}}/">Watch now</a>
                 </div>
             </div>
