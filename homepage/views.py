@@ -393,7 +393,7 @@ def buy_course_detail(request, course_id):
     if request.method == 'POST':
         form = request.POST
         course_price = form.get('price')
-        totalprice = float(form.get('totalprice'))
+        totalprice = int(form.get('totalprice'))
         discount = form.get('discount')
         month = form.get('month')
         course_id = form.get('course_id')
