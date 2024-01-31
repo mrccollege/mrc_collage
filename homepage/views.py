@@ -33,29 +33,10 @@ def homepage(request, id=0):
         'course_master': course_master,
         'home_banner': home_banner.file.url,
     }
-    # return render(request, 'homepage.html', context)
     return render(request, 'index.html', context)
 
 
-def month_amount(request):
-    if request.method == 'GET':
-        course_id = request.GET.get('course_id')
-        monts = MonthMoney.objects.filter(course_id=course_id)
-        course_month = []
-        for i in monts:
-            data_dict = {}
-            data_dict['id'] = i.id
-            data_dict['month'] = i.month
-            data_dict['money'] = i.money
-
-            course_month.append(data_dict)
-
-        context = {
-            'month': course_month,
-        }
-        return JsonResponse(context)
-
-
+@login_required(login_url='/accounts/login/')
 def my_courses(request):
     try:
         home_banner = Lookup.objects.get(code='home_banner')
@@ -228,6 +209,7 @@ def round_view(request, video_id):
     return JsonResponse(context)
 
 
+@login_required(login_url='/accounts/login/')
 def add_course(request):
     try:
         home_banner = Lookup.objects.get(code='home_banner')
@@ -252,6 +234,7 @@ def add_course(request):
     return render(request, 'add_course.html', context)
 
 
+@login_required(login_url='/accounts/login/')
 def upload_video(request):
     if request.method == 'POST':
         form = request.POST
@@ -319,6 +302,7 @@ def video_detail(request, id):
     return render(request, 'video_detail.html', context)
 
 
+@login_required(login_url='/accounts/login/')
 def view_list(request, course_id):
     try:
         home_banner = Lookup.objects.get(code='home_banner')
@@ -331,6 +315,7 @@ def view_list(request, course_id):
     return render(request, 'view_list_kshar_sutra.html', context)
 
 
+@login_required(login_url='/accounts/login/')
 def get_kshar_sutra_videos(request):
     if request.method == 'GET':
         course_id = request.GET.get('course_id')
@@ -351,6 +336,7 @@ def get_kshar_sutra_videos(request):
         return JsonResponse(context)
 
 
+@login_required(login_url='/accounts/login/')
 def delete_files(request):
     video_id = request.GET.get('video_id')
     try:
@@ -441,6 +427,7 @@ def buy_course_detail(request, course_id):
         return render(request, 'new_cart_page.html', context)
 
 
+@login_required(login_url='/accounts/login/')
 def payment_success(request):
     user_id = request.session.get('user_id')
     if request.method == 'GET':
@@ -486,6 +473,7 @@ def payment_success(request):
         return JsonResponse(json_data)
 
 
+@login_required(login_url='/accounts/login/')
 def get_service_month(request):
     if request.method == 'GET':
         form = request.GET
@@ -506,6 +494,7 @@ def get_service_month(request):
         return JsonResponse(context)
 
 
+@login_required(login_url='/accounts/login/')
 def get_service_price(request):
     if request.method == 'GET':
         form = request.GET
