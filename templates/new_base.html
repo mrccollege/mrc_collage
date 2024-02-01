@@ -87,39 +87,53 @@
                     <li><a href="/my-courses/">My Therapy</a></li>
                     <li><a href="/accounts/contact_us/">Contact Us</a></li>
                     <li class="nav-item dropdown">
-                    <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
-                       id="navbarDropdown" role="button">
-                        Privacy and Policy
-                    </a>
-                    <ul aria-labelledby="navbarDropdown" class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/accounts/term_condition/">Term and conditions</a></li>
-                        <li><a class="dropdown-item" href="/accounts/cancel_refund/">Cancellation and refund</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="/accounts/shiping/">Shiping</a></li>
-                        <li><a class="dropdown-item" href="/accounts/privacy_policy/">Privacy and policy</a></li>
-                    </ul>
-                </li>
-                </ul>
-            </div>
-            <div class="nav-right-part nav-right-part-desktop">
-                <ul>
+                        <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
+                           id="navbarDropdown" role="button">
+                            Privacy and Policy
+                        </a>
+                        <ul aria-labelledby="navbarDropdown" class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/accounts/term_condition/">Term and conditions</a></li>
+                            <li><a class="dropdown-item" href="/accounts/cancel_refund/">Cancellation and refund</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/accounts/shiping/">Shiping</a></li>
+                            <li><a class="dropdown-item" href="/accounts/privacy_policy/">Privacy and policy</a></li>
+                        </ul>
+                    </li>
                     {% if request.user.is_authenticated %}
                     <li>
-                        <a href="/accounts/logout/" class="btn btn-base-light">
+                        <a href="/accounts/logout/" class="btn btn-xs btn-base-light">
                             Logout
                         </a>
                     </li>
                     {% else %}
                     <li>
-                        <a href="/accounts/login/" class="btn btn-base-light">
+                        <a href="/accounts/login/" class="btn btn-xs btn-base-light">
                             Login
                         </a>
                     </li>
                     {% endif %}
                 </ul>
             </div>
+<!--            <div class="nav-right-part nav-right-part-desktop">-->
+<!--                <ul>-->
+<!--                    {% if request.user.is_authenticated %}-->
+<!--                    <li>-->
+<!--                        <a href="/accounts/logout/" class="btn btn-base-light">-->
+<!--                            Logout-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    {% else %}-->
+<!--                    <li>-->
+<!--                        <a href="/accounts/login/" class="btn btn-base-light">-->
+<!--                            Login-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    {% endif %}-->
+<!--                </ul>-->
+<!--            </div>-->
         </div>
     </nav>
 </header>
