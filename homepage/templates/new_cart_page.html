@@ -310,6 +310,7 @@ $('#coupon_code').on('keyup', function(){
             url: '/apply_coupon_code/',
             data: {
                 'coupon_code': coupon_code,
+                'course_id': '{{course_data.id}}',
             },
             success: function (response) {
                 var percent = response.coupon_data

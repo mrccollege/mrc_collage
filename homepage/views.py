@@ -14,9 +14,14 @@ from homepage.models import Lookup, CouponCode
 import os
 import qrcode
 from django.urls import reverse
-
+from datetime import datetime, timedelta
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+def calculate_future_date(month):
+    current_date = datetime.now()
+    future_date = current_date + timedelta(days=30 * month)  # Assuming a month has 30 days for simplicity
+    return future_date
 
 def homepage(request, id=0):
     user_id = request.session.get('user_id')
@@ -435,38 +440,21 @@ def buy_course_detail(request, course_id):
 def payment_success(request):
     user_id = request.session.get('user_id')
     if request.method == 'GET':
-        course_obj = ''
         form = request.GET
         razorpay_order_id = form.get('razorpay_order_id', None)
         razorpay_payment_id = form.get('razorpay_payment_id', None)
         razorpay_signature = form.get('razorpay_signature', None)
         course_id = form.get('course_id', None)
-        price = int(float(form.get('course_price', None)))
-        discount = form.get('discount', None)
         totalprice = int(float(form.get('totalprice', None)))
-        quantity = form.get('quantity', None)
         payment_status = form.get('payment_status', None)
-        month = int(form.get('month', 0))
         status = 0
-        from datetime import datetime, timedelta
 
-        def calculate_future_date(month):
-            current_date = datetime.now()
-            future_date = current_date + timedelta(days=30 * month)  # Assuming a month has 30 days for simplicity
-            return future_date
-
-        future_date = calculate_future_date(month)
         try:
-            query = Q(user_id=user_id, razorpay_order_id=razorpay_order_id, course_id=course_id)
-            course_obj = CoursePurchased.objects.filter(query).update(price=price,
-                                                                      discount=discount,
-                                                                      totalprice=totalprice,
-                                                                      quantity=quantity,
+            query = Q(user_id=user_id, course_id=course_id, razorpay_order_id=razorpay_order_id)
+            course_obj = CoursePurchased.objects.filter(query).update(totalprice=totalprice,
                                                                       razorpay_payment_id=razorpay_payment_id,
                                                                       razorpay_signature=razorpay_signature,
-                                                                      payment_status=payment_status,
-                                                                      end_date=future_date,
-                                                                      month=month)
+                                                                      payment_status=payment_status,)
             if course_obj:
                 status = 1
         except Exception as e:
@@ -502,6 +490,7 @@ def get_service_month(request):
 def get_service_price(request):
     if request.method == 'GET':
         form = request.GET
+        user_id = request.session.get('user_id')
         course_id = form.get('course_id')
         month_id = form.get('month_id')
         data_dict = {}
@@ -509,6 +498,22 @@ def get_service_price(request):
 
         data_dict['month'] = price_data.month
         data_dict['price'] = price_data.money
+
+        future_date = calculate_future_date(data_dict['month'])
+        same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
+        if same_user:
+            CoursePurchased.objects.filter(user_id=user_id, course_id=course_id,).update(price=data_dict['price'],
+                                                                                         totalprice=data_dict['price'],
+                                                                                         month=data_dict['month'],
+                                                                                         end_date=future_date)
+        else:
+            CoursePurchased.objects.create(user_id=user_id,
+                                           course_id=course_id,
+                                           price=data_dict['price'],
+                                           totalprice=data_dict['price'],
+                                           month=data_dict['month'],
+                                           end_date=future_date
+                                           )
 
         context = {
             'data': data_dict,
@@ -521,11 +526,19 @@ def get_service_price(request):
 def apply_coupon_code(request):
     if request.method == 'GET':
         form = request.GET
+        user_id = request.session.get('user_id')
+        course_id = form.get('course_id')
         coupon_code = form.get('coupon_code')
         coupon_data = CouponCode.objects.filter(coupon_code__exact=coupon_code)
         coupon_dict = {}
         if coupon_data:
             coupon_dict['percent'] = coupon_data[0].percent
+
+        same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
+        if same_user:
+            CoursePurchased.objects.filter(user_id=user_id).update(discount=coupon_dict['percent'])
+
+
         context = {
             'coupon_data': coupon_dict
         }
