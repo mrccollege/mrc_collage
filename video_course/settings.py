@@ -123,3 +123,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 RAZOR_KEY_ID = 'rzp_live_Ap1PwlFBhamMza'
 RAZOR_KEY_SECRET = 'ow916Sgk2V2lSXoomeAM0Xf6'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mrctherapy2023@gmail.com'
+EMAIL_HOST_PASSWORD = 'ikjh dxwd jlst lbgm'
