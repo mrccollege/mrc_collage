@@ -7,6 +7,10 @@ urlpatterns = [
     path('login/', views.login_account, name='login_account'),
     path('logout/', views.logout_account, name='logout_account'),
 
+    path('forget_password/', views.forget_password, name='forget_password'),
+    path('verity_otp/', views.verity_otp, name='verity_otp'),
+    path('verity_otp/<str:email>/', views.verity_otp, name='verity_otp'),
+
     path('term_condition/', views.term_condition, name='term_condition'),
     path('cancel_refund/', views.cancel_refund, name='cancel_refund'),
     path('shiping/', views.shiping, name='shiping'),

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -16,3 +17,16 @@ class UserQuery(models.Model):
 
     class Meta:
         db_table = 'user_query'
+
+
+class OtpVerify(models.Model):
+    email = models.EmailField(null=True, unique=True)
+    otp = models.CharField(max_length=10, null=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(null=True)
+
+    def __str__(self):
+        return self.email
+
+    class Meta:
+        db_table = 'otp_verify'

@@ -1,12 +1,14 @@
+import time
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from homepage.models import Lookup
-
+from django.core.mail import send_mail
 # Create your views here.
-from .models import UserQuery
+from .models import UserQuery, OtpVerify
 
 
 def register_account(request):
@@ -91,6 +93,111 @@ def login_account(request):
 def logout_account(request):
     logout(request)
     return redirect('/accounts/login/')
+
+
+def generate_time_based_otp():
+    # Get the current time in seconds
+    current_time = int(time.time())
+    # Convert the current time to a string and use a portion of it as the OTP
+    otp = str(current_time)[-6:]
+
+    return otp
+
+
+def send_otp_email(email, otp):
+    subject = 'Your OTP for Verification'
+    message = f'Your OTP is: {otp}'
+    from_email = 'sanjay.singh@crebritech.com'
+    recipient_list = [email]
+
+    send_mail(subject, message, from_email, recipient_list)
+
+
+def forget_password(request):
+    try:
+        loader_img = Lookup.objects.get(code='loader_img')
+        loader_img = loader_img.file.url
+    except:
+        loader_img = ''
+
+    if request.method == 'POST':
+        form = request.POST
+        email = form.get('email')
+        is_user = User.objects.filter(email__exact=email)
+        if is_user:
+            otp = generate_time_based_otp()
+            otp_obj = OtpVerify.objects.filter(email__exact=email)
+            if otp_obj:
+                OtpVerify.objects.filter(email__exact=email).update(otp=otp)
+                send_otp_email(email, otp)
+                status = 1
+                msg = f'OTP Send successfully on {email}'
+            else:
+                try:
+                    OtpVerify.objects.create(email=email, otp=otp)
+                    send_otp_email(email, otp)
+                    status = 1
+                    msg = f'OTP Send successfully on {email}'
+                except Exception as e:
+                    status = 0
+                    msg = str(e)
+        else:
+            status = 0
+            msg = 'Email is not registered'
+
+        context = {
+            'status': status,
+            'msg': msg,
+            'email': email,
+        }
+        return JsonResponse(context)
+
+    context = {
+        'loader_img': loader_img,
+    }
+    return render(request, 'forget_password.html', context)
+
+
+def verity_otp(request, email=None):
+    try:
+        loader_img = Lookup.objects.get(code='loader_img')
+        loader_img = loader_img.file.url
+    except:
+        loader_img = ''
+
+    if request.method == 'POST':
+        form = request.POST
+        email = form.get('email')
+        otp = form.get('otp')
+        new_password = form.get('new_password')
+        status = 0
+        msg = 'Password not reset'
+        is_user = User.objects.filter(email__exact=email)
+        if is_user:
+            otp_obj = OtpVerify.objects.filter(email__exact=email, otp__exact=otp)
+            if otp_obj:
+                users = User.objects.filter(email__exact=email)
+                user = users[0]
+                user.set_password(new_password)
+                user.save()
+                status = 1
+                msg = 'Password successfully reset'
+            else:
+                status = 0
+                msg = 'Password not reset'
+
+        context = {
+            'status': status,
+            'msg': msg,
+            'email': email,
+        }
+        return JsonResponse(context)
+
+    context = {
+        'loader_img': loader_img,
+        'email': email
+    }
+    return render(request, 'verity_otp.html', context)
 
 
 def term_condition(request):

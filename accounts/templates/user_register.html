@@ -64,7 +64,7 @@ Registration
             <label for="address" class="form-label">Complete Address</label>
             <textarea class="form-control" id="address" name="address" placeholder="Enter complete address"></textarea>
         </div>
-        <button type="button" id="submit_form_btn" class="btn btn-primary w-100 mb-3">Sign Up</button>
+        <button type="submit" id="submit_form_btn" class="btn btn-primary w-100 mb-3">Sign Up</button>
         <a class="text-primary mx-auto" href="/accounts/login/">Already User? login account</a>
     </form>
 </div>
@@ -75,7 +75,7 @@ Registration
 <script>
 
 $(document).ready(function() {
-    $('#submit_form_btn').click(function(e) {
+    $('#register_form').on('submit', function(e) {
         e.preventDefault();  // Prevent the form from submitting normally
         var fullname = $('#fullname').val();
         var contact_number = $('#contact_number').val();

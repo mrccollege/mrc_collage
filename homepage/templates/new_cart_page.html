@@ -151,8 +151,6 @@
             background-position-x: 95%;
             background-position-y: center;
         }
-
-
 </style>
 {% endblock css %}
 
@@ -258,7 +256,6 @@
 function get_price_service() {
     var month_id = $('#select_month').val();
     if (month_id) {
-        $('#loader').removeClass('d-none');
         $.ajax({
             url: '/get_service_price/',
             data: {
