@@ -105,9 +105,15 @@
             }
             $('#video_frame').attr('src', file)
             $('#video_title').html(title)
+
+<!--            window.scrollTo({-->
+<!--                top: 0,-->
+<!--                behavior: 'smooth' // Optional: for smooth scrolling-->
+<!--            });-->
+
             window.scrollTo({
-                top: 0,
-                behavior: 'smooth' // Optional: for smooth scrolling
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
             });
         }else{
             $('#video_frame').attr('poster', '')
