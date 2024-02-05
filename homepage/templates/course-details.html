@@ -18,6 +18,39 @@
 <section class="courses-details-area mt-5 mb-5">
     <div class="container">
         <div class="row">
+            <div class="col-lg-4 mb-3 sidebar-area">
+                <div class="widget widget-accordion-inner scrollableDiv">
+                    <h5 class="widget-title border-0">Course Syllabus</h5>
+                    <div class="accordion" id="accordionExample">
+                        {% for data in data %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{forloop.counter}}" aria-expanded="false"
+                                        aria-controls="collapseTwo">
+                                    {{data.title}}
+                                </button>
+                            </h2>
+                            <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse"
+                                 aria-labelledby="headingTwo"
+                                 data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li class="cursor-pointer" onclick="play_video('{{data.title}}', '{{data.file.url}}', '{{data.file_type}}')">
+                                            <i class="fa fa-play"></i>
+                                            <span>
+                                                <p>{{data.title}}</p>
+                                                <span>1m 24s</span>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
             <div class="col-lg-8 mb-3">
                 <div class="single-course-wrap mb-0">
                     <div class="thumb">
@@ -51,39 +84,6 @@
                             </div>
 
                         </div>
-                </div>
-            </div>
-            <div class="col-lg-4 mb-3 sidebar-area">
-                <div class="widget widget-accordion-inner scrollableDiv">
-                    <h5 class="widget-title border-0">Course Syllabus</h5>
-                    <div class="accordion" id="accordionExample">
-                        {% for data in data %}
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapse{{forloop.counter}}" aria-expanded="false"
-                                        aria-controls="collapseTwo">
-                                    {{data.title}}
-                                </button>
-                            </h2>
-                            <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse"
-                                 aria-labelledby="headingTwo"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                        <li class="cursor-pointer" onclick="play_video('{{data.title}}', '{{data.file.url}}', '{{data.file_type}}')">
-                                            <i class="fa fa-play"></i>
-                                            <span>
-                                                <p>{{data.title}}</p>
-                                                <span>1m 24s</span>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
                 </div>
             </div>
         </div>
