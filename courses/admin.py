@@ -13,7 +13,7 @@ class VideoAdmin(admin.ModelAdmin):
 
 
 class CoursePurchasedAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'course', 'payment_status', 'price', 'discount', 'totalprice', 'month', 'end_date')
+    list_display = ('id', 'user', 'course', 'payment_status', 'price', 'coupon_code', 'discount', 'totalprice', 'month', 'end_date')
 
 
 # Register your models here.

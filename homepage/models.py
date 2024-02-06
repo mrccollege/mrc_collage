@@ -14,6 +14,10 @@ class Lookup(models.Model):
 
 
 class CouponCode(models.Model):
+    coupon_agent_name = models.CharField(max_length=100, null=True, default='admin')
+    coupon_agent_mobile = models.CharField(max_length=15, null=True, default='9267678888')
+    coupon_agent_address = models.TextField(null=True, blank=True)
+    coupon_agent_email = models.EmailField(unique=True, null=True, blank=True)
     coupon_name = models.CharField(max_length=100, null=True)
     coupon_code = models.IntegerField(null=True)
     percent = models.IntegerField(null=True)

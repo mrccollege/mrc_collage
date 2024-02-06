@@ -82,6 +82,7 @@ class CoursePurchased(models.Model):
     price = models.IntegerField(null=True)
     discount = models.CharField(max_length=10, null=True, default=0, blank=True)
     totalprice = models.IntegerField(null=True)
+    coupon_code = models.CharField(max_length=50, null=True, blank=True)
     quantity = models.PositiveIntegerField(default=1, null=True, blank=True)
     month = models.IntegerField(null=True, blank=True)
     razorpay_payment_id = models.CharField(max_length=100, null=True)

@@ -390,7 +390,7 @@ def buy_course_detail(request, course_id):
         course_price = form.get('price')
         totalprice = form.get('totalprice')
         totalprice = round(float(totalprice), 1)
-        discount = form.get('discount')
+        discount = form.get('discount', 0)
         month = form.get('month')
         course_id = form.get('course_id')
 
@@ -399,10 +399,13 @@ def buy_course_detail(request, course_id):
         order_id = payment['id']
 
         same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
-        if same_user:
-            CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id)
-        else:
-            CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id)
+        try:
+            if same_user:
+                CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id, totalprice=totalprice, discount=discount)
+            else:
+                CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id, totalprice=totalprice, discount=discount)
+        except:
+            pass
 
         context = {
             'payment': payment,
@@ -533,12 +536,19 @@ def apply_coupon_code(request):
         coupon_dict = {}
         if coupon_data:
             coupon_dict['percent'] = coupon_data[0].percent
+            coupon_dict['coupon_code'] = coupon_data[0].coupon_code
 
         same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
         if same_user:
-            CoursePurchased.objects.filter(user_id=user_id).update(discount=coupon_dict['percent'])
-
-
+            try:
+                CoursePurchased.objects.filter(user_id=user_id).update(discount=coupon_dict['percent'],
+                                                                       coupon_code=coupon_dict['coupon_code']
+                                                                       )
+            except Exception as e:
+                print(e, '===========e===============')
+                CoursePurchased.objects.filter(user_id=user_id).update(discount=0,
+                                                                       coupon_code='',
+                                                                       )
         context = {
             'coupon_data': coupon_dict
         }
