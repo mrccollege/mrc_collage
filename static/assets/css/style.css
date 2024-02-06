@@ -4277,7 +4277,7 @@ a.showMore-cat.showLess::after {
   border-bottom: 1px solid #e0e4ec;
 }
 .dashboard-left-menu .logo img {
-  max-width: 100%;
+  max-width: 50%;
 }
 .dashboard-left-menu ul {
   margin: 0;
