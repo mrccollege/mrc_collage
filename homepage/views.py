@@ -15,6 +15,7 @@ import os
 import qrcode
 from django.urls import reverse
 from datetime import datetime, timedelta
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -22,6 +23,7 @@ def calculate_future_date(month):
     current_date = datetime.now()
     future_date = current_date + timedelta(days=30 * month)  # Assuming a month has 30 days for simplicity
     return future_date
+
 
 def homepage(request, id=0):
     user_id = request.session.get('user_id')
@@ -401,9 +403,14 @@ def buy_course_detail(request, course_id):
         same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
         try:
             if same_user:
-                CoursePurchased.objects.filter(user_id=user_id).update(razorpay_order_id=order_id, totalprice=totalprice, discount=discount)
+                CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(razorpay_order_id=order_id,
+                                                                                            totalprice=totalprice,
+                                                                                            discount=discount,
+                                                                                            start_date=datetime.now()
+                                                                                            )
             else:
-                CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id, totalprice=totalprice, discount=discount)
+                CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id,
+                                               totalprice=totalprice, discount=discount)
         except:
             pass
 
@@ -457,7 +464,9 @@ def payment_success(request):
             course_obj = CoursePurchased.objects.filter(query).update(totalprice=totalprice,
                                                                       razorpay_payment_id=razorpay_payment_id,
                                                                       razorpay_signature=razorpay_signature,
-                                                                      payment_status=payment_status,)
+                                                                      payment_status=payment_status,
+                                                                      start_date=datetime.now()
+                                                                      )
             if course_obj:
                 status = 1
         except Exception as e:
@@ -505,10 +514,11 @@ def get_service_price(request):
         future_date = calculate_future_date(data_dict['month'])
         same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
         if same_user:
-            CoursePurchased.objects.filter(user_id=user_id, course_id=course_id,).update(price=data_dict['price'],
-                                                                                         totalprice=data_dict['price'],
-                                                                                         month=data_dict['month'],
-                                                                                         end_date=future_date)
+            CoursePurchased.objects.filter(user_id=user_id, course_id=course_id, ).update(price=data_dict['price'],
+                                                                                          totalprice=data_dict['price'],
+                                                                                          month=data_dict['month'],
+                                                                                          start_date=datetime.now(),
+                                                                                          end_date=future_date)
         else:
             CoursePurchased.objects.create(user_id=user_id,
                                            course_id=course_id,
@@ -541,14 +551,17 @@ def apply_coupon_code(request):
         same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
         if same_user:
             try:
-                CoursePurchased.objects.filter(user_id=user_id).update(discount=coupon_dict['percent'],
-                                                                       coupon_code=coupon_dict['coupon_code']
-                                                                       )
+                CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(
+                    discount=coupon_dict['percent'],
+                    coupon_code=coupon_dict['coupon_code'],
+                    start_date=datetime.now(),
+                    )
             except Exception as e:
                 print(e, '===========e===============')
-                CoursePurchased.objects.filter(user_id=user_id).update(discount=0,
-                                                                       coupon_code='',
-                                                                       )
+                CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(discount=0,
+                                                                                            coupon_code='',
+                                                                                            start_date=datetime.now(),
+                                                                                            )
         context = {
             'coupon_data': coupon_dict
         }
