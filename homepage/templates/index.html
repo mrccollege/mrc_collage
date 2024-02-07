@@ -155,7 +155,13 @@
 {% block js %}
 <script>
     function get_course(course_id){
-        window.location.href = '/'+course_id+'/';
+        if(course_id == '12'){
+            return false;
+        }else{
+            window.location.href = '/'+course_id+'/';
+        }
+
+
     }
     function enroll_now(course_id){
         //window.location.href = '/cart-page/'+course_id+'/';
