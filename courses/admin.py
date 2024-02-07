@@ -12,6 +12,11 @@ class VideoAdmin(admin.ModelAdmin):
     list_display = ('id', 'course', 'file', 'code_no', 'qr_code', 'created_at')
 
 
+class MonthMoneyAdmin(admin.ModelAdmin):
+    list_display = ('id', 'course', 'month', 'money')
+    list_filter = ('id', 'course', 'month', 'money')
+
+
 class CoursePurchasedAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'course', 'payment_status', 'price', 'coupon_code', 'discount', 'totalprice', 'month', 'start_date', 'end_date')
     list_filter = ('id', 'user', 'course', 'payment_status', 'price', 'coupon_code', 'discount', 'totalprice', 'month', 'start_date', 'end_date')
@@ -25,4 +30,4 @@ admin.site.register(CoursePurchased, CoursePurchasedAdmin)
 admin.site.register(UserWatch)
 admin.site.register(FileType)
 admin.site.register(CourseMaster)
-admin.site.register(MonthMoney)
+admin.site.register(MonthMoney, MonthMoneyAdmin)
