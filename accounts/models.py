@@ -30,3 +30,12 @@ class OtpVerify(models.Model):
 
     class Meta:
         db_table = 'otp_verify'
+
+
+class UserSession(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    session_id = models.CharField(max_length=255)
+    login_time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.session_id}"
