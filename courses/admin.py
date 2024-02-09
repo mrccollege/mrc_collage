@@ -6,10 +6,12 @@ from .models import VideoFiles, UserWatch, Course, VideoInstructions, CoursePurc
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
+    list_filter = ('id', 'name')
 
 
 class VideoAdmin(admin.ModelAdmin):
     list_display = ('id', 'course', 'file', 'code_no', 'qr_code', 'created_at')
+    list_filter = ('id', 'course', 'file', 'code_no', 'qr_code', 'created_at')
 
 
 class MonthMoneyAdmin(admin.ModelAdmin):
