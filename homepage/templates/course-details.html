@@ -8,6 +8,7 @@
      .cursor-pointer{
         cursor:pointer;
      }
+
 </style>
 {% endblock css %}
 
@@ -36,7 +37,8 @@
                                  data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     <ul>
-                                        <li class="cursor-pointer" onclick="play_video('{{data.title}}', '{{data.file.url}}', '{{data.file_type}}')">
+                                        <li class="cursor-pointer"
+                                            onclick="play_video('{{data.title}}', '{{data.file.url}}', '{{data.file_type}}')">
                                             <i class="fa fa-play"></i>
                                             <span>
                                                 <p>{{data.title}}</p>
@@ -59,31 +61,8 @@
                         </video>
                     </div>
                     <div class="wrap-details">
-                            <h5 id="video_title">First select Course Syllabus video or audio.</h5>
-                            <!--<p>Learn Python like a Professional Start from the basics</p>-->
-<!--                            <div class="user-area">-->
-<!--                                <div class="user-details">-->
-<!--                                    &lt;!&ndash;<img src="assets/img/author/1.png" alt="img">&ndash;&gt;-->
-<!--                                    <p><strong>Instructor:</strong> Dr. Abhishek Sharma</p>-->
-<!--                                </div>-->
-<!--                                <div class="date ms-auto">-->
-<!--                                    <i class="fa fa-calendar-alt me-2" style="color: var(&#45;&#45;main-color);"></i>Last updated 1/2024-->
-<!--                                </div>-->
-<!--                                <div class="ms-auto">-->
-<!--                                    <i class="fa fa-user me-2" style="color: var(&#45;&#45;main-color);"></i>5k already enrolled-->
-<!--                                </div>-->
-<!--                                <div class="user-rating">-->
-<!--                                    <span>-->
-<!--                                        <i class="fa fa-star"></i>-->
-<!--                                        <i class="fa fa-star"></i>-->
-<!--                                        <i class="fa fa-star"></i>-->
-<!--                                        <i class="fa fa-star"></i>-->
-<!--                                        <i class="fa fa-star-half-alt"></i>-->
-<!--                                    4.9</span>(1.7k)-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-                        </div>
+                        <h5 id="video_title">First select Course Syllabus video or audio.</h5>
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,11 +85,6 @@
             $('#video_frame').attr('src', file)
             $('#video_title').html(title)
 
-<!--            window.scrollTo({-->
-<!--                top: 0,-->
-<!--                behavior: 'smooth' // Optional: for smooth scrolling-->
-<!--            });-->
-
             window.scrollTo({
                 top: document.body.scrollHeight,
                 behavior: 'smooth'
@@ -122,4 +96,12 @@
         }
     }
 </script>
+
+<script>
+  const player = new Plyr('#video_frame', {
+    controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+    hideControls: false
+  });
+</script>
+
 {% endblock js %}
