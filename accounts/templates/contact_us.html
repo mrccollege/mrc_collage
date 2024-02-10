@@ -73,6 +73,11 @@
             </div>
 
             <div class="mb-3">
+                <label for="whatsapp" class="form-label">Whatsapp (required) *</label>
+                <input type="text" class="form-control" id="whatsapp" name="whatsapp" maxlength="10" required>
+            </div>
+
+            <div class="mb-3">
                 <label for="email" class="form-label">Email:</label>
                 <input type="email" class="form-control" id="email" name="email" required>
             </div>
@@ -93,31 +98,35 @@
     $(document).ready(function () {
         $('#submit-btn').on('click', function () {
             var formData = $('#query_form').serialize();
-
-            // Make the AJAX request
-            $.ajax({
-                url: '/accounts/contact_us/',
-                type: 'POST',
-                data: formData,
-                success: function (data) {
-                    if(data.status == 1){
-                        Swal.fire({
-                            title: 'Success',
-                            text: 'Your query has been submitted. We will call you later?',
-                            icon: 'success',
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK'
-                          }).then((result) => {
-
-                            window.location.href = '/';
-                          });
+            var whatsapp = $('#whatsapp').val();
+            if(whatsapp == ''){
+                alert('Please fill whatsapp number')
+                return false;
+            }else{
+                $.ajax({
+                    url: '/accounts/contact_us/',
+                    type: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        if(data.status == 1){
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Your query has been submitted. We will call you later?',
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                              }).then((result) => {
+                                window.location.href = '/';
+                              });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
+                });
+            }
+
         });
     });
 </script>

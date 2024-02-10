@@ -224,11 +224,13 @@ def contact_us(request):
     if request.method == 'POST':
         form = request.POST
         name = form.get('name')
+        whatsapp = form.get('whatsapp')
         email = form.get('email')
         message = form.get('message')
         status = 0
         try:
             q_obj = UserQuery.objects.create(name=name,
+                                             whatsapp=whatsapp,
                                              email=email,
                                              message=message,
                                              )

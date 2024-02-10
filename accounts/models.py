@@ -6,6 +6,7 @@ from django.db import models
 
 class UserQuery(models.Model):
     name = models.CharField(max_length=100, null=True)
+    whatsapp = models.CharField(max_length=15, null=True, blank=True)
     email = models.EmailField(null=True)
     message = models.TextField(null=True)
     status = models.CharField(max_length=10, null=True, default='pending')
