@@ -1,3 +1,4 @@
+# middleware.py
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib.sessions.models import Session
 from django.contrib.auth.signals import user_logged_in
@@ -9,8 +10,6 @@ from .models import UserSession
 
 class SingleSessionMiddleware(MiddlewareMixin):
     def process_request(self, request):
-        if request.user.is_superuser or request.user.is_staff:
-            return  # Skip processing requests from admin users
         if hasattr(request, 'user') and request.user.is_authenticated:
             try:
                 current_session_key = request.session.session_key
@@ -30,8 +29,6 @@ class SingleSessionMiddleware(MiddlewareMixin):
                 pass
 
     def process_response(self, request, response):
-        if request.user.is_superuser or request.user.is_staff:
-            return response  # Skip processing responses for admin users
         if hasattr(request, 'user') and request.user.is_authenticated:
             try:
                 current_session_key = request.session.session_key
@@ -47,8 +44,6 @@ class SingleSessionMiddleware(MiddlewareMixin):
 # Define signal handler to logout previous session when a new session is created (user logged in)
 @receiver(user_logged_in)
 def logout_previous_sessions(sender, user, request, **kwargs):
-    if user.is_superuser or user.is_staff:
-        return  # Skip processing requests from admin users
     current_session_key = request.session.session_key
     try:
         previous_session = UserSession.objects.get(user=user)
