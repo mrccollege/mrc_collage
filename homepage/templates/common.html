@@ -10,13 +10,15 @@
         {% if pre_next == 'pre' %}
         <a href="javascript:void(0)" id="prevButton" class="me-2 btn-sm btn-primary">Previous</a>
         {% else %}
-        <a href="/watch-video/pre/{{file_type}}/{{course_id}}/{{file_id}}/" id="prevButton" class="me-2 btn-sm btn-primary">Previous</a>
+        <a href="/watch-video/pre/{{file_type}}/{{course_id}}/{{file_id}}/" id="prevButton"
+           class="me-2 btn-sm btn-primary">Previous</a>
         {% endif %}
 
         {% if pre_next == 'next' %}
         <a href="javascript:void(0)" id="nextButton" class="m2 btn-sm btn-primary">Next</a>
         {% else %}
-        <a href="/watch-video/next/{{file_type}}/{{course_id}}/{{file_id}}/" id="nextButton" class="m2 btn-sm btn-primary">Next</a>
+        <a href="/watch-video/next/{{file_type}}/{{course_id}}/{{file_id}}/" id="nextButton"
+           class="m2 btn-sm btn-primary">Next</a>
         {% endif %}
     </div>
 
@@ -34,7 +36,7 @@
                 {% else %}
 
                 <audio controls controlsList="nodownload">
-                  <source src="{% if data.file %}{{data.file.url}}{% endif %}" type="audio/mpeg">
+                    <source src="{% if data.file %}{{data.file.url}}{% endif %}" type="audio/mpeg">
                 </audio>
                 {% endif %}
             </div>
@@ -43,12 +45,15 @@
         <div class="col-md-6">
             <h2>Video and Audio Instructions</h2>
             <div class="video-container">
-                <p style="text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Dicta
-                    placeat suscipit voluptatibus
-                    omnis cum dignissimos velit, quibusdam corporis cumque, alias laborum impedit
-                    cupiditate
-                    consequatur, ipsam quo illum quas repudiandae vel.</p>
+                <p style="text-align: justify;">
+                    Best Experience के लिए Headphone का उपयोग करें।
+
+                    जब भी ऑडियो को सुनना हो तो Wifi होने की स्थिति पर Aroplane mode का उपयोग कर net Wifi से चलाए और
+                    Relax होकर लेट जाये और निश्चित करें कि कोई आपको डिस्टर्ब न करें।
+
+                    नोट: अपनी अकाउंट डिटेल किसी के साथ शेयर न करें या बार बार नई डिवाइस में login न करें या अन्यथा आपका
+                    अकाउंट ब्लॉक हो जाएगा
+                </p>
             </div>
         </div>
         {% endif %}
@@ -88,6 +93,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const players = Plyr.setup('.plyr');
     });
+
 
 
 </script>
