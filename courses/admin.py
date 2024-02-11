@@ -22,7 +22,8 @@ class MonthMoneyAdmin(admin.ModelAdmin):
 class CoursePurchasedAdmin(admin.ModelAdmin):
     list_display = ('user', 'course', 'razorpay_order_id', 'payment_status', 'coupon_code', 'month', 'start_date', 'end_date')
     list_filter = ('user', 'course', 'razorpay_order_id', 'payment_status', 'coupon_code', 'month', 'start_date', 'end_date')
-    search_fields = ('user__icontains', 'course__icontains', 'razorpay_order_id__icontains', 'payment_status__icontains')
+    search_fields = ('user__username', 'course__title', 'razorpay_order_id', 'payment_status')
+
 
 
 # Register your models here.
