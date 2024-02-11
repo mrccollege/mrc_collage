@@ -70,6 +70,9 @@ def my_courses(request):
 
 
 def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
+    now_date = datetime.now()
+    now_date = now_date.strftime("%Y-%m-%d")
+
     try:
         home_banner = Lookup.objects.get(code='home_banner')
     except:
@@ -85,6 +88,15 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
         thumb = ''
 
     if user_id is not None:
+        is_exipre = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).values('end_date')
+        if is_exipre:
+            expire_date = is_exipre[0]['end_date'].strftime("%Y-%m-%d")
+            if now_date > expire_date:
+                status = 'Renew'
+                CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(payment_status=status)
+                return redirect(f'/buy_course_detail/{course_id}/{status}/')
+            else:
+                pass
         if type == 'professional':
             video_files = VideoFiles.objects.filter(course_id=course_id)
             context = {'type': type,
@@ -92,7 +104,6 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                        'thumb': thumb,
                        'home_banner': home_banner,
                        }
-            # return render(request, 'professional_course.html', context)
             return render(request, 'course-details.html', context)
         elif type == 'regular':
             video_files = VideoFiles.objects.filter(course_id=course_id)
@@ -385,7 +396,7 @@ def delete_files(request):
 
 
 @login_required(login_url='/accounts/login/')
-def buy_course_detail(request, course_id):
+def buy_course_detail(request, course_id, status=None):
     user_id = request.session.get('user_id')
     if request.method == 'POST':
         form = request.POST
@@ -440,6 +451,7 @@ def buy_course_detail(request, course_id):
             loader_img = ''
 
         context = {
+            'status': status,
             'course_data': course_data,
             'loader_img': loader_img,
         }

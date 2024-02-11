@@ -159,6 +159,9 @@
     <div class="card">
         <div class="row">
             <div class="col-md-8 cart">
+                {% if status == 'Renew' %}
+                <p class="text-danger">Your Therapy Course Has Been Expired.</p>
+                {% endif %}
                 <div class="title">
                     <div class="row">
                         <div class="col"><h4><b>Cart Page</b></h4></div>
