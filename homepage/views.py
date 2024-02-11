@@ -59,8 +59,8 @@ def my_courses(request):
         if is_admin:
             query = Q()
         else:
-            course_purchased = CoursePurchased.objects.filter(user_id=user_id, payment_status='success').values_list(
-                'course', flat=True)
+            query = Q(user_id=user_id) | Q(payment_status='success') | Q(payment_status='renew')
+            course_purchased = CoursePurchased.objects.filter(query).values_list('course', flat=True)
             query = Q(id__in=course_purchased)
         my_pur_cours = Course.objects.filter(query)
         context = {'my_course': my_pur_cours, 'home_banner': home_banner}
@@ -88,11 +88,16 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
         thumb = ''
 
     if user_id is not None:
-        is_exipre = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).values('end_date')
+        is_exipre = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
         if is_exipre:
-            expire_date = is_exipre[0]['end_date'].strftime("%Y-%m-%d")
+            expire_date = is_exipre[0].end_date.strftime("%Y-%m-%d")
+            payment_status = is_exipre[0].payment_status
+            if payment_status == 'renew':
+                status = 'renew'
+                return redirect(f'/buy_course_detail/{course_id}/{status}/')
+
             if now_date > expire_date:
-                status = 'Renew'
+                status = 'renew'
                 CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(payment_status=status)
                 return redirect(f'/buy_course_detail/{course_id}/{status}/')
             else:
