@@ -405,35 +405,49 @@ def buy_course_detail(request, course_id, status=None):
     user_id = request.session.get('user_id')
     if request.method == 'POST':
         form = request.POST
-        course_price = form.get('price')
-        totalprice = form.get('totalprice')
-        totalprice = round(float(totalprice), 1)
-        discount = form.get('discount', 0)
+        apply_coupon = form.get('apply_coupon')
         month = form.get('month')
-        course_id = form.get('course_id')
+        course_id = course_id
+        discount = 0
+
+        course_price = MonthMoney.objects.filter(course_id=course_id, month=month)
+        if course_price:
+            base_price = course_price[0].money
+        else:
+            course_price = MonthMoney.objects.filter(course_id=course_id)[0]
+            base_price = course_price.money
+            month = course_price.month
+
+        if apply_coupon:
+            is_exist = CouponCode.objects.filter(coupon_code__exact=apply_coupon)
+            if is_exist:
+                discount = is_exist[0].percent * base_price / 100
+                course_price = base_price - discount
+        else:
+            course_price = base_price
 
         client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-        payment = client.order.create({'amount': totalprice * 100, 'currency': 'INR', 'payment_capture': '1'})
+        payment = client.order.create({'amount': course_price * 100, 'currency': 'INR', 'payment_capture': '1'})
         order_id = payment['id']
 
         same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
         try:
             if same_user:
                 CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(razorpay_order_id=order_id,
-                                                                                            totalprice=totalprice,
+                                                                                            totalprice=course_price,
                                                                                             discount=discount,
                                                                                             start_date=datetime.now()
                                                                                             )
             else:
                 CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id,
-                                               totalprice=totalprice, discount=discount)
+                                               totalprice=course_price, discount=discount)
         except:
             pass
 
         context = {
             'payment': payment,
-            'course_price': course_price,
-            'totalprice': totalprice,
+            'course_price': base_price,
+            'totalprice': course_price,
             'discount': discount,
             'month': month,
             'course_id': course_id,

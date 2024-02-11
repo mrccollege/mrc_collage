@@ -213,13 +213,10 @@
                         <div class="col text-right">₹ <span id="total_price">0.00</span></div>
                     </div>
                 </div>
-                <form method="post">
+                <form id="payment_data" method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="price" id="price">
-                    <input type="hidden" name="totalprice" id="totalprice">
-                    <input type="hidden" name="discount" id="discount" value="0">
                     <input type="hidden" name="month" id="month">
-                    <input type="hidden" name="course_id" id="course_id">
+                    <input type="hidden" name="apply_coupon" id="apply_coupon" value="">
                     <button type="submit" class="btn check-out-btn" id="rzp-button1">CHECKOUT</button>
                 </form>
 
@@ -325,12 +322,14 @@ $('#coupon_code').on('keyup', function(){
                     $('#discount').val(discount)
                     if (!isNaN(result)){
                         $('#total_price').html(result.toFixed(2));
+                        $('#apply_coupon').val(coupon_code)
                     }
                 }else{
                     $('#totalprice').val($('#price').val());
                     $('#discount').val(0);
                     $('#discount_price').html(0);
                     $('#total_price').html($('#price').val());
+                    $('#apply_coupon').val('')
                 }
             },
             complete: function () {
@@ -342,7 +341,5 @@ $('#coupon_code').on('keyup', function(){
     }
 
 })
-
-
 </script>
 {% endblock js %}
