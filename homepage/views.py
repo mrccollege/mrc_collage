@@ -421,8 +421,9 @@ def buy_course_detail(request, course_id, status=None):
         if apply_coupon:
             is_exist = CouponCode.objects.filter(coupon_code__exact=apply_coupon)
             if is_exist:
-                discount = is_exist[0].percent * base_price / 100
-                course_price = base_price - discount
+                discount = is_exist[0].percent
+                after_discount = discount * base_price / 100
+                course_price = base_price - after_discount
         else:
             course_price = base_price
 
