@@ -10,6 +10,18 @@
 {% block js %}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+      $(document).ready(function(){
+        Swal.fire({
+            title: 'Warning',
+            text: 'पेमेंट सफल होने के बाद पेज को रिफ्रेश या बैक न करें जब तक आप My Therapy पेज पर न पहुँच जाएं, After successful payment, do not refresh or back the page until you reach My Therapy page.',
+            icon: 'warning',
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        })
+      });
+
+
       var options = {
           "key": '{{razorkey}}',
           "amount": {{payment.amount}},
