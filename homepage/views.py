@@ -88,72 +88,129 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
         thumb = ''
 
     if user_id is not None:
-        is_exipre = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
-        if is_exipre:
-            expire_date = is_exipre[0].end_date.strftime("%Y-%m-%d")
-            payment_status = is_exipre[0].payment_status
-            if payment_status == 'renew':
-                status = 'renew'
-                return redirect(f'/buy_course_detail/{course_id}/{status}/')
+        is_admin = User.objects.filter(id=user_id, username='admin')
+        if is_admin:
+            if type == 'professional':
+                video_files = VideoFiles.objects.filter(course_id=course_id)
+                context = {'type': type,
+                           'data': video_files,
+                           'thumb': thumb,
+                           'home_banner': home_banner,
+                           }
+                return render(request, 'course-details.html', context)
 
-            if now_date > expire_date:
-                status = 'renew'
-                CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(payment_status=status)
-                return redirect(f'/buy_course_detail/{course_id}/{status}/')
+            elif type == 'regular':
+                video_files = VideoFiles.objects.filter(course_id=course_id)
+                context = {'type': type,
+                           'data': video_files,
+                           'thumb': thumb,
+                           'home_banner': home_banner,
+                           }
+                return render(request, 'regular.html', context)
+
             else:
-                pass
-        if type == 'professional':
-            video_files = VideoFiles.objects.filter(course_id=course_id)
-            context = {'type': type,
-                       'data': video_files,
-                       'thumb': thumb,
-                       'home_banner': home_banner,
-                       }
-            return render(request, 'course-details.html', context)
-        elif type == 'regular':
-            video_files = VideoFiles.objects.filter(course_id=course_id)
-            context = {'type': type,
-                       'data': video_files,
-                       'thumb': thumb,
-                       'home_banner': home_banner,
-                       }
-            return render(request, 'regular.html', context)
-        else:
-
-            watch_video_ids = UserWatch.objects.filter(user_id=user_id, status='complete',
-                                                       course_id=course_id).values_list('videofile', flat=True)
-            if watch_video_ids:
-                if file_id != 0:
-                    if pre_next == 'pre':
-                        video_path = VideoFiles.objects.filter(course_id=course_id, id__lt=file_id)[0]
-                        if video_path:
-                            file_id = video_path.id
-                            file_type = video_path.file_type.file_type
-                    else:
-                        if pre_next == 'next':
-                            video_path = VideoFiles.objects.filter(course_id=course_id, id__gt=file_id)[0]
+                watch_video_ids = UserWatch.objects.filter(user_id=user_id, status='complete',
+                                                           course_id=course_id).values_list('videofile', flat=True)
+                if watch_video_ids:
+                    if file_id != 0:
+                        if pre_next == 'pre':
+                            video_path = VideoFiles.objects.filter(course_id=course_id, id__lt=file_id)[0]
                             if video_path:
                                 file_id = video_path.id
                                 file_type = video_path.file_type.file_type
+                        else:
+                            if pre_next == 'next':
+                                video_path = VideoFiles.objects.filter(course_id=course_id, id__gt=file_id)[0]
+                                if video_path:
+                                    file_id = video_path.id
+                                    file_type = video_path.file_type.file_type
+                    else:
+                        try:
+                            video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
+                            file_id = video_path.id
+                            file_type = video_path.file_type.file_type
+                        except:
+                            file_id = 0
+                            video_path = ''
                 else:
                     try:
-                        video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
+                        video_path = VideoFiles.objects.filter(course_id=course_id)[0]
                         file_id = video_path.id
                         file_type = video_path.file_type.file_type
                     except:
                         file_id = 0
                         video_path = ''
-            else:
-                try:
-                    video_path = VideoFiles.objects.filter(course_id=course_id)[0]
-                    file_id = video_path.id
-                    file_type = video_path.file_type.file_type
-                except:
-                    file_id = 0
-                    video_path = ''
-            context = {'pre_next': pre_next, 'data': video_path, 'file_type': file_type, 'course_id': course_id,
-                       'home_banner': home_banner, 'file_id': file_id}
-            return render(request, 'common.html', context)
+                context = {'pre_next': pre_next, 'data': video_path, 'file_type': file_type, 'course_id': course_id,
+                           'home_banner': home_banner, 'file_id': file_id}
+                return render(request, 'common.html', context)
+        else:
+            is_exipre = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
+            if is_exipre:
+                expire_date = is_exipre[0].end_date.strftime("%Y-%m-%d")
+                if now_date > expire_date:
+                    status = 'renew'
+                    CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(payment_status=status)
+                    return redirect(f'/buy_course_detail/{course_id}/{status}/')
+
+                payment_status = is_exipre[0].payment_status
+                if payment_status == 'renew':
+                    status = 'renew'
+                    return redirect(f'/buy_course_detail/{course_id}/{status}/')
+
+                if now_date < expire_date and payment_status == 'success':
+                    if type == 'professional':
+                        video_files = VideoFiles.objects.filter(course_id=course_id)
+                        context = {'type': type,
+                                   'data': video_files,
+                                   'thumb': thumb,
+                                   'home_banner': home_banner,
+                                   }
+                        return render(request, 'course-details.html', context)
+
+                    elif type == 'regular':
+                        video_files = VideoFiles.objects.filter(course_id=course_id)
+                        context = {'type': type,
+                                   'data': video_files,
+                                   'thumb': thumb,
+                                   'home_banner': home_banner,
+                                   }
+                        return render(request, 'regular.html', context)
+
+                    else:
+                        watch_video_ids = UserWatch.objects.filter(user_id=user_id, status='complete',
+                                                                   course_id=course_id).values_list('videofile', flat=True)
+                        if watch_video_ids:
+                            if file_id != 0:
+                                if pre_next == 'pre':
+                                    video_path = VideoFiles.objects.filter(course_id=course_id, id__lt=file_id)[0]
+                                    if video_path:
+                                        file_id = video_path.id
+                                        file_type = video_path.file_type.file_type
+                                else:
+                                    if pre_next == 'next':
+                                        video_path = VideoFiles.objects.filter(course_id=course_id, id__gt=file_id)[0]
+                                        if video_path:
+                                            file_id = video_path.id
+                                            file_type = video_path.file_type.file_type
+                            else:
+                                try:
+                                    video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
+                                    file_id = video_path.id
+                                    file_type = video_path.file_type.file_type
+                                except:
+                                    file_id = 0
+                                    video_path = ''
+                        else:
+                            try:
+                                video_path = VideoFiles.objects.filter(course_id=course_id)[0]
+                                file_id = video_path.id
+                                file_type = video_path.file_type.file_type
+                            except:
+                                file_id = 0
+                                video_path = ''
+                        context = {'pre_next': pre_next, 'data': video_path, 'file_type': file_type, 'course_id': course_id,
+                                   'home_banner': home_banner, 'file_id': file_id}
+                        return render(request, 'common.html', context)
     else:
         redirect('/accounts/login/')
 
