@@ -59,7 +59,7 @@ def my_courses(request):
         if is_admin:
             query = Q()
         else:
-            query = Q(user_id=user_id) | Q(payment_status='success') | Q(payment_status='renew')
+            query = Q(user_id=user_id) & Q(payment_status='success') | Q(payment_status='renew')
             course_purchased = CoursePurchased.objects.filter(query).values_list('course', flat=True)
             query = Q(id__in=course_purchased)
         my_pur_cours = Course.objects.filter(query)
