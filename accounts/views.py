@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from homepage.models import Lookup
 from django.core.mail import send_mail
 # Create your views here.
-from .models import UserQuery, OtpVerify
+from .models import UserQuery, OtpVerify, UserProfile
 
 
 def register_account(request):
@@ -35,9 +35,11 @@ def register_account(request):
                 user.set_password(password)
                 user.first_name = first_name
                 user.address = address
-                user.contact_number = contact_number
                 user.save()
                 id = user.id
+                UserProfile.objects.create(user_id=id,
+                                           mobile=contact_number,
+                                           )
                 msg = 'User registration successfully.'
         except Exception as e:
             msg = 'Something went wrong.'
