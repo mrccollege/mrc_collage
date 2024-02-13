@@ -182,9 +182,10 @@ def verity_otp(request, email=None):
                 user.save()
                 status = 1
                 msg = 'Password successfully reset'
+                OtpVerify.objects.filter(email__exact=email).delete()
             else:
                 status = 0
-                msg = 'Password not reset'
+                msg = msg
 
         context = {
             'status': status,
