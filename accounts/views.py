@@ -27,7 +27,7 @@ def register_account(request):
         password = password.strip()
 
         address = form.get('address')
-        address = address.strip()
+        contact_number = form.get('contact_number')
 
         try:
             user = User.objects.create_user(usename, email)
@@ -35,6 +35,7 @@ def register_account(request):
                 user.set_password(password)
                 user.first_name = first_name
                 user.address = address
+                user.contact_number = contact_number
                 user.save()
                 id = user.id
                 msg = 'User registration successfully.'
