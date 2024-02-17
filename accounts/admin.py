@@ -6,7 +6,7 @@ from .models import UserQuery, OtpVerify, UserProfile
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'mobile')
     list_filter = ('user',)
-    search_fields = ('user__username',)
+    search_fields = ('user__username', 'mobile')
 
 
 class UserQueryAdmin(admin.ModelAdmin):
