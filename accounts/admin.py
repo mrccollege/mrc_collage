@@ -4,9 +4,12 @@ from .models import UserQuery, OtpVerify, UserProfile
 
 # Register your models here.
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'mobile', 'user_username')
+    list_display = ('user', 'mobile', 'get_username')
     list_filter = ('user',)
     search_fields = ('user__username', 'mobile')
+
+    def get_username(self, obj):
+        return obj.user.username
 
 
 class UserQueryAdmin(admin.ModelAdmin):
