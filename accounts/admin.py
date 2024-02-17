@@ -11,6 +11,11 @@ class UserProfileAdmin(admin.ModelAdmin):
     def first_name(self, obj):
         return obj.user.first_name
 
+# https://www.youtube.com/@mrcayurveda3775
+# https://www.youtube.com/@DrAbhishekSharmaMRC
+
+# https://www.facebook.com/mrc.aarogyam
+# https://www.facebook.com/profile.php?id=1074279266
 
 
 class UserQueryAdmin(admin.ModelAdmin):
