@@ -5,7 +5,7 @@ from .models import UserQuery, OtpVerify, UserProfile
 # Register your models here.
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'mobile', 'first_name')
-    list_filter = ('user', 'mobile')
+    list_filter = ('user', 'mobile', 'first_name')
     search_fields = ('user__username', 'mobile', 'user__first_name')
 
     def first_name(self, obj):
