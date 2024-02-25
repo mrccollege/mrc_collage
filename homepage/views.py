@@ -27,32 +27,23 @@ def calculate_future_date(month):
 
 def homepage(request, id=0):
     user_id = request.session.get('user_id')
-    if id != 0:
-        if user_id:
+    if user_id is not None:
+        if id != 0:
             course_master = Course.objects.filter(course_master_id=id)
         else:
-            return redirect('/accounts/login/')
+            course_master = CourseMaster.objects.all().order_by('-id')
     else:
-        course_master = CourseMaster.objects.all().order_by('-id')
-    try:
-        home_banner = Lookup.objects.get(code='home_banner')
-    except:
-        home_banner = ''
+         return redirect('/accounts/login/')
 
     context = {
         'id': id,
         'course_master': course_master,
-        'home_banner': home_banner.file.url,
     }
     return render(request, 'index.html', context)
 
 
 @login_required(login_url='/accounts/login/')
 def my_courses(request):
-    try:
-        home_banner = Lookup.objects.get(code='home_banner')
-    except:
-        home_banner = ''
     user_id = request.session.get('user_id')
     if user_id is not None:
         is_admin = User.objects.filter(id=user_id, username='admin')
@@ -63,7 +54,7 @@ def my_courses(request):
             course_purchased = CoursePurchased.objects.filter(query).values_list('course', flat=True)
             query = Q(id__in=course_purchased)
         my_pur_cours = Course.objects.filter(query)
-        context = {'my_course': my_pur_cours, 'home_banner': home_banner}
+        context = {'my_course': my_pur_cours}
         return render(request, 'my_course.html', context)
     else:
         return redirect('/accounts/login/')
@@ -72,11 +63,6 @@ def my_courses(request):
 def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
     now_date = datetime.now()
     now_date = now_date.strftime("%Y-%m-%d")
-
-    try:
-        home_banner = Lookup.objects.get(code='home_banner')
-    except:
-        home_banner = ''
 
     user_id = request.session.get('user_id')
     type = type
@@ -95,7 +81,6 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                 context = {'type': type,
                            'data': video_files,
                            'thumb': thumb,
-                           'home_banner': home_banner,
                            }
                 return render(request, 'course-details.html', context)
 
@@ -104,7 +89,6 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                 context = {'type': type,
                            'data': video_files,
                            'thumb': thumb,
-                           'home_banner': home_banner,
                            }
                 return render(request, 'regular.html', context)
 
@@ -140,8 +124,13 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                     except:
                         file_id = 0
                         video_path = ''
-                context = {'pre_next': pre_next, 'data': video_path, 'file_type': file_type, 'course_id': course_id,
-                           'home_banner': home_banner, 'file_id': file_id}
+                context = {
+                    'pre_next': pre_next,
+                    'data': video_path,
+                    'file_type': file_type,
+                    'course_id': course_id,
+                    'file_id': file_id
+                }
                 return render(request, 'common.html', context)
         else:
             is_exipre = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
@@ -163,7 +152,6 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                         context = {'type': type,
                                    'data': video_files,
                                    'thumb': thumb,
-                                   'home_banner': home_banner,
                                    }
                         return render(request, 'course-details.html', context)
 
@@ -172,7 +160,6 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                         context = {'type': type,
                                    'data': video_files,
                                    'thumb': thumb,
-                                   'home_banner': home_banner,
                                    }
                         return render(request, 'regular.html', context)
 
@@ -208,8 +195,13 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                             except:
                                 file_id = 0
                                 video_path = ''
-                        context = {'pre_next': pre_next, 'data': video_path, 'file_type': file_type, 'course_id': course_id,
-                                   'home_banner': home_banner, 'file_id': file_id}
+                        context = {
+                            'pre_next': pre_next,
+                            'data': video_path,
+                            'file_type': file_type,
+                            'course_id': course_id,
+                            'file_id': file_id
+                        }
                         return render(request, 'common.html', context)
     else:
         redirect('/accounts/login/')
@@ -296,11 +288,6 @@ def round_view(request, video_id):
 @login_required(login_url='/accounts/login/')
 def add_course(request):
     try:
-        home_banner = Lookup.objects.get(code='home_banner')
-    except:
-        home_banner = ''
-
-    try:
         loader_img = Lookup.objects.get(code='loader_img')
         loader_img = loader_img.file.url
     except:
@@ -310,7 +297,6 @@ def add_course(request):
     course = Course.objects.all()
 
     context = {
-        'home_banner': home_banner,
         'file_type': file_type,
         'course': course,
         'loader_img': loader_img,
@@ -373,27 +359,16 @@ def upload_video(request):
 
 
 def video_detail(request, id):
-    try:
-        home_banner = Lookup.objects.get(code='home_banner')
-    except:
-        home_banner = ''
     video = VideoFiles.objects.get(code_no=id)
     context = {
-        'home_banner': home_banner,
         'video': video,
-
     }
     return render(request, 'video_detail.html', context)
 
 
 @login_required(login_url='/accounts/login/')
 def view_list(request, course_id):
-    try:
-        home_banner = Lookup.objects.get(code='home_banner')
-    except:
-        home_banner = ''
     context = {
-        'home_banner': home_banner,
         'course_id': course_id,
     }
     return render(request, 'view_list_kshar_sutra.html', context)
