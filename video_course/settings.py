@@ -135,3 +135,24 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mrctherapy2023@gmail.com'
 EMAIL_HOST_PASSWORD = 'ikjh dxwd jlst lbgm'
+
+
+# PXEK4SAQTPR4TZF5JB6KZVM2
+
+# from twilio.rest import Client
+#
+# account_sid = 'ACba651db70b737ca2a2558e01f14feea5'
+# auth_token = '[AuthToken]'
+# client = Client(account_sid, auth_token)
+#
+# message = client.messages.create(
+#   from_='whatsapp:+14155238886',
+#   to='whatsapp:+917351154123'
+# )
+#
+# print(message.sid)
+
+TWILIO_ACCOUNT_SID = 'ACba651db70b737ca2a2558e01f14feea5'
+TWILIO_AUTH_TOKEN = '6556dc1cc1f40b4fcf6c853ca1bf7444'
+TWILIO_PHONE_NUMBER = '+14155238886'
+

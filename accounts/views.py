@@ -1,5 +1,6 @@
 import time
 
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -9,6 +10,8 @@ from homepage.models import Lookup
 from django.core.mail import send_mail
 # Create your views here.
 from .models import UserQuery, OtpVerify, UserProfile
+from twilio.rest import Client
+client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
 
 def register_account(request):
@@ -68,6 +71,7 @@ def login_account(request):
         username = username.strip()
         password = form.get('password')
         password = password.strip()
+
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -238,6 +242,17 @@ def contact_us(request):
                                              email=email,
                                              message=message,
                                              )
+
+            # Send message using Twilio
+            message = client.messages.create(
+                body=f'Name: {name}, '
+                     f'whatsapp: {whatsapp}, '
+                     f'email: {email}, '
+                     f'message: {message}',
+                from_='whatsapp:' + settings.TWILIO_PHONE_NUMBER,
+                to='whatsapp:+917351154123'
+            )
+
             if q_obj:
                 status = 1
         except:
