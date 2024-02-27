@@ -252,7 +252,7 @@ def contact_us(request):
                 from_='whatsapp:' + settings.TWILIO_PHONE_NUMBER,
                 to='whatsapp:+917351154123'
             )
-
+            print(message,'================message')
             if q_obj:
                 status = 1
         except:
