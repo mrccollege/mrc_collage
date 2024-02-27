@@ -243,20 +243,24 @@ def contact_us(request):
                                              message=message,
                                              )
 
-            # Send message using Twilio
-            message = client.messages.create(
-                body=f'Name: {name}, '
-                     f'whatsapp: {whatsapp}, '
-                     f'email: {email}, '
-                     f'message: {message}',
-                from_='whatsapp:' + settings.TWILIO_PHONE_NUMBER,
-                to='whatsapp:+917351154123'
-            )
-            print(message, '================message')
+            try:
+                message = client.messages.create(
+                    body=f'Name: {name}, '
+                         f'whatsapp: {whatsapp}, '
+                         f'email: {email}, '
+                         f'message: {message}',
+                    from_='whatsapp:' + settings.TWILIO_PHONE_NUMBER,
+                    to='whatsapp:+917351154123'
+                )
+            except Exception as e:
+                print(e)
+
             if q_obj:
                 status = 1
         except:
             pass
+
+
 
         context = {
             'status': status
