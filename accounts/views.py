@@ -248,7 +248,7 @@ def contact_us(request):
                     body=f'Name: {name}, '
                          f'whatsapp: {whatsapp}, '
                          f'email: {email}, '
-                         f'message: {message}',
+                         f'message: {message} ',
                     from_='whatsapp:' + settings.TWILIO_PHONE_NUMBER,
                     to='whatsapp:+917351154123'
                 )
