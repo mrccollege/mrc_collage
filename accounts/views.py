@@ -244,13 +244,14 @@ def contact_us(request):
                                              )
 
             try:
+                recipient_numbers = ['whatsapp:+917351154123', 'whatsapp:+918279408396', 'whatsapp:+919267678888']
                 message = client.messages.create(
                     body=f'Name: {name}, '
                          f'whatsapp: {whatsapp}, '
                          f'email: {email}, '
                          f'message: {message} ',
                     from_='whatsapp:' + settings.TWILIO_PHONE_NUMBER,
-                    to='whatsapp:+917351154123'
+                    to=recipient_numbers
                 )
             except Exception as e:
                 print(e)
