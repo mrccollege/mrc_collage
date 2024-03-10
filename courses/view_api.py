@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Course
+from .models import Course, VideoFiles
 
 
 @csrf_exempt
@@ -21,5 +21,22 @@ def course_list(request):
             course_list.append(data_dict)
         context = {
             'course_list': course_list
+        }
+        return JsonResponse(context)
+
+
+@csrf_exempt
+def course_detail(request, id):
+    if request.method == 'GET':
+        courses = VideoFiles.objects.filter(course_id=id)
+        course_details_list = []
+        for i in courses:
+            data_dict = {}
+            data_dict['title'] = i.title
+            data_dict['file'] = str(i.file)
+
+            course_details_list.append(data_dict)
+        context = {
+            'course_details': course_details_list
         }
         return JsonResponse(context)
