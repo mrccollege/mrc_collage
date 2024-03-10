@@ -11,6 +11,7 @@ def course_list(request):
         course_list = []
         for i in courses:
             data_dict = {}
+            data_dict['id'] = i.id
             data_dict['name'] = i.name if i.name else ''
             data_dict['instructor'] = i.instructor if i.instructor else ''
             data_dict['description'] = i.description if i.description else ''
