@@ -10,8 +10,6 @@ def course_list(request):
         courses = Course.objects.all()
         course_list = []
         for i in courses:
-            domain = request.build_absolute_uri
-            print(domain, '==============domain')
             data_dict = {}
             data_dict['id'] = i.id
             data_dict['name'] = i.name if i.name else ''
@@ -36,7 +34,7 @@ def course_detail(request, id):
         for i in courses:
             data_dict = {}
             data_dict['title'] = i.title
-            data_dict['file'] = str(i.file)
+            data_dict['file'] = request.build_absolute_uri(i.file.url) if i.file else ''
 
             course_details_list.append(data_dict)
         context = {
