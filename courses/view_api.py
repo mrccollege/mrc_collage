@@ -34,7 +34,7 @@ def course_detail(request, id):
         for i in courses:
             data_dict = {}
             data_dict['title'] = i.title
-            data_dict['file'] = request.build_absolute_uri(i.file.url) if i.file else ''
+            data_dict['video'] = request.build_absolute_uri(i.file.url) if i.file else ''
 
             course_details_list.append(data_dict)
         context = {
