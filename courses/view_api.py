@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.urls import reverse
 from .models import Course, VideoFiles
 
 
@@ -10,13 +10,15 @@ def course_list(request):
         courses = Course.objects.all()
         course_list = []
         for i in courses:
+            domain = request.build_absolute_uri
+            print(domain, '==============domain')
             data_dict = {}
             data_dict['id'] = i.id
             data_dict['name'] = i.name if i.name else ''
             data_dict['instructor'] = i.instructor if i.instructor else ''
             data_dict['description'] = i.description if i.description else ''
-            data_dict['course_image'] = str(i.course_image) if str(i.course_image) else ''
-            data_dict['demo_video'] = str(i.demo_video) if str(i.demo_video) else ''
+            data_dict['course_image'] = request.build_absolute_uri(i.course_image.url) if i.course_image else '',
+            data_dict['demo_video'] = request.build_absolute_uri(i.demo_video) if str(i.demo_video) else ''
             data_dict['created_at'] = i.created_at if i.created_at else ''
             data_dict['course_lang'] = i.course_lang if i.course_lang else ''
             course_list.append(data_dict)
