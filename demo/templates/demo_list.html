@@ -4,9 +4,6 @@
     .banner-img{
         margin-top:100px;
     }
-
-
-
 </style>
 {% endblock css %}
 
@@ -27,18 +24,18 @@
                                 <div class="single-course-wrap">
                                     <div class="thumb">
                                         {% if i.demo_video %}
-                                        <video class="img-fluid" src="{{i.course.course_video.url}}" controls
+                                        <video class="img-fluid" src="{{i.demo_video.url}}" controls
                                                controlsList="nodownload">
                                             {% else %}
-                                            <img class="img-fluid" src="{{i.course.course_image.url}}" alt="img">
+                                            <img class="img-fluid" src="{{i.course_image.url}}" alt="img">
                                             {% endif %}
                                     </div>
                                     <div class="wrap-details">
-                                        <h6>{{i.course.course_name|title}}</h6>
+                                        <h6>{{i.name|title}}</h6>
                                         <div class="user-area">
                                             <div class="user-details">
                                                 <img src="/static/assets/img/author/1.png" alt="img">
-                                                <p>{{i.course.course_instructor}}</p>
+                                                <p>{{i.instructor}}</p>
                                             </div>
                                             <div class="user-rating">
                                                 <span><i class="fa fa-star"></i>4.1</span>(196)
@@ -47,7 +44,7 @@
                                         <div class="price-wrap">
                                             <div class="row align-items-center">
                                                 <button type="button" class="btn-primary rounded"
-                                                        onclick="enroll_now('{{i.course.id}}')">
+                                                        onclick="enroll_now('{{i.id}}')">
                                                     Watch Now
                                                 </button>
                                             </div>

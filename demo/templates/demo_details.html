@@ -28,7 +28,7 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#collapse{{forloop.counter}}" aria-expanded="false"
                                         aria-controls="collapseTwo">
-                                    {{i.class_file_title}} &nbsp; click here
+                                    {{i.title}} &nbsp; click here
                                 </button>
                             </h2>
                             <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse"
@@ -37,10 +37,10 @@
                                 <div class="accordion-body">
                                     <ul>
                                         <li class="cursor-pointer"
-                                            onclick="play_video('{{i.class_file_title}}', '{{i.class_file.url}}', '{{i.file_formate}}')">
+                                            onclick="play_video('{{i.title}}', '{{i.demo_file.url}}', '{{i.file_type}}', '{{i.id}}')">
                                             <i class="fa fa-play"></i>
                                             <span>
-                                                <p>{{i.class_file_title}}</p>
+                                                <p>{{i.title}}</p>
                                                 <span>1m 24s</span>
                                             </span>
                                         </li>
@@ -76,23 +76,36 @@
         const players = Plyr.setup('.plyr');
     });
     var sleep_headphone = '/static/assets/img/sleep_headphone.jpg'
-    function play_video(title, file, file_type) {
-        if (file, file_type){
-            if (file_type == 'audio'){
-                $('#video_frame').attr('poster', sleep_headphone)
-            }
-            $('#video_frame').attr('src', file)
-            $('#video_title').html(title)
+    function play_video(title, file, file_type, file_id) {
+        $.ajax({
+            url:'/demo/count_video_play/',
+            data: {'file_id': file_id},
+            success: function(data){
+                console.log(data, '=========data=========')
+                if (data.status == 0){
+                    return false;
+                }else{
+                    if (file, file_type){
+                        if (file_type == 'audio'){
+                            $('#video_frame').attr('poster', sleep_headphone)
+                        }
+                        $('#video_frame').attr('src', file)
+                        $('#video_title').html(title)
 
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
-        }else{
-            $('#video_frame').attr('poster', '')
-            $('#video_frame').attr('src', '')
-            $('#video_title').html('')
-        }
+                        window.scrollTo({
+                            top: document.body.scrollHeight,
+                            behavior: 'smooth'
+                        });
+                    }else{
+                        $('#video_frame').attr('poster', '')
+                        $('#video_frame').attr('src', '')
+                        $('#video_title').html('')
+                    }
+                }
+            },
+        })
+
+
     }
 </script>
 
