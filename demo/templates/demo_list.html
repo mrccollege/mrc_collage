@@ -24,7 +24,7 @@
                                 <div class="single-course-wrap">
                                     <div class="thumb">
                                         {% if i.demo_video %}
-                                        <video class="img-fluid" src="{{i.demo_video.url}}" controls
+                                        <video class="img-fluid plyr video_frame" src="{{i.demo_video.url}}" controls
                                                controlsList="nodownload">
                                             {% else %}
                                             <img class="img-fluid" src="{{i.course_image.url}}" alt="img">
@@ -70,5 +70,11 @@
     function enroll_now(course_id){
         window.location.href = '/demo/demo-details/'+course_id+'/';
     }
+</script>
+<script>
+  const player = new Plyr('.video_frame', {
+    controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+    hideControls: false
+  });
 </script>
 {% endblock js %}
