@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'courses',
     'homepage',
     'accounts',
+    'demo',
 
 ]
 
