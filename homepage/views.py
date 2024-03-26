@@ -16,6 +16,10 @@ import qrcode
 from django.urls import reverse
 from datetime import datetime, timedelta
 
+from demo.models import UploadDemo
+
+from demo.models import AddUserDemoCode, MainUserDemo
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -35,9 +39,17 @@ def homepage(request, id=0):
     else:
          return redirect('/accounts/login/')
 
+    demo_file_path = ''
+    demo_file = UploadDemo.objects.filter().order_by('-id')
+
+    is_add_code = AddUserDemoCode.objects.filter(user_id=user_id)
+    if is_add_code[0].code:
+        demo_file_path = demo_file[0].file.url
+
     context = {
         'id': id,
         'course_master': course_master,
+        'demo_file': demo_file_path,
     }
     return render(request, 'index.html', context)
 

@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
-from .models import DemoClass
+from .models import DemoClass, MainUserDemo, AddUserDemoCode
 
 # Create your views here.
 from courses.models import Course
@@ -33,23 +33,13 @@ def count_video_play(request):
     if request.method == 'GET':
         form = request.GET
         user_id = request.session.get('user_id')
-        file_id = form.get('file_id')
         status = 0
-        demo_class = UserDemoClass.objects.filter(user_id=user_id, file_id=file_id)
-        if demo_class:
-            play_again = UserDemoClass.objects.filter(user_id=user_id, file_id=file_id, watch_count=0)
-            if play_again:
-                UserDemoClass.objects.filter(user_id=user_id, file_id=file_id).update(watch_count=1)
-                status = 1
-            else:
-                status = status
-        else:
-            demo_class = UserDemoClass.objects.create(user_id=user_id,
-                                                      file_id=file_id,
-                                                      watch_count=1
-                                                      )
-            if demo_class:
-                status = 1
+        try:
+            AddUserDemoCode.objects.filter(user_id=user_id).update(code='')
+            MainUserDemo.objects.filter(user_id=user_id).update(code='')
+            status = 1
+        except:
+            status = status
 
         context = {
             'status': status

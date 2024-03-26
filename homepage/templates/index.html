@@ -17,7 +17,8 @@
                 <div class="banner-inner text-md-start text-center">
                     <h1>Find the Best <span>Therapy</span> & Upgrade <span>Your Skills.</span></h1>
                     <div class="banner-content">
-                        <p>Mrc therapy offers professional training therapy classes and special features to help you improve
+                        <p>Mrc therapy offers professional training therapy classes and special features to help you
+                            improve
                             your skills.</p>
                     </div>
                     <div class="single-input-wrap">
@@ -36,6 +37,20 @@
 <!-- trending courses Area Start-->
 <section class="trending-courses-area">
     <div class="container">
+        {% if demo_file %}
+        <div class="col-lg-8 mb-3 mx-auto p-5" id="demo_div">
+            <h4><em>Demo for you</em></h4>
+            <hr/>
+            <div class="single-course-wrap mb-0">
+                <div class="thumb">
+                    <video controls autoplay controlsList="nodownload" id="video_frame"
+                           src="{{demo_file}}" type="video/mp4" class="img-fluid plyr" poster="">
+                    </video>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <div class="row">
             <div class="col-lg-12">
                 <h4 class="text-center p-3">Most Trending Therapy</h4>
@@ -82,10 +97,11 @@
                                 <div class="single-course-wrap">
                                     <div class="thumb">
                                         {% if course_master.demo_video %}
-                                        <video class="img-fluid" src="{{course_master.demo_video.url}}" controls controlsList="nodownload">
-                                        {% else %}
-                                        <img class="img-fluid" src="{{course_master.course_image.url}}" alt="img">
-                                        {% endif %}
+                                        <video class="img-fluid" src="{{course_master.demo_video.url}}" controls
+                                               controlsList="nodownload">
+                                            {% else %}
+                                            <img class="img-fluid" src="{{course_master.course_image.url}}" alt="img">
+                                            {% endif %}
                                     </div>
                                     <div class="wrap-details">
                                         <h6>{{course_master.name|title}}</h6>
@@ -100,13 +116,8 @@
                                         </div>
                                         <div class="price-wrap">
                                             <div class="row align-items-center">
-<!--                                                <div class="col-6">-->
-<!--                                                    <a href="#">Development</a>-->
-<!--                                                </div>-->
-<!--                                                <div class="col-6 text-end">-->
-<!--                                                    <div class="price">$30</div>-->
-<!--                                                </div>-->
-                                                <button type="button" class="btn-primary rounded" onclick="enroll_now('{{course_master.id}}')">
+                                                <button type="button" class="btn-primary rounded"
+                                                        onclick="enroll_now('{{course_master.id}}')">
                                                     Enroll Now
                                                 </button>
                                             </div>
@@ -116,7 +127,7 @@
                             </div>
 
                             {% empty %}
-                                <p class="text-center mt-4">No course data available right now.</p>
+                            <p class="text-center mt-4">No course data available right now.</p>
                             {% endfor %}
                         </div>
                     </div>
@@ -141,5 +152,28 @@
         //window.location.href = '/cart-page/'+course_id+'/';
         window.location.href = '/buy_course_detail/'+course_id+'/';
     }
+</script>
+
+<script>
+     const player = new Plyr('#video_frame', {
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+        hideControls: false
+     });
+
+    const video = document.getElementById('video_frame');
+
+    video.addEventListener('play', function() {
+        $.ajax({
+            url:'/demo/count_video_play/',
+            success: function(data){
+                console.log(data, '=========data=========')
+                if (data.status == 0){
+                    $('#demo_div').addClass('d-none')
+                }else{
+                    $('#demo_div').removeClass('d-none')
+                }
+            },
+        })
+    });
 </script>
 {% endblock js %}

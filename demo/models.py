@@ -25,3 +25,36 @@ class UserDemoClass(models.Model):
 
     def __str__(self):
         return str(self.file.title + ' ' + f"({self.file.course.name})")
+
+
+class UploadDemo(models.Model):
+    title = models.CharField(max_length=1000, null=True)
+    description = models.TextField(null=True, blank=True)
+    file = models.FileField(upload_to='upload_demo')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+
+class MainUserDemo(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    file = models.ForeignKey(UploadDemo, on_delete=models.CASCADE)
+    code = models.CharField(max_length=10, null=True)
+    watch_count = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.user.email + ' ' + f"({self.code})")
+
+
+class AddUserDemoCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=10, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.user.email + ' ' + f"({self.code})")

@@ -79,7 +79,6 @@
     function play_video(title, file, file_type, file_id) {
         $.ajax({
             url:'/demo/count_video_play/',
-            data: {'file_id': file_id},
             success: function(data){
                 console.log(data, '=========data=========')
                 if (data.status == 0){
@@ -104,8 +103,6 @@
                 }
             },
         })
-
-
     }
 </script>
 
