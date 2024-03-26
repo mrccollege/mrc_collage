@@ -20,6 +20,8 @@ from demo.models import UploadDemo
 
 from demo.models import AddUserDemoCode, MainUserDemo
 
+from demo.models import BulkCode
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -41,16 +43,17 @@ def homepage(request, id=0):
 
     demo_file_path = ''
     demo_file = UploadDemo.objects.filter().order_by('-id')
+    if demo_file:
+        demo_file_path = demo_file[0].file.url
 
-    is_add_code = AddUserDemoCode.objects.filter(user_id=user_id)
-    if is_add_code:
-        if is_add_code[0].code:
-            demo_file_path = demo_file[0].file.url
-
+    bulk_code = BulkCode.objects.filter(Q()).order_by('id')
+    if bulk_code:
+        bulk_code = bulk_code[0].code
     context = {
         'id': id,
         'course_master': course_master,
         'demo_file': demo_file_path,
+        'bulk_code': bulk_code
     }
     return render(request, 'index.html', context)
 
