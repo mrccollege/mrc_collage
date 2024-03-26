@@ -43,8 +43,9 @@ def homepage(request, id=0):
     demo_file = UploadDemo.objects.filter().order_by('-id')
 
     is_add_code = AddUserDemoCode.objects.filter(user_id=user_id)
-    if is_add_code[0].code:
-        demo_file_path = demo_file[0].file.url
+    if is_add_code:
+        if is_add_code[0].code:
+            demo_file_path = demo_file[0].file.url
 
     context = {
         'id': id,
