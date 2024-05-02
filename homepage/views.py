@@ -32,14 +32,10 @@ def calculate_future_date(month):
 
 
 def homepage(request, id=0):
-    user_id = request.session.get('user_id')
-    if user_id is not None:
-        if id != 0:
-            course_master = Course.objects.filter(course_master_id=id)
-        else:
-            course_master = CourseMaster.objects.all().order_by('-id')
+    if id != 0:
+        course_master = Course.objects.filter(course_master_id=id)
     else:
-         return redirect('/accounts/login/')
+        course_master = CourseMaster.objects.all().order_by('-id')
 
     demo_file_path = ''
     demo_file = UploadDemo.objects.filter().order_by('-id')
