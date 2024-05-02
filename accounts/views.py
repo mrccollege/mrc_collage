@@ -20,11 +20,8 @@ def register_account(request):
         first_name = form.get('fullname')
         first_name.strip()
 
-        usename = form.get('email')
-        usename.strip()
-
-        email = form.get('email')
-        email = email.strip()
+        username = form.get('contact_number')
+        username.strip()
 
         password = form.get('password')
         password = password.strip()
@@ -33,7 +30,18 @@ def register_account(request):
         contact_number = form.get('contact_number')
 
         try:
-            user = User.objects.create_user(usename, email)
+            user = User.objects.filter(username=username).exists()
+            if user:
+                msg = 'This User Already Exists.'
+                id = 0
+
+                data_json = {
+                    'id': id,
+                    'msg': msg,
+                }
+
+                return JsonResponse(data_json)
+            user = User.objects.create_user(username)
             if user is not None:
                 user.set_password(password)
                 user.first_name = first_name
@@ -45,7 +53,7 @@ def register_account(request):
                                            )
                 msg = 'User registration successfully.'
         except Exception as e:
-            msg = 'Something went wrong.'
+            msg = str(e)
             id = 0
 
         data_json = {

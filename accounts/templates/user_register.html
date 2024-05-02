@@ -39,11 +39,11 @@ Registration
 
 {% block content %}
 <div class="col-md-4 mt-5 p-4 border mx-auto">
-    <h5>User Registration</h5>
+    <h5 class="text-center">User Registration</h5>
     <form id="register_form">{% csrf_token %}
         <div class="row">
             <div class="mb-3">
-                <label for="fullname" class="form-label">Username</label>
+                <label for="fullname" class="form-label">Full Name</label>
                 <input autofocus type="text" class="form-control" name="fullname" id="fullname" placeholder="Enter your username">
             </div>
             <div class="mb-3">
@@ -52,10 +52,10 @@ Registration
                        placeholder="Enter your contact number">
             </div>
         </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email">
-        </div>
+<!--        <div class="mb-3">-->
+<!--            <label for="email" class="form-label">Email(optional)</label>-->
+<!--            <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email">-->
+<!--        </div>-->
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password">
@@ -79,7 +79,6 @@ $(document).ready(function() {
         e.preventDefault();  // Prevent the form from submitting normally
         var fullname = $('#fullname').val();
         var contact_number = $('#contact_number').val();
-        var email = $('#email').val();
         var password = $('#password').val();
         var address = $('#address').val();
 
@@ -94,12 +93,6 @@ $(document).ready(function() {
                 icon: 'error',
                 title: 'Oops...',
                 text: 'Please fill in the contact number field!',
-            });
-        }else if (email === "") {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please fill in the email field!',
             });
         }else if (password === "") {
             Swal.fire({
@@ -122,19 +115,27 @@ $(document).ready(function() {
                 type: 'POST',
                 data: formData,
                 success: function(response) {
-                    // Handle the successful response
-                    console.log(response);
-                    Swal.fire({
-                        title: 'Success',
-                        text: response.msg,
-                        icon: 'success',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        // Redirect to another page or perform additional actions
-                        window.location.href = '/accounts/login/';
-                    });
+                    if (response.id == 0){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.msg,
+                        });
+                        return false;
+                    }else{
+                        Swal.fire({
+                            title: 'Success',
+                            text: response.msg,
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            // Redirect to another page or perform additional actions
+                            window.location.href = '/accounts/login/';
+                        });
+                    }
+
                 },
                 error: function(xhr, errmsg, err) {
                     // Handle the error
