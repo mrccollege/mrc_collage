@@ -32,6 +32,7 @@ def calculate_future_date(month):
 
 
 def homepage(request, id=0):
+    user_id = request.session.get('user_id')
     if id != 0:
         course_master = Course.objects.filter(course_master_id=id)
     else:
@@ -49,7 +50,8 @@ def homepage(request, id=0):
         'id': id,
         'course_master': course_master,
         'demo_file': demo_file_path,
-        'bulk_code': bulk_code
+        'bulk_code': bulk_code,
+        'user_id': user_id,
     }
     return render(request, 'index.html', context)
 

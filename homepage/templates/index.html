@@ -155,14 +155,20 @@
 <script>
 
     $('#watch_demo').click(function(){
-        $('#demo_code').removeClass('d-none')
+        var user_id = '{{user_id}}'
+        if (user_id == 'None'){
+            window.location.href = '/accounts/login'
+        }else{
+            $('#demo_code').removeClass('d-none')
+        }
+
+
     });
 
     function get_course(course_id){
         window.location.href = '/'+course_id+'/';
     }
     function enroll_now(course_id){
-        //window.location.href = '/cart-page/'+course_id+'/';
         window.location.href = '/buy_course_detail/'+course_id+'/';
     }
 
@@ -185,7 +191,6 @@
                     'bulk_code': bulk_code
                 },
                 success: function(data){
-                    console.log(data, '=========data=========')
                     if (data.status == 0){
                         $('#demo_div').addClass('d-none')
                         Swal.fire({
