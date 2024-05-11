@@ -38,21 +38,21 @@
     <h5>Login User</h5>
     <form id="login_form" class="mb-3">{% csrf_token %}
         <div class="mb-3">
-            <label class="form-label" for="email">Email</label>
-            <input class="form-control" autofocus id="email" name="email" placeholder="Enter your email" type="text">
+            <label class="form-label" for="email">Mobile / Email</label>
+            <input class="form-control" autofocus id="email" name="email" placeholder="Enter Your Mobile Number / Email" type="text">
         </div>
         <div class="mb-3">
             <label class="form-label" for="password">Password</label>
-            <input class="form-control" id="password" name="password" placeholder="Enter your password" type="password">
+            <input class="form-control" id="password" name="password" placeholder="Enter Your Password" type="password">
         </div>
         <button class="btn btn-primary w-100" id="login_form_btn" type="submit">Login</button>
     </form>
-    <div class="row">
-        <div class="col-lg-8">
-            <a class="text-primary" href="/accounts/register/">New User? create account</a>
+    <div class="row mx-auto">
+        <div class="col-lg-6 mx-auto">
+            <a class="text-primary btn btn-success text-light" href="/accounts/register/">New User? create account</a>
         </div>
-        <div class="col-lg-4">
-            <a class="text-primary" href="/accounts/forget_password/">Forget Password</a>
+        <div class="col-lg-6 mx-auto">
+            <a class="btn btn-danger text-light" href="/accounts/forget_password/">Forget Password</a>
         </div>
     </div>
 </div>
