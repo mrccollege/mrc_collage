@@ -1,12 +1,17 @@
 from django.contrib import admin
 
 from .models import VideoFiles, UserWatch, Course, VideoInstructions, CoursePurchased, FileType, CourseMaster, \
-    MonthMoney
+    MonthMoney, ScreenColumn
 
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     list_filter = ('id', 'name')
+
+
+class ScreenColumnAdmin(admin.ModelAdmin):
+    list_display = ('id', 'screen_column')
+    list_filter = ('id', 'screen_column')
 
 
 class VideoAdmin(admin.ModelAdmin):
@@ -35,3 +40,4 @@ admin.site.register(UserWatch)
 admin.site.register(FileType)
 admin.site.register(CourseMaster)
 admin.site.register(MonthMoney, MonthMoneyAdmin)
+admin.site.register(ScreenColumn, ScreenColumnAdmin)
