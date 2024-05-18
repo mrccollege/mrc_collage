@@ -34,9 +34,11 @@ def calculate_future_date(month):
 def homepage(request, id=0):
     user_id = request.session.get('user_id')
     if id != 0:
-        course_master = Course.objects.filter(course_master_id=id)
+        course_master1 = Course.objects.filter(course_master_id=id)
+        course_master2 = ''
     else:
-        course_master = CourseMaster.objects.all().order_by('-id')
+        course_master1 = CourseMaster.objects.exclude(ScreenColumn__screen_column=2).order_by('-id')
+        course_master2 = CourseMaster.objects.filter(ScreenColumn__screen_column=2).order_by('-id')
 
     demo_file_path = ''
     demo_file = UploadDemo.objects.filter().order_by('-id')
@@ -48,7 +50,8 @@ def homepage(request, id=0):
         bulk_code = bulk_code[0].code
     context = {
         'id': id,
-        'course_master': course_master,
+        'course_master1': course_master1,
+        'course_master2': course_master2,
         'demo_file': demo_file_path,
         'bulk_code': bulk_code,
         'user_id': user_id,
