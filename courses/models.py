@@ -11,6 +11,16 @@ class FileType(models.Model):
     def __str__(self):
         return self.file_type
 
+class ScreenColumn(models.Model):
+    screen_column = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    def __str__(self):
+        return str(self.screen_column)
+
+    class Meta:
+        db_table = 'Screen_column'
+
 
 class CourseMaster(models.Model):
     name = models.CharField(max_length=1000, null=True)
