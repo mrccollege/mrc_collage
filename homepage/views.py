@@ -37,7 +37,7 @@ def homepage(request, id=0):
         course_master1 = Course.objects.filter(course_master_id=id)
         course_master2 = ''
     else:
-        course_master1 = CourseMaster.objects.exclude(ScreenColumn__screen_column=2).order_by('-id')
+        course_master1 = CourseMaster.objects.filter(ScreenColumn__screen_column=1).order_by('-id')
         course_master2 = CourseMaster.objects.filter(ScreenColumn__screen_column=2).order_by('-id')
 
     demo_file_path = ''
