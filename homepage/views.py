@@ -36,9 +36,11 @@ def homepage(request, id=0):
     if id != 0:
         course_master1 = Course.objects.filter(course_master_id=id)
         course_master2 = ''
+        course_master3 = ''
     else:
         course_master1 = CourseMaster.objects.filter(ScreenColumn__screen_column=1).order_by('-id')
         course_master2 = CourseMaster.objects.filter(ScreenColumn__screen_column=2).order_by('-id')
+        course_master3 = CourseMaster.objects.filter(ScreenColumn__screen_column=3).order_by('-id')
 
     demo_file_path = ''
     demo_file = UploadDemo.objects.filter().order_by('-id')
@@ -52,6 +54,7 @@ def homepage(request, id=0):
         'id': id,
         'course_master1': course_master1,
         'course_master2': course_master2,
+        'course_master3': course_master3,
         'demo_file': demo_file_path,
         'bulk_code': bulk_code,
         'user_id': user_id,
