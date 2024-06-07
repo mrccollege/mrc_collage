@@ -27,9 +27,11 @@ def course_list(request):
 
 
 @csrf_exempt
-def course_detail(request, id):
+def course_detail(request):
     if request.method == 'GET':
-        courses = VideoFiles.objects.filter(course_id=id)
+        data = request.GET
+        course_id = int(data.get('course_id'))
+        courses = VideoFiles.objects.filter(course_id=course_id)
         course_details_list = []
         for i in courses:
             data_dict = {}
