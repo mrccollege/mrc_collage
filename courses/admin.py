@@ -76,11 +76,15 @@ class MonthMoneyAdmin(admin.ModelAdmin):
 
 class CoursePurchasedAdmin(admin.ModelAdmin):
     list_display = (
-    'user', 'course', 'razorpay_order_id', 'delivery_status', 'coupon_code', 'month', 'start_date', 'end_date')
+    'user', 'get_first_name', 'course', 'razorpay_order_id', 'delivery_status', 'coupon_code', 'month', 'start_date', 'end_date')
     list_filter = (
     'user', 'course', 'razorpay_order_id', 'delivery_status', 'coupon_code', 'month', 'start_date', 'end_date')
     search_fields = ('user__username','user__first_name', 'course__name', 'razorpay_order_id', 'delivery_status')
     actions = [export_course_purchases_to_excel]
+
+    def get_first_name(self, obj):
+        return obj.user.first_name
+    get_first_name.short_description = 'First Name'
 
 
 # Register your models here.
