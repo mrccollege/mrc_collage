@@ -45,11 +45,11 @@ def register_account(request):
             if user is not None:
                 user.set_password(password)
                 user.first_name = first_name
-                user.address = address
                 user.save()
                 id = user.id
                 UserProfile.objects.create(user_id=id,
                                            mobile=contact_number,
+                                           address=address,
                                            )
                 msg = 'User registration successfully.'
         except Exception as e:
