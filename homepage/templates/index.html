@@ -249,8 +249,6 @@
         }else{
             $('#demo_code').removeClass('d-none')
         }
-
-
     });
 
     function get_course(course_id){
@@ -273,12 +271,16 @@
             })
             return false;
         }else{
+            $('#loader-overlay').show(); // Show overlay
+            $('#loader').show(); // Show loader
             $.ajax({
                 url:'/demo/get_demo_data/',
                 data:{
                     'bulk_code': bulk_code
                 },
                 success: function(data){
+                    $('#loader-overlay').hide(); // Show overlay
+                    $('#loader').hide(); // Show loader
                     if (data.status == 0){
                         $('#demo_div').addClass('d-none')
                         Swal.fire({

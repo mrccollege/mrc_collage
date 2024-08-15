@@ -108,13 +108,16 @@ $(document).ready(function() {
             });
         }
         else{
-
+            $('#loader-overlay').show(); // Show overlay
+            $('#loader').show(); // Show loader
             var formData = $('#register_form').serialize();  // Serialize the form data
             $.ajax({
                 url: '/accounts/register/',  // URL to the Django view
                 type: 'POST',
                 data: formData,
                 success: function(response) {
+                    $('#loader-overlay').hide(); // Show overlay
+                    $('#loader').hide(); // Show loader
                     if (response.id == 0){
                         Swal.fire({
                             icon: 'error',
@@ -137,10 +140,6 @@ $(document).ready(function() {
                     }
 
                 },
-                error: function(xhr, errmsg, err) {
-                    // Handle the error
-                    console.log(xhr.status + ": " + xhr.responseText);
-                }
             });
         }
     });

@@ -1,19 +1,6 @@
 {% extends 'new_base.html' %}
 
 {% block css %}
-<style>
-    #loader{
-            position: fixed;
-            left: 0%;
-            top: 0%;
-            z-index: 9999;
-            height: 100%;
-            width: 100%;
-            opacity: .5;
-            background-size: 50px auto !important;
-            background:url("{{loader_img}}") 50% 50% no-repeat rgb(0, 0, 0);
-        }
-</style>
 {% endblock css %}
 
 {% block content %}
@@ -70,17 +57,17 @@
       if (input_file){
           var form = $("#uploadForm")[0];
           var formData = new FormData(form);
-
+          $('#loader-overlay').show(); // Show overlay
+          $('#loader').show(); // Show loader
           $.ajax({
             type: "POST",
             url: "/upload_video/", // Replace with your server-side script URL
             data: formData,
             contentType: false,
             processData: false,
-            beforeSend:function(){
-                $('#loader').removeClass('d-none')
-            },
             success: function (response) {
+                $('#loader-overlay').hide(); // Show overlay
+                $('#loader').hide(); // Show loader
                 if (response.status == 'success'){
                     Swal.fire({
                         title: 'Success',
@@ -105,12 +92,6 @@
                 }
 
             },
-            complete:function(){
-                $('#loader').addClass('d-none')
-            },
-            error: function (error) {
-              console.log(error)
-            }
           });
       }else{
         Swal.fire({

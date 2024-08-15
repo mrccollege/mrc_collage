@@ -59,7 +59,8 @@
                   'payment_status':'success',
                   'month':'{{month}}',
                 }
-                $('#loader').removeClass('d-none')
+                $('#loader-overlay').show(); // Show overlay
+                $('#loader').show(); // Show loader
                 $.ajax({
                     url:'/payment_success/',
                     method: 'GET',
@@ -69,9 +70,8 @@
                         if(responseData.status == 1){
                           window.location.href = '/my-courses/';
                         }
-                    },
-                    complete:function(){
-                        $('#loader').addClass('d-none')
+                        $('#loader-overlay').hide(); // Show overlay
+                        $('#loader').hide(); // Show loader
                     },
                 });
 

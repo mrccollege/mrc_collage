@@ -58,7 +58,8 @@
             'course_id': '{{course_id}}'
         },
         beforeSend:function(){
-            $('#loader').removeClass('d-none')
+            $('#loader-overlay').show(); // Show overlay
+            $('#loader').show(); // Show loader
         },
         success: function (response) {
             console.log(response.video_list)
@@ -73,11 +74,9 @@
             });
         },
         complete:function(){
-            $('#loader').addClass('d-none')
+            $('#loader-overlay').hide(); // Show overlay
+            $('#loader').hide(); // Show loader
         },
-        error: function (error) {
-          console.log(error)
-        }
     });
 
   });
@@ -89,7 +88,8 @@
             'video_id': video_id,
         },
         beforeSend:function(){
-            $('#loader').removeClass('d-none')
+            $('#loader-overlay').show(); // Show overlay
+            $('#loader').show(); // Show loader
         },
         success: function (response) {
             if(response.status == 'success'){
@@ -117,11 +117,9 @@
 
         },
         complete:function(){
-            $('#loader').addClass('d-none')
+            $('#loader-overlay').hide(); // Show overlay
+            $('#loader').hide(); // Show loader
         },
-        error: function (error) {
-          console.log(error)
-        }
     });
   }
 

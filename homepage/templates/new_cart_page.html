@@ -232,13 +232,16 @@
 <!--<script src="https://checkout.razorpay.com/v1/checkout.js"></script>-->
 <script>
     $(document).ready(function(){
+        $('#loader-overlay').show(); // Show overlay
+        $('#loader').show(); // Show loader
         $.ajax({
             url: '/get_service_month/',
             data:{
                 'course_id': '{{course_data.id}}',
             },
             success: function(response){
-                //console.log(response.data)
+                $('#loader-overlay').hide(); // Show overlay
+                $('#loader').hide(); // Show loader
                 var html = '';
                 html += '<option class="text-muted" value="">Select Month</option>';
                 $.each(response.data, function(index, item){
@@ -265,7 +268,8 @@ function get_price_service() {
                 'course_id': '{{course_data.id}}',
             },
             beforeSend: function () {
-                $('#loader').removeClass('d-none');
+               $('#loader-overlay').show(); // Show overlay
+               $('#loader').show(); // Show loader
             },
             success: function (response) {
                 var month = response.data.month;
@@ -291,7 +295,8 @@ function get_price_service() {
 
             },
             complete: function () {
-                $('#loader').addClass('d-none');
+                $('#loader-overlay').hide(); // Show overlay
+                $('#loader').hide(); // Show loader
             },
         });
     }
