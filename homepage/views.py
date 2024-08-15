@@ -310,19 +310,12 @@ def round_view(request, video_id):
 
 @login_required(login_url='/accounts/login/')
 def add_course(request):
-    try:
-        loader_img = Lookup.objects.get(code='loader_img')
-        loader_img = loader_img.file.url
-    except:
-        loader_img = ''
-
     file_type = FileType.objects.all()
     course = Course.objects.all()
 
     context = {
         'file_type': file_type,
         'course': course,
-        'loader_img': loader_img,
     }
     return render(request, 'add_course.html', context)
 
@@ -457,11 +450,6 @@ def delete_files(request):
 
 @login_required(login_url='/accounts/login/')
 def buy_course_detail(request, course_id, status=None):
-    try:
-        loader_img = Lookup.objects.get(code='loader_img')
-        loader_img = loader_img.file.url
-    except:
-        loader_img = ''
     user_id = request.session.get('user_id')
     if request.method == 'POST':
         form = request.POST
@@ -506,7 +494,6 @@ def buy_course_detail(request, course_id, status=None):
             pass
 
         context = {
-            'loader_img': loader_img,
             'payment': payment,
             'course_price': base_price,
             'totalprice': course_price,
@@ -525,16 +512,9 @@ def buy_course_detail(request, course_id, status=None):
         if already_purchased:
             return redirect('/')
 
-        try:
-            loader_img = Lookup.objects.get(code='loader_img')
-            loader_img = loader_img.file.url
-        except:
-            loader_img = ''
-
         context = {
             'status': status,
             'course_data': course_data,
-            'loader_img': loader_img,
         }
         return render(request, 'new_cart_page.html', context)
 

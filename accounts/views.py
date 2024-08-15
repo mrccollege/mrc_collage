@@ -129,12 +129,6 @@ def send_otp_email(email, otp):
 
 
 def forget_password(request):
-    try:
-        loader_img = Lookup.objects.get(code='loader_img')
-        loader_img = loader_img.file.url
-    except:
-        loader_img = ''
-
     if request.method == 'POST':
         form = request.POST
         email = form.get('email')
@@ -166,20 +160,10 @@ def forget_password(request):
             'email': email,
         }
         return JsonResponse(context)
-
-    context = {
-        'loader_img': loader_img,
-    }
-    return render(request, 'forget_password.html', context)
+    return render(request, 'forget_password.html')
 
 
 def verity_otp(request, email=None):
-    try:
-        loader_img = Lookup.objects.get(code='loader_img')
-        loader_img = loader_img.file.url
-    except:
-        loader_img = ''
-
     if request.method == 'POST':
         form = request.POST
         email = form.get('email')
@@ -210,7 +194,6 @@ def verity_otp(request, email=None):
         return JsonResponse(context)
 
     context = {
-        'loader_img': loader_img,
         'email': email
     }
     return render(request, 'verity_otp.html', context)
