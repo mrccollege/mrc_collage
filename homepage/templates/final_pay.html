@@ -59,11 +59,13 @@
                   'payment_status':'success',
                   'month':'{{month}}',
                 }
-                $('#loader').removeClass('d-none')
                 $.ajax({
                     url:'/payment_success/',
                     method: 'GET',
                     data: myObject,
+                    beforeSend:function(){
+                        $('#loader').removeClass('d-none')
+                    },
                     success: function (response) {
                         var responseData = response;
                         if(responseData.status == 1){
