@@ -1,10 +1,26 @@
 {% extends 'new_base.html' %}
 
+{% block css %}
+<style>
+    #loader{
+            position: fixed;
+            left: 0%;
+            top: 0%;
+            z-index: 9999;
+            height: 100%;
+            width: 100%;
+            opacity: .5;
+            background-size: 50px auto !important;
+            background:url("{{loader_img}}") 50% 50% no-repeat rgb(0, 0, 0);
+        }
+</style>
+{% endblock css %}
+
 {% block content %}
 <div class="col-lg-6 m-5 mx-auto text-center">
     <button type="button" class="btn btn-primary btn-sm w-50" id="rzp-button1">Complete Checkout</button>
 </div>
-
+<div id="loader" class="d-none"></div>
 {% endblock content %}
 
 {% block js %}
@@ -31,8 +47,6 @@
           "image": "https://example.com/your_logo",
           "order_id": '{{payment.id}}',
           "handler": function (response) {
-
-                console.log(response);
                 var myObject = {
                   'razorpay_order_id': response.razorpay_order_id,
                   'razorpay_payment_id': response.razorpay_payment_id,
@@ -45,9 +59,8 @@
                   'payment_status':'success',
                   'month':'{{month}}',
                 }
-
-                console.log(myObject, '===========myObject')
                 $.ajax({
+                    $('#loader').removeClass('d-none')
                     url:'/payment_success/',
                     method: 'GET',
                     data: myObject,
@@ -57,10 +70,9 @@
                           window.location.href = '/my-courses/';
                         }
                     },
-                    error: function (xhr, status, error) {
-                        // Handle error here
-                        console.log(error);
-                    }
+                    complete:function(){
+                        $('#loader').addClass('d-none')
+                    },
                 });
 
           },
@@ -71,11 +83,7 @@
     rzp1.on('payment.failed', function (response) {
       alert(response.error.code);
       alert(response.error.description);
-      alert(response.error.source);
-      alert(response.error.step);
       alert(response.error.reason);
-      alert(response.error.metadata.order_id);
-      alert(response.error.metadata.payment_id);
     });
 
 
