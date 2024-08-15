@@ -28,7 +28,7 @@ def export_course_purchases_to_excel(modeladmin, request, queryset):
 
     # Define the header
     headers = [
-        'User','Name', 'Course', 'Razorpay Order ID', 'Delivery Status', 'Coupon Code', 'Month',
+        'User','Name', 'Course', 'Razorpay Order ID', 'Payment Status', 'Coupon Code', 'Month',
         'Start Date', 'End Date'
     ]
     worksheet.append(headers)
@@ -42,7 +42,7 @@ def export_course_purchases_to_excel(modeladmin, request, queryset):
             obj.user.first_name,  # or obj.user.email if preferred
             obj.course.name,  # assuming the Course model has a name field
             obj.razorpay_order_id,
-            obj.delivery_status,
+            obj.payment_status,
             obj.coupon_code,
             obj.month,
             obj.start_date.strftime('%Y-%m-%d'),
@@ -76,10 +76,10 @@ class MonthMoneyAdmin(admin.ModelAdmin):
 
 class CoursePurchasedAdmin(admin.ModelAdmin):
     list_display = (
-    'user', 'get_first_name', 'course', 'razorpay_order_id', 'delivery_status', 'coupon_code', 'month', 'start_date', 'end_date')
+    'user', 'get_first_name', 'course', 'razorpay_order_id', 'payment_status', 'coupon_code', 'month', 'start_date', 'end_date')
     list_filter = (
-    'user', 'course', 'razorpay_order_id', 'delivery_status', 'coupon_code', 'month', 'start_date', 'end_date')
-    search_fields = ('user__username','user__first_name', 'course__name', 'razorpay_order_id', 'delivery_status')
+    'user', 'course', 'razorpay_order_id', 'payment_status', 'coupon_code', 'month', 'start_date', 'end_date')
+    search_fields = ('user__username','user__first_name', 'course__name', 'razorpay_order_id', 'payment_status')
     actions = [export_course_purchases_to_excel]
 
     def get_first_name(self, obj):
