@@ -18,5 +18,6 @@ urlpatterns = [
     path('contact_us/', views.contact_us, name='contact_us'),
 
     path('user_login/', views_api.user_login, name='user_login'),
+    path('user_logout/', views_api.user_logout, name='user_logout'),
 
 ]

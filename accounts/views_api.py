@@ -31,3 +31,16 @@ def user_login(request):
         }
 
         return JsonResponse(json_data)
+
+
+@csrf_exempt
+def user_logout(request):
+    logout(request)
+    msg = 'User logged out successfully'
+    status = 'success'
+
+    json_data = {
+        'msg': msg,
+        'status': status
+    }
+    return JsonResponse(json_data)
