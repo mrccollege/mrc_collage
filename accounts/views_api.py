@@ -16,13 +16,16 @@ def user_login(request):
         if user is not None:
             login(request, user)
             request.session['user_id'] = user.id
+            user_id = user.id
             msg = 'User logged in successfully'
             status = 'success'
         else:
+            user_id = 0
             msg = 'User name or password is not correct!'
             status = 'failed'
 
         json_data = {
+            'user_id': user_id,
             'msg': msg,
             'status': status
         }
