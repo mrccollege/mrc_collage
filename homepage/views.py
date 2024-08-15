@@ -457,6 +457,11 @@ def delete_files(request):
 
 @login_required(login_url='/accounts/login/')
 def buy_course_detail(request, course_id, status=None):
+    try:
+        loader_img = Lookup.objects.get(code='loader_img')
+        loader_img = loader_img.file.url
+    except:
+        loader_img = ''
     user_id = request.session.get('user_id')
     if request.method == 'POST':
         form = request.POST
@@ -501,6 +506,7 @@ def buy_course_detail(request, course_id, status=None):
             pass
 
         context = {
+            'loader_img': loader_img,
             'payment': payment,
             'course_price': base_price,
             'totalprice': course_price,
