@@ -1,7 +1,10 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.urls import reverse
 from .models import Course, VideoFiles
+from django.contrib.auth.models import User
+from courses.models import CoursePurchased, Course, VideoFiles, UserWatch, CourseMaster, MonthMoney, FileType
+from django.db.models import Q
+from django.shortcuts import render, redirect
 
 
 @csrf_exempt
@@ -44,3 +47,21 @@ def course_detail(request):
             'course_details': course_details_list
         }
         return JsonResponse(context)
+
+
+@csrf_exempt
+def my_courses(request):
+    if request.method == 'GET':
+        data = request.GET
+        user_id = int(data.get('user_id'))
+        is_admin = User.objects.filter(id=user_id, username='admin')
+        if is_admin:
+            query = Q()
+        else:
+            query = Q(user_id=user_id) & Q(payment_status='success') | Q(user_id=user_id) & Q(payment_status='renew')
+            course_purchased = CoursePurchased.objects.filter(query).values_list('course', flat=True)
+            query = Q(id__in=course_purchased)
+        my_pur_cours = Course.objects.filter(query)
+        context = {'my_course': my_pur_cours}
+        return JsonResponse(context)
+
