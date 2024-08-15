@@ -62,6 +62,17 @@ def my_courses(request):
             course_purchased = CoursePurchased.objects.filter(query).values_list('course', flat=True)
             query = Q(id__in=course_purchased)
         my_pur_cours = Course.objects.filter(query)
-        context = {'my_course': my_pur_cours}
+        course_list = []
+        for i in my_pur_cours:
+            data_dict = {}
+            data_dict['id'] = i.id
+            data_dict['name'] = i.name if i.name else ''
+            data_dict['instructor'] = i.instructor if i.instructor else ''
+            data_dict['description'] = i.description if i.description else ''
+            data_dict['course_image'] = request.build_absolute_uri(i.course_image.url) if i.course_image else ''
+            data_dict['demo_video'] = request.build_absolute_uri(i.demo_video) if str(i.demo_video) else ''
+            data_dict['created_at'] = i.created_at if i.created_at else ''
+            data_dict['course_lang'] = i.course_lang if i.course_lang else ''
+            course_list.append(data_dict)
+        context = {'my_course': course_list}
         return JsonResponse(context)
-
