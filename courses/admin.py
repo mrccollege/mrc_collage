@@ -28,7 +28,7 @@ def export_course_purchases_to_excel(modeladmin, request, queryset):
 
     # Define the header
     headers = [
-        'User','Name', 'Course', 'Razorpay Order ID', 'Payment Status', 'Coupon Code', 'Month',
+        'User','Name', 'Course','totalprice', 'Razorpay Order ID', 'Payment Status', 'Coupon Code', 'Month',
         'Start Date', 'End Date'
     ]
     worksheet.append(headers)
@@ -41,6 +41,7 @@ def export_course_purchases_to_excel(modeladmin, request, queryset):
             obj.user.username,  # or obj.user.email if preferred
             obj.user.first_name,  # or obj.user.email if preferred
             obj.course.name,  # assuming the Course model has a name field
+            obj.course.totalprice,  # assuming the Course model has a name field
             obj.razorpay_order_id,
             obj.payment_status,
             obj.coupon_code,
