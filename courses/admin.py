@@ -41,7 +41,7 @@ def export_course_purchases_to_excel(modeladmin, request, queryset):
             obj.user.username,  # or obj.user.email if preferred
             obj.user.first_name,  # or obj.user.email if preferred
             obj.course.name,  # assuming the Course model has a name field
-            obj.course.totalprice,  # assuming the Course model has a name field
+            obj.totalprice,  # assuming the Course model has a name field
             obj.razorpay_order_id,
             obj.payment_status,
             obj.coupon_code,
