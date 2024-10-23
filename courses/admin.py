@@ -77,9 +77,9 @@ class MonthMoneyAdmin(admin.ModelAdmin):
 
 class CoursePurchasedAdmin(admin.ModelAdmin):
     list_display = (
-    'user', 'get_first_name', 'course', 'totalprice','razorpay_signature', 'razorpay_order_id', 'payment_status', 'coupon_code', 'month', 'start_date', 'end_date')
+    'user', 'get_first_name', 'course', 'totalprice','razorpay_signature', 'payment_status', 'coupon_code', 'month', 'start_date', 'end_date')
     list_filter = (
-    'user', 'course','razorpay_signature', 'razorpay_order_id', 'payment_status', 'coupon_code', 'month', 'start_date', 'end_date')
+    'user', 'course','razorpay_signature', 'payment_status', 'coupon_code', 'month', 'start_date', 'end_date')
     search_fields = ('user__username','user__first_name', 'course__name', 'razorpay_order_id', 'payment_status')
     actions = [export_course_purchases_to_excel]
 
