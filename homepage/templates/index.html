@@ -185,7 +185,14 @@
                             <div class="item col-lg-3" onclick="get_course('{{course_master.id}}')">
                                 <div class="single-course-wrap">
                                     <div class="thumb">
+                                        {% if course_master.video %}
+                                        <video class="img-fluid" src="{{course_master.video.url}}" controls
+                                               controlsList="nodownload">
+                                        </video>
+                                        {% else %}
                                         <img class="img-fluid" src="{{course_master.image.url}}" alt="img">
+                                        {% endif %}
+
                                     </div>
                                     <div class="wrap-details">
                                         <h6>{{course_master.name|title}}</h6>
