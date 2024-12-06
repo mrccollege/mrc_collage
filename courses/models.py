@@ -26,6 +26,7 @@ class CourseMaster(models.Model):
     name = models.CharField(max_length=1000, null=True)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='course_images/', null=True, blank=True)
+    video = models.FileField(upload_to='course_master_video', null=True, blank=True)
     ScreenColumn = models.ForeignKey(ScreenColumn, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
