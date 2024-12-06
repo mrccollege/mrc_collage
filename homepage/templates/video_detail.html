@@ -15,7 +15,7 @@
 
 <div class="container">
     <div class="col-lg-8 mx-auto">
-        <video controls controlsList="nodownload" height="540px" id="video_frame" src="{{video.file.url}}" type="video/mp4" width="960px"
+        <video controls controlsList="nodownload" height="540px" id="video_frame" src="{{news.video_file.url}}" type="video/mp4" width="960px"
                class="img-fluid plyr">
         </video>
     </div>
@@ -23,10 +23,5 @@
 {% endblock content %}
 
 {% block js %}
-<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.4/dist/plyr.min.js"></script>
-<script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const players = Plyr.setup('.plyr');
-        });
-</script>
+
 {% endblock js %}

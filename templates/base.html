@@ -95,7 +95,8 @@
 {% endblock content %}
 
 
-<footer class="mt-3" style="background: linear-gradient(to right, #4b6cb7, #182848); padding: 40px; text-align: center; color: #fff;">
+<footer class="mt-3"
+        style="background: linear-gradient(to right, #4b6cb7, #182848); padding: 40px; text-align: center; color: #fff;">
     <p style="font-size: 24px; font-weight: bold;">Experience Radiant Wellness with MRC Ayurveda</p>
     <p style="font-size: 18px;">Unlock the secrets of ancient Ayurvedic wisdom for a vibrant and balanced life.</p>
     <div style="margin-top: 20px; color: #fff;">
@@ -111,20 +112,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.4/dist/plyr.min.js"></script>
 <script>
-<!--  $(document).ready(function () {-->
-<!--    $(document).on('contextmenu', function (e) {-->
-<!--      e.preventDefault();-->
-<!--    });-->
-
-<!--    $(document).keydown(function (e) {-->
-<!--      if (e.ctrlKey) {-->
-<!--        e.preventDefault();-->
-<!--      }-->
-<!--    });-->
-<!--  });-->
+    document.addEventListener('DOMContentLoaded', function () {
+        const players = Plyr.setup('.plyr');
+    });
 </script>
-
 {% block js %}
 {% endblock js %}
 
