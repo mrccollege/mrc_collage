@@ -70,6 +70,7 @@ def homepage(request, id=0):
     }
     return render(request, 'index.html', context)
 
+
 def send_order_confirmation_email(order):
     subject = 'Order Confirmation'
     # to_email = order[0].user.email
@@ -159,7 +160,8 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                                     file_type = video_path.file_type.file_type
                     else:
                         try:
-                            video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
+                            video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[
+                                0]
                             file_id = video_path.id
                             file_type = video_path.file_type.file_type
                         except:
@@ -218,7 +220,8 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
 
                     else:
                         watch_video_ids = UserWatch.objects.filter(user_id=user_id, status='complete',
-                                                                   course_id=course_id).values_list('videofile', flat=True)
+                                                                   course_id=course_id).values_list('videofile',
+                                                                                                    flat=True)
                         if watch_video_ids:
                             if file_id != 0:
                                 if pre_next == 'pre':
@@ -234,7 +237,8 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                                             file_type = video_path.file_type.file_type
                             else:
                                 try:
-                                    video_path = VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
+                                    video_path = \
+                                    VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
                                     file_id = video_path.id
                                     file_type = video_path.file_type.file_type
                                 except:
@@ -660,7 +664,7 @@ def apply_coupon_code(request):
                     discount=coupon_dict['percent'],
                     coupon_code=coupon_dict['coupon_code'],
                     start_date=datetime.now(),
-                    )
+                )
             except Exception as e:
                 print(e, '===========e===============')
                 CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(discount=0,
