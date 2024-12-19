@@ -21,6 +21,8 @@ from demo.models import UploadDemo
 from demo.models import AddUserDemoCode, MainUserDemo
 
 from demo.models import BulkCode
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -67,6 +69,25 @@ def homepage(request, id=0):
         'user_id': user_id,
     }
     return render(request, 'index.html', context)
+
+def send_order_confirmation_email(order):
+    subject = 'Order Confirmation'
+    to_email = order[0].user.email
+    from_email = 'mrctherapy2023@gmail.com'
+
+    # Render the email template
+    email_content = render_to_string('order_confirmation_email.html', {
+        'customer_name': order[0].user.first_name,
+        'order_items': order[0].course.name,
+        'MRP PRICE': order[0].course.price,
+        'DISCOUNT': order[0].course.discount,
+        'TOTAL AMOUNT': order[0].course.totalprice,
+    })
+
+    # Create and send email
+    email = EmailMessage(subject, email_content, from_email, [to_email])
+    email.content_subtype = 'html'  # Set email content type to HTML
+    email.send()
 
 
 @login_required(login_url='/accounts/login/')
@@ -545,6 +566,8 @@ def payment_success(request):
                                                                       start_date=datetime.now()
                                                                       )
             if course_obj:
+                order = CoursePurchased.objects.filter(query)
+                send_order_confirmation_email(order)
                 status = 1
         except Exception as e:
             print(e, '=====error in payment success function')
