@@ -72,16 +72,17 @@ def homepage(request, id=0):
 
 def send_order_confirmation_email(order):
     subject = 'Order Confirmation'
-    to_email = order[0].user.email
+    # to_email = order[0].user.email
+    to_email = 'srbc500@gmail.com'
     from_email = 'mrctherapy2023@gmail.com'
 
     # Render the email template
     email_content = render_to_string('order_confirmation_email.html', {
         'customer_name': order[0].user.first_name,
         'order_items': order[0].course.name,
-        'MRP PRICE': order[0].course.price,
-        'DISCOUNT': order[0].course.discount,
-        'TOTAL AMOUNT': order[0].course.totalprice,
+        'mrp_price': order[0].price,
+        'discount': order[0].discount,
+        'total_amount': order[0].totalprice,
     })
 
     # Create and send email

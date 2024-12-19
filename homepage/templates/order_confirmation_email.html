@@ -32,6 +32,23 @@
             font-size: 12px;
             color: #666;
         }
+        .contact-details {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .contact-details h4 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            color: #333;
+        }
+        .contact-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
         .order-details table {
             width: 100%;
             border-collapse: collapse;
@@ -55,32 +72,44 @@
         <div class="email-body">
             <p>Hi {{ customer_name }},</p>
             <p>Thank you for your order! Your order has been placed successfully. Below are your order details:</p>
+
+            <h4 style="text-align:center">Therapy/Course Name</h4>
+            <h4 style="text-align:center">{{ order_items }}</h4>
             <div class="order-details">
                 <table>
                     <thead>
                         <tr>
-                            <th>Product Name</th>
                             <th>Quantity</th>
                             <th>Price</th>
+                            <th>Discount</th>
+                            <th>Total Pay Amount</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for item in order_items %}
+
                         <tr>
-                            <td>{{ item.name }}</td>
-                            <td>{{ item.quantity }}</td>
-                            <td>{{ item.price }}</td>
+                            <td>1</td>
+                            <td>INR : {{ mrp_price }} Rs.</td>
+                            <td>{{ discount }} %</td>
+                            <td>INR : {{ total_amount }} Rs.</td>
                         </tr>
-                        {% endfor %}
                     </tbody>
                 </table>
             </div>
             <p><strong>Total Amount:</strong> {{ total_amount }}</p>
             <p>We hope to serve you again soon!</p>
+            <div class="contact-details">
+                <h4>Contact Information:</h4>
+                <p><strong>MRC Ayurveda Lotus Garden</strong></p>
+                <p>Sunrakh Road, Vrindavan, Mathura</p>
+                <p>Email: <a href="mailto:mrctherapy2023@gmail.com">mrctherapy2023@gmail.com</a></p>
+                <p>Phone: <a href="tel:7417741771">7417741771</a></p>
+            </div>
         </div>
         <div class="email-footer">
-            &copy; 2024 Your Company Name. All rights reserved.
+            &copy; 2024 MRC Ayurveda Lotus Garden. All rights reserved.
         </div>
     </div>
 </body>
 </html>
+

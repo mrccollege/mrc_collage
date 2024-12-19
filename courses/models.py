@@ -101,6 +101,7 @@ class CoursePurchased(models.Model):
     razorpay_order_id = models.CharField(max_length=100, null=True)
     razorpay_signature = models.CharField(max_length=100, null=True)
     payment_status = models.CharField(max_length=100, null=True)
+    mail_delivered = models.BooleanField(default=False, null=True)
     # delivery_status = models.CharField(max_length=100, null=True)
 
     start_date = models.DateTimeField(auto_now_add=True)
