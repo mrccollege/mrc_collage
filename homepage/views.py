@@ -183,8 +183,11 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                 return render(request, 'common.html', context)
         else:
             is_exipre = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
-            send_order_confirmation_email(is_exipre)
             if is_exipre:
+                mail_delivered = is_exipre[0].mail_delivered
+                if mail_delivered == False:
+                    send_order_confirmation_email(is_exipre)
+                    CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(mail_delivered=True)
                 expire_date = is_exipre[0].end_date.strftime("%Y-%m-%d")
                 if now_date > expire_date:
                     status = 'renew'
