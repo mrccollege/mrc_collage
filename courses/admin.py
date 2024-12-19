@@ -80,7 +80,7 @@ class CoursePurchasedAdmin(admin.ModelAdmin):
     'user', 'get_first_name', 'course', 'totalprice','razorpay_signature', 'payment_status', 'coupon_code', 'month', 'start_date')
     list_filter = (
     'user', 'course','razorpay_signature', 'payment_status', 'coupon_code', 'month', 'start_date')
-    search_fields = ('user__username','user__first_name', 'course__name', 'razorpay_order_id', 'payment_status')
+    search_fields = ('user__username','user__first_name', 'course__name', 'razorpay_order_id','razorpay_payment_id', 'payment_status')
     actions = [export_course_purchases_to_excel]
 
     def get_first_name(self, obj):
