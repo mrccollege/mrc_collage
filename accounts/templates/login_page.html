@@ -39,8 +39,8 @@
             <form id="login_form" class="mb-3">{% csrf_token %}
                 <div class="mb-3">
                     <label class="form-label" for="email">Mobile / Email</label>
-                    <input class="form-control" autofocus id="email" name="email"
-                           placeholder="Enter Your Mobile Number / Email" type="text">
+                    <input type="text" class="form-control" id="email" name="email"
+                           placeholder="Enter Your Mobile Number / Email" autofocus>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="password">Password</label>

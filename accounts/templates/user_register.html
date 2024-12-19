@@ -44,25 +44,25 @@ Registration
         <div class="row">
             <div class="mb-3">
                 <label for="fullname" class="form-label">Full Name</label>
-                <input autofocus type="text" class="form-control" name="fullname" id="fullname" placeholder="Enter your username">
+                <input autofocus type="text" class="form-control" name="fullname" id="fullname" placeholder="Enter your username" required>
             </div>
             <div class="mb-3">
                 <label for="contact_number" class="form-label">Contact Number</label>
                 <input type="text" class="form-control" id="contact_number" name="contact_number"
-                       placeholder="Enter your contact number">
+                       placeholder="Enter your contact number" required>
             </div>
         </div>
-<!--        <div class="mb-3">-->
-<!--            <label for="email" class="form-label">Email(optional)</label>-->
-<!--            <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email">-->
-<!--        </div>-->
+        <div class="mb-3">
+            <label for="email" class="form-label">Email *</label>
+            <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email" required>
+        </div>
         <div class="mb-3">
             <label for="password" class="form-label">Create Password</label>
-            <input type="password" class="form-control" name="password" id="password" placeholder="Create New Password">
+            <input type="password" class="form-control" name="password" id="password" placeholder="Create New Password" required>
         </div>
         <div class="mb-3">
             <label for="address" class="form-label">Complete Address</label>
-            <textarea class="form-control" id="address" name="address" placeholder="Enter complete address"></textarea>
+            <textarea class="form-control" id="address" name="address" placeholder="Enter complete address" required></textarea>
         </div>
         <button type="submit" id="submit_form_btn" class="btn btn-primary w-100 mb-3">Sign Up</button>
         <a class="text-primary mx-auto" href="/accounts/login/">Already User? login account</a>

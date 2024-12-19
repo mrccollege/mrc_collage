@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 # Create your views here.
 from .models import UserQuery, OtpVerify, UserProfile
 from twilio.rest import Client
+from django.db.models import Q
 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
 
@@ -23,14 +24,17 @@ def register_account(request):
         username = form.get('contact_number')
         username.strip()
 
+        email = form.get('email')
+        email.strip()
+
         password = form.get('password')
         password = password.strip()
 
         address = form.get('address')
         contact_number = form.get('contact_number')
-
+        query = Q(username=username) | Q(email=email)
         try:
-            user = User.objects.filter(username=username).exists()
+            user = User.objects.filter(query).exists()
             if user:
                 msg = 'This User Already Exists.'
                 id = 0
@@ -45,6 +49,7 @@ def register_account(request):
             if user is not None:
                 user.set_password(password)
                 user.first_name = first_name
+                user.email = email
                 user.save()
                 id = user.id
                 UserProfile.objects.create(user_id=id,
@@ -80,27 +85,40 @@ def login_account(request):
         password = form.get('password')
         password = password.strip()
 
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            request.session['user_id'] = user.id
-            msg = 'User logged in successfully'
-            status = 'success'
+        query = Q(username=username) | Q(email=username)
+        user = User.objects.filter(query)
+        if user:
+            user = authenticate(request, username=user[0].username, password=password)
+
+            if user is not None:
+                login(request, user)
+                request.session['user_id'] = user.id
+                msg = 'User logged in successfully'
+                status = 'success'
+            else:
+                msg = 'User name or password is not correct!'
+                status = 'failed'
+
+            json_data = {
+                'msg': msg,
+                'status': status
+            }
+
+            return JsonResponse(json_data)
         else:
-            msg = 'User name or password is not correct!'
-            status = 'failed'
+            try:
+                home_banner = Lookup.objects.get(code='home_banner')
+            except:
+                home_banner = ''
 
-        json_data = {
-            'msg': msg,
-            'status': status
-        }
-
-        return JsonResponse(json_data)
+            context = {'home_banner': home_banner}
+            return render(request, 'login_page.html', context)
     else:
         try:
             home_banner = Lookup.objects.get(code='home_banner')
         except:
             home_banner = ''
+
         context = {'home_banner': home_banner}
         return render(request, 'login_page.html', context)
 
