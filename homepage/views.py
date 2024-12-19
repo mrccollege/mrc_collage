@@ -74,7 +74,10 @@ def homepage(request, id=0):
 def send_order_confirmation_email(order):
     try:
         subject = 'Order Confirmation'
-        to_email = order[0].user.email
+        try:
+            to_email = order[0].user.email
+        except:
+            to_email = order[0].user.username + '@yopmail.com'
         from_email = 'mrctherapy2023@gmail.com'
 
         # Render the email template
