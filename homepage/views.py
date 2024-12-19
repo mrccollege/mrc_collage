@@ -72,24 +72,26 @@ def homepage(request, id=0):
 
 
 def send_order_confirmation_email(order):
-    subject = 'Order Confirmation'
-    # to_email = order[0].user.email
-    to_email = 'srbc500@gmail.com'
-    from_email = 'mrctherapy2023@gmail.com'
+    try:
+        subject = 'Order Confirmation'
+        to_email = order[0].user.email
+        from_email = 'mrctherapy2023@gmail.com'
 
-    # Render the email template
-    email_content = render_to_string('order_confirmation_email.html', {
-        'customer_name': order[0].user.first_name,
-        'order_items': order[0].course.name,
-        'mrp_price': order[0].price,
-        'discount': order[0].discount,
-        'total_amount': order[0].totalprice,
-    })
+        # Render the email template
+        email_content = render_to_string('order_confirmation_email.html', {
+            'customer_name': order[0].user.first_name,
+            'order_items': order[0].course.name,
+            'mrp_price': order[0].price,
+            'discount': order[0].discount,
+            'total_amount': order[0].totalprice,
+        })
 
-    # Create and send email
-    email = EmailMessage(subject, email_content, from_email, [to_email])
-    email.content_subtype = 'html'  # Set email content type to HTML
-    email.send()
+        # Create and send email
+        email = EmailMessage(subject, email_content, from_email, [to_email])
+        email.content_subtype = 'html'  # Set email content type to HTML
+        email.send()
+    except:
+        pass
 
 
 @login_required(login_url='/accounts/login/')
@@ -577,6 +579,7 @@ def payment_success(request):
             if course_obj:
                 order = CoursePurchased.objects.filter(query)
                 send_order_confirmation_email(order)
+                CoursePurchased.objects.filter(query).update(mail_delivered=True)
                 status = 1
         except Exception as e:
             print(e, '=====error in payment success function')
