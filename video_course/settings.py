@@ -85,8 +85,8 @@ DATABASES = {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'mrc_college',
 #         'USER': 'sanjay',
-#         'PASSWORD': 'Hello123456#',
-#         'HOST': '178.16.139.173',
+#         'PASSWORD': 'Hello12345678#$@',
+#         'HOST': '145.223.18.243',
 #         'PORT': '3306',
 #     }
 # }
@@ -118,8 +118,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static')]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 
