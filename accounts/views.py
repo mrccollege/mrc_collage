@@ -189,17 +189,17 @@ def verity_otp(request, email=None):
         new_password = form.get('new_password')
         status = 0
         msg = 'Password not reset'
-        is_user = User.objects.filter(email__exact=email)
+        is_user = User.objects.filter(email__iexact=email)
         if is_user:
-            otp_obj = OtpVerify.objects.filter(email__exact=email, otp__exact=otp)
+            otp_obj = OtpVerify.objects.filter(email__iexact=email, otp__iexact=otp)
             if otp_obj:
-                users = User.objects.filter(email__exact=email)
+                users = User.objects.filter(email__iexact=email)
                 user = users[0]
                 user.set_password(new_password)
                 user.save()
                 status = 1
                 msg = 'Password successfully reset'
-                OtpVerify.objects.filter(email__exact=email).delete()
+                OtpVerify.objects.filter(email__iexact=email).delete()
             else:
                 status = 0
                 msg = msg

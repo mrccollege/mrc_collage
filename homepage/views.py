@@ -87,6 +87,8 @@ def send_order_confirmation_email(order):
             'mrp_price': order[0].price,
             'discount': order[0].discount,
             'total_amount': order[0].totalprice,
+            'razorpay_payment_id': order[0].razorpay_payment_id,
+            'razorpay_order_id': order[0].razorpay_order_id,
         })
 
         # Create and send email
