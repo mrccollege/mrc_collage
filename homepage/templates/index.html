@@ -38,7 +38,8 @@
 <section class="trending-courses-area">
     <div class="container">
         <div class="col-lg-8 mb-3 mx-auto p-5 text-center">
-            <button id="watch_demo" type="button" class="btn btn-primary">Listen Demo</button>
+            <button id="my_courses" type="button" class="btn btn-primary m-3">My Therapy / Course</button>
+            <button id="watch_demo" type="button" class="btn btn-primary m-3">Listen Demo</button>
 
             <div class="col-lg-6 d-none mx-auto" id="demo_code">
                 <h6 class="mt-2">Only for one time so please listen complete demo when you have free 30 minutes</h6>
@@ -283,6 +284,10 @@
         }else{
             $('#demo_code').removeClass('d-none')
         }
+    });
+
+    $('#my_courses').click(function(){
+         window.location.href = '/my-courses/'
     });
 
     function get_course(course_id){
