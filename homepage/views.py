@@ -687,7 +687,7 @@ def apply_coupon_code(request):
 
 
 def gargi(request):
-    course_query = CoursePurchased.objects.order_by('-start_date')[:100]
+    course_query = CoursePurchased.objects.filter().exclude(payment_status='success').order_by('-start_date')[:100]
     context = {
         'course_query': course_query,
     }
