@@ -26,6 +26,7 @@ urlpatterns = [
     path('get_service_price/', views.get_service_price, name='get_service_price'),
 
     path('apply_coupon_code/', views.apply_coupon_code, name='apply_coupon_code'),
+    path('gargi/', views.gargi, name='gargi'),
 
 
 ]

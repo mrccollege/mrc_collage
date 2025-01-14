@@ -245,7 +245,8 @@ def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
                             else:
                                 try:
                                     video_path = \
-                                    VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[0]
+                                        VideoFiles.objects.filter(course_id=course_id).exclude(id__in=watch_video_ids)[
+                                            0]
                                     file_id = video_path.id
                                     file_type = video_path.file_type.file_type
                                 except:
@@ -683,3 +684,11 @@ def apply_coupon_code(request):
             'coupon_data': coupon_dict
         }
         return JsonResponse(context)
+
+
+def gargi(request):
+    course_query = CoursePurchased.objects.order_by('-id')[:100]
+    context = {
+        'course_query': course_query,
+    }
+    return render(request, 'customer/customer_course_purchased.html', context)

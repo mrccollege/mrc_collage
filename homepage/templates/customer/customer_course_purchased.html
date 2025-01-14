@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Purchased Data</title>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <!-- jQuery and DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 10px 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .dataTables_wrapper .dataTables_filter input {
+            width: 300px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Course Purchased Data</h2>
+
+<table id="courseTable" class="display">
+    <thead>
+    <tr>
+        <th>Course Name</th>
+        <th>User</th>
+        <th>Price</th>
+        <th>Discount</th>
+        <th>Total Price</th>
+        <th>Purchased Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for course in course_query %}
+    <tr>
+        <td>{{ course.course.name }}</td>
+        <td>{{ course.user.username }}</td>
+        <td>{{ course.price }}</td>
+        <td>{{ course.discount }}</td>
+        <td>{{ course.total_price }}</td>
+        <td>{{ course.created_at|date:"d-M-Y H:i" }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#courseTable').DataTable({
+            "pageLength": 10,        // Number of records per page
+            "lengthMenu": [5, 10, 20, 50], // Options for page length
+            "searching": true,      // Enable search
+            "ordering": true,       // Enable column sorting
+            "info": true,           // Show table info
+            "paging": true          // Enable pagination
+        });
+    });
+</script>
+
+</body>
+</html>
