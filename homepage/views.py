@@ -687,8 +687,14 @@ def apply_coupon_code(request):
 
 
 def gargi(request):
+    page_reload = Lookup.objects.filter(code='page_reload')
+    if page_reload:
+        page_reload = page_reload[0].desc
+    else:
+        page_reload = 20
     course_query = CoursePurchased.objects.filter().exclude(payment_status='success').order_by('-start_date')[:100]
     context = {
         'course_query': course_query,
+        'page_reload': page_reload,
     }
     return render(request, 'customer/customer_course_purchased.html', context)

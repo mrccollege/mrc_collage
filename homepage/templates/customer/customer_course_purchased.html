@@ -94,5 +94,13 @@
 <!--    });-->
 <!--</script>-->
 
+<script>
+    var reloadTimeMinutes = {{ page_reload }};  // Time passed from Django
+    setTimeout(function() {
+        location.reload();
+    }, reloadTimeMinutes * 60 * 1000);  // Convert minutes to milliseconds
+</script>
+
+
 </body>
 </html>

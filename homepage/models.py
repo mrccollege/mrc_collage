@@ -5,6 +5,7 @@ from django.db import models
 class Lookup(models.Model):
     code = models.CharField(max_length=50, null=True)
     title = models.CharField(max_length=50, null=True)
+    desc = models.TextField(null=True, blank=True)
     file = models.FileField(upload_to='files', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=False,blank=True, null=True)
