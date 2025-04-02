@@ -28,7 +28,7 @@ def export_course_purchases_to_excel(modeladmin, request, queryset):
 
     # Define the header
     headers = [
-        'User','Name', 'Course','totalprice', 'Razorpay Order ID', 'Payment Status', 'Coupon Code', 'Month',
+        'User', 'Name', 'Course', 'totalprice', 'Razorpay Order ID', 'Payment Status', 'Coupon Code', 'Month',
         'Start Date', 'End Date'
     ]
     worksheet.append(headers)
@@ -66,8 +66,9 @@ class ScreenColumnAdmin(admin.ModelAdmin):
 
 
 class VideoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'course', 'file', 'code_no', 'qr_code', 'created_at')
-    list_filter = ('id', 'course', 'file', 'code_no', 'qr_code', 'created_at')
+    list_display = ('course', 'file', 'code_no', 'qr_code', 'created_at', 'id')
+    list_filter = ('course', 'file', 'code_no', 'qr_code', 'created_at', 'id')
+    search_fields = ('course__name', 'file', 'code_no', 'qr_code', 'created_at', 'id')
 
 
 class MonthMoneyAdmin(admin.ModelAdmin):
@@ -77,14 +78,18 @@ class MonthMoneyAdmin(admin.ModelAdmin):
 
 class CoursePurchasedAdmin(admin.ModelAdmin):
     list_display = (
-    'user', 'get_first_name', 'course', 'totalprice','razorpay_signature', 'payment_status', 'coupon_code', 'month', 'start_date')
+        'user', 'get_first_name', 'course', 'totalprice', 'razorpay_signature', 'payment_status', 'coupon_code',
+        'month', 'start_date')
     list_filter = (
-    'user', 'course','razorpay_signature', 'payment_status', 'coupon_code', 'month', 'start_date')
-    search_fields = ('user__username','user__first_name', 'course__name', 'razorpay_order_id','razorpay_payment_id', 'payment_status')
+        'user', 'course', 'razorpay_signature', 'payment_status', 'coupon_code', 'month', 'start_date')
+    search_fields = (
+        'user__username', 'user__first_name', 'course__name', 'razorpay_order_id', 'razorpay_payment_id',
+        'payment_status')
     actions = [export_course_purchases_to_excel]
 
     def get_first_name(self, obj):
         return obj.user.first_name
+
     get_first_name.short_description = 'First Name'
 
 
