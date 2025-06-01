@@ -86,7 +86,7 @@ def login_account(request):
         password = form.get('password')
         password = password.strip()
 
-        query = Q(username=username) | Q(email=username)
+        query = Q(username=username[-10:]) | Q(email=username)
         user = User.objects.filter(query)
         if user:
             user = authenticate(request, username=user[0].username, password=password)
