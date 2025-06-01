@@ -23,6 +23,7 @@ def register_account(request):
 
         username = form.get('contact_number')
         username.strip()
+        username = username[-10:]
 
         email = form.get('email')
         email.strip()
