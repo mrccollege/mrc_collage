@@ -698,3 +698,13 @@ def gargi(request):
         'page_reload': page_reload,
     }
     return render(request, 'customer/customer_course_purchased.html', context)
+
+
+def search_therapy(request):
+    q = request.GET.get('q', '')
+    results = []
+
+    if q:
+        therapies = Course.objects.filter(name__icontains=q)[:10]  # Limit for performance
+        results = [{'id': t.id, 'name': t.name} for t in therapies]
+    return JsonResponse({'results': results})

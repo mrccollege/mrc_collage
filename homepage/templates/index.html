@@ -4,6 +4,22 @@
     .banner-img{
         margin-top:100px;
     }
+
+    #search_results {
+        border: 1px solid #ccc;
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 5px;
+        background: #fff;
+        width: 100%;
+        position: absolute;
+        z-index: 1000;
+    }
+
+      #search_results li:hover {
+        background-color: #f0f0f0;
+      }
+
 </style>
 {% endblock css %}
 
@@ -17,15 +33,20 @@
                 <div class="banner-inner text-md-start text-center">
                     <h1>Welcome to our <span>MRC Therapy</span></h1>
                     <div class="banner-content">
-                        <p>Join us on this journey to harness the power of your subconscious mind for transformative growth,
+                        <p>Join us on this journey to harness the power of your subconscious mind for transformative
+                            growth,
                             success and being healthy. We are also code your mind according your wishes.
                             परिवर्तनकारी विकास, सफलता और स्वस्थ रहने के लिए अपने अवचेतन मन की शक्ति का उपयोग करने की
                             इस यात्रा में हमारे साथ जुड़ें। हम आपकी इच्छाओं के अनुसार आपके मन को कोड भी करते हैं।</p>
                     </div>
                     <div class="single-input-wrap">
-                        <input type="text" placeholder="Search your best therapy">
-                        <button><i class="fa fa-search"></i></button>
+                        <input type="text" id="search_input" placeholder="Search your best therapy">
+                        <button id="search_btn"><i class="fa fa-search"></i></button>
+                        <ul id="search_results" style="list-style: none; padding-left: 0;"></ul>
                     </div>
+
+
+
                 </div>
             </div>
         </div>
@@ -44,7 +65,7 @@
 
             <div class="col-lg-6 d-none mx-auto" id="demo_code">
                 <h6 class="mt-2">Only for one time so please listen complete demo when you have free 30 minutes</h6>
-                <input id="user_code" class="form-control mt-3" type="text"  placeholder="Enter Demo Code"/>
+                <input id="user_code" class="form-control mt-3" type="text" placeholder="Enter Demo Code"/>
                 <button id="get_demo_data" type="button" class="btn btn-success mt-4">
                     Submit
                 </button>
@@ -55,7 +76,8 @@
             <div class="single-course-wrap mb-0">
                 <div class="thumb">
                     <video controls controlsList="nodownload" id="video_frame"
-                           src="{{demo_file}}" type="video/mp4" class="img-fluid plyr" poster="static/assets/img/wave.gif">
+                           src="{{demo_file}}" type="video/mp4" class="img-fluid plyr"
+                           poster="static/assets/img/wave.gif">
                     </video>
                 </div>
             </div>
@@ -243,9 +265,9 @@
                                                 <img src="/static/assets/img/author/1.png" alt="img">
                                                 <p>{{course_master.instructor}}</p>
                                             </div>
-<!--                                            <div class="user-rating">-->
-<!--                                                <span><i class="fa fa-star"></i>4.1</span>(196)-->
-<!--                                            </div>-->
+                                            <!--                                            <div class="user-rating">-->
+                                            <!--                                                <span><i class="fa fa-star"></i>4.1</span>(196)-->
+                                            <!--                                            </div>-->
                                         </div>
                                         <div class="price-wrap">
                                             <div class="row align-items-center">
@@ -352,26 +374,65 @@
 </script>
 
 <script>
-     const player = new Plyr('#video_frame', {
-        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-        hideControls: false
-     });
-
-    const video = document.getElementById('video_frame');
-
-    video.addEventListener('play', function() {
-        $.ajax({
-            url:'/demo/count_video_play/',
-            data:{
-                'bulk_code': {{bulk_code}}
-            },
-            success: function(data){
-                if (data.status == 0){
-                    return false;
-                }
-            },
-        })
+    const player = new Plyr('#video_frame', {
+       controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+       hideControls: false
     });
 
+   const video = document.getElementById('video_frame');
+
+   video.addEventListener('play', function() {
+       $.ajax({
+           url:'/demo/count_video_play/',
+           data:{
+               'bulk_code': {{bulk_code}}
+           },
+           success: function(data){
+               if (data.status == 0){
+                   return false;
+               }
+           },
+       })
+   });
+
 </script>
+
+
+<script>
+    $('#search_input').on('keyup', function(e) {
+     e.preventDefault();
+     let query = $('#search_input').val();
+
+     $.ajax({
+       url: '/search-therapy/',
+       data: { 'q': query },
+       success: function(data) {
+         let results = '';
+         if (data.results.length > 0) {
+           data.results.forEach(item => {
+             results += `<li style="cursor:pointer; padding:5px;" class="search-item" data-id="${item.id}">${item.name}</li>`;
+           });
+         } else {
+           results = '<li>No matching courses found.</li>';
+         }
+         $('#search_results').html(results);
+       }
+     });
+   });
+
+   // Redirect on click
+   $(document).on('click', '.search-item', function() {
+     let courseId = $(this).data('id');
+     window.location.href = `/${courseId}/`;
+   });
+
+   // Optional: trigger search on Enter
+   $('#search_input').on('keypress', function(e) {
+     if (e.which === 13) {
+       $('#search_btn').click();
+     }
+   });
+</script>
+
+
 {% endblock js %}
