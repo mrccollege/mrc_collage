@@ -46,7 +46,6 @@
                     </div>
 
 
-
                 </div>
             </div>
         </div>
@@ -252,11 +251,10 @@
                                 <div class="single-course-wrap">
                                     <div class="thumb">
                                         {% if course_master.demo_video %}
-                                        <video class="img-fluid" src="{{course_master.demo_video.url}}" controls
-                                               controlsList="nodownload">
-                                            {% else %}
-                                            <img class="img-fluid" src="{{course_master.course_image.url}}" alt="img">
-                                            {% endif %}
+                                        <video class="img-fluid" src="{{course_master.demo_video.url}}" controls controlsList="nodownload">
+                                        {% else %}
+                                        <img class="img-fluid" src="{{course_master.course_image.url}}" alt="img"/>
+                                        {% endif %}
                                     </div>
                                     <div class="wrap-details">
                                         <h6>{{course_master.name|title}}</h6>
@@ -269,6 +267,7 @@
                                             <!--                                                <span><i class="fa fa-star"></i>4.1</span>(196)-->
                                             <!--                                            </div>-->
                                         </div>
+                                        <p><strong>Description :</strong> {{course_master.description}}</p>
                                         <div class="price-wrap">
                                             <div class="row align-items-center">
                                                 <button type="button" class="btn-primary rounded"
