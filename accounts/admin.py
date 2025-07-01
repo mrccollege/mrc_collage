@@ -28,7 +28,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 
 class UserQueryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'email', 'created_at')
+    list_display = ('id', 'name', 'message', 'email', 'created_at')
 
 
 class OtpVerifyAdmin(admin.ModelAdmin):
