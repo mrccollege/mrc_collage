@@ -40,6 +40,7 @@ class Course(models.Model):
     description = models.TextField(null=True, blank=True)
     discount = models.CharField(max_length=10, default=0, blank=True, null=True)
     course_image = models.ImageField(upload_to='course_images/', null=True, blank=True)
+    coupon_image = models.ImageField(upload_to='coupon_images/', null=True, blank=True)
     demo_video = models.FileField(upload_to='course_demo', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(null=True, blank=True)
