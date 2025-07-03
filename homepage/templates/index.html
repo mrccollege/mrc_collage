@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col-lg-6 col-md-8 align-self-center">
                 <div class="banner-inner text-md-start text-center">
-                    <h1>Welcome to our <span>MRC Therapy</span></h1>
+                    <h1>Welcome to our <span>MRC Course</span></h1>
                     <div class="banner-content">
                         <p>Join us on this journey to harness the power of your subconscious mind for transformative
                             growth,
@@ -40,7 +40,7 @@
                             इस यात्रा में हमारे साथ जुड़ें। हम आपकी इच्छाओं के अनुसार आपके मन को कोड भी करते हैं।</p>
                     </div>
                     <div class="single-input-wrap">
-                        <input type="text" id="search_input" placeholder="Search your best therapy">
+                        <input type="text" id="search_input" placeholder="Search your best courses">
                         <button id="search_btn"><i class="fa fa-search"></i></button>
                         <ul id="search_results" style="list-style: none; padding-left: 0;"></ul>
                     </div>
@@ -59,7 +59,7 @@
 <section class="trending-courses-area">
     <div class="container">
         <div class="col-lg-8 mb-3 mx-auto p-5 text-center">
-            <button id="my_courses" type="button" class="btn btn-primary m-3">My Therapy</button>
+            <button id="my_courses" type="button" class="btn btn-primary m-3">My Course</button>
             <button id="watch_demo" type="button" class="btn btn-primary m-3">Listen Demo</button>
 
             <div class="col-lg-6 d-none mx-auto" id="demo_code">
@@ -84,7 +84,7 @@
         {% if course_master1 %}
         <div class="row">
             <div class="col-lg-12">
-                <h4 class="text-center p-3"><em>Mrc Mantra Therapy</em></h4>
+                <h4 class="text-center p-3"><em>Mrc Mantra Course</em></h4>
             </div>
             <div class="col-lg-12">
                 <div class="tab-content">
@@ -113,7 +113,7 @@
         {% if course_master2 %}
         <div class="row">
             <div class="col-lg-12">
-                <h4 class="text-center p-3"><em>Professional Courses & Therapy for Doctors</em></h4>
+                <h4 class="text-center p-3"><em>Professional Courses & Course for Doctors</em></h4>
             </div>
             <div class="col-lg-12">
                 <div class="tab-content">
@@ -141,7 +141,7 @@
         {% if course_master3 %}
         <div class="row">
             <div class="col-lg-12">
-                <h4 class="text-center p-3"><em>Mrc Therapy with collaborations</em></h4>
+                <h4 class="text-center p-3"><em>Mrc Course with collaborations</em></h4>
             </div>
             <div class="col-lg-12">
                 <div class="tab-content">
@@ -169,7 +169,7 @@
         {% if course_master4 %}
         <div class="row">
             <div class="col-lg-12">
-                <h4 class="text-center p-3"><em>Devotional Therapy (Subconscious Mind)</em></h4>
+                <h4 class="text-center p-3"><em>Devotional Course (Subconscious Mind)</em></h4>
             </div>
             <div class="col-lg-12">
                 <div class="tab-content">
@@ -240,7 +240,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h4 class="text-center p-3">Our Therapy</h4>
+                <h4 class="text-center p-3">Our Course</h4>
             </div>
             <div class="col-lg-12">
                 <div class="tab-content">
@@ -346,7 +346,7 @@
                         $('#demo_div').addClass('d-none')
                         Swal.fire({
                             title: 'Your demo is completed.',
-                            text: 'Now choose the therapy & purchase or contact for more details Mob - +91 7417 7417 74',
+                            text: 'Now choose the courses & purchase or contact for more details Mob - +91 7417 7417 74',
                             icon: 'success',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
@@ -403,7 +403,7 @@
      let query = $('#search_input').val();
 
      $.ajax({
-       url: '/search-therapy/',
+       url: '/search-courses/',
        data: { 'q': query },
        success: function(data) {
          let results = '';
