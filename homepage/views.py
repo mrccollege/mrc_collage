@@ -24,6 +24,8 @@ from demo.models import BulkCode
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
+from common_function.send_message import send_sms
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -584,9 +586,12 @@ def payment_success(request):
                                                                       )
             if course_obj:
                 order = CoursePurchased.objects.filter(query)
+                mobile = order[0].user.mobile
                 send_order_confirmation_email(order)
                 CoursePurchased.objects.filter(query).update(mail_delivered=True)
                 status = 1
+                message = f'Thank you for choosing {status} MRC therapy (Inventor Dr. Abhishek Sharma) MRC AYURVEDA & RESEARCH CENTER'
+                send_sms(mobile, message)
         except Exception as e:
             print(e, '=====error in payment success function')
             status = 0
