@@ -20,8 +20,6 @@ client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
 def send_sms(mobile, message):
     url = "http://msg.msgclub.net/rest/services/sendSMS/sendGroupSms"
-    print(mobile, '===============####################')
-    print(message, '===============####################')
     params = {
         'AUTH_KEY': '3380567192fd2e6d18f63985aace',
         'message': message,

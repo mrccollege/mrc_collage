@@ -23,8 +23,10 @@ from demo.models import AddUserDemoCode, MainUserDemo
 from demo.models import BulkCode
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
-
+from django.views.decorators.csrf import csrf_exempt
 from common_function.send_message import send_sms
+
+from accounts.models import UserProfile
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -544,6 +546,7 @@ def buy_course_detail(request, course_id, status=None):
             'discount': discount,
             'month': month,
             'course_id': course_id,
+            'user_id': user_id,
             'razorkey': settings.RAZOR_KEY_ID,
         }
         return render(request, 'final_pay.html', context)
@@ -713,3 +716,30 @@ def search_therapy(request):
         therapies = Course.objects.filter(name__icontains=q)[:10]  # Limit for performance
         results = [{'id': t.id, 'name': t.name} for t in therapies]
     return JsonResponse({'results': results})
+
+
+@csrf_exempt  # If you're not passing CSRF token, else remove this
+def final_pay(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        course_id = request.POST.get('course_id')
+        data = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
+        if data:
+            try:
+                user = UserProfile.objects.filter(user_id=user_id)
+                mobile = user[0].mobile
+                course = data[0].course.name
+                message = f'Congratulations you have enrolled {course} MRC therapy (Inventor Dr. Abhishek Sharma) MRC AYURVEDA & RESEARCH CENTER'
+                send_sms(mobile, message)
+                status = 'success'
+                send_sms('9267678888', message)
+            except:
+                message = f'Hope you are enjoy MRC therapy if any problem please contact {9267678888} this number (Inventor Dr. Abhishek Sharma) MRC AYURVEDA & RESEARCH CENTER'
+                user = UserProfile.objects.filter(user_id=user_id)
+                mobile = user[0].mobile
+                send_sms(mobile, message)
+                status = 'failed!'
+            context = {
+                'status': status,
+            }
+            return JsonResponse(context)

@@ -5,7 +5,12 @@
 
 {% block content %}
 <div class="col-lg-6 m-5 mx-auto text-center">
+    <p>Scan this scanner and pay the total amount Rs. {{totalprice}}</p>
+    <input type="hidden" name="user_id" id="user_id" value="{{user_id}}">
+    <input type="hidden" name="course_id" id="course_id" value="{{course_id}}">
+    <img src="/static/assets/img/payment_scanner/scanner.jpeg" alt="" class="img-fluid" style="max-width: 300px;">
     <button type="button" class="btn btn-primary btn-sm w-50" id="rzp-button1">Complete Checkout</button>
+
 </div>
 <div id="loader" class="d-none"></div>
 {% endblock content %}
@@ -25,60 +30,103 @@
       });
 
 
-      var options = {
-          "key": '{{razorkey}}',
-          "amount": {{payment.amount}},
-          "currency": "INR",
-          "name": "Mrc Vrindavan",
-          "description": "Medical Facilities for all",
-          "image": "https://example.com/your_logo",
-          "order_id": '{{payment.id}}',
-          "handler": function (response) {
-                var myObject = {
-                  'razorpay_order_id': response.razorpay_order_id,
-                  'razorpay_payment_id': response.razorpay_payment_id,
-                  'razorpay_signature':response.razorpay_signature,
-                  'course_id':'{{course_id}}',
-                  'course_price':'{{course_price}}',
-                  'discount':'{{discount}}',
-                  'totalprice':'{{totalprice}}',
-                  'quantity':'1',
-                  'payment_status':'success',
-                  'month':'{{month}}',
-                }
-                $('#loader-overlay').show(); // Show overlay
-                $('#loader').show(); // Show loader
-                $.ajax({
-                    url:'/payment_success/',
-                    method: 'GET',
-                    data: myObject,
-                    success: function (response) {
-                        var responseData = response;
-                        if(responseData.status == 1){
-                          window.location.href = '/my-courses/';
-                        }
-                        $('#loader-overlay').hide(); // Show overlay
-                        $('#loader').hide(); // Show loader
-                    },
-                });
+<!--      var options = {-->
+<!--          "key": '{{razorkey}}',-->
+<!--          "amount": {{payment.amount}},-->
+<!--          "currency": "INR",-->
+<!--          "name": "Mrc Vrindavan",-->
+<!--          "description": "Medical Facilities for all",-->
+<!--          "image": "https://example.com/your_logo",-->
+<!--          "order_id": '{{payment.id}}',-->
+<!--          "handler": function (response) {-->
+<!--                var myObject = {-->
+<!--                  'razorpay_order_id': response.razorpay_order_id,-->
+<!--                  'razorpay_payment_id': response.razorpay_payment_id,-->
+<!--                  'razorpay_signature':response.razorpay_signature,-->
+<!--                  'course_id':'{{course_id}}',-->
+<!--                  'course_price':'{{course_price}}',-->
+<!--                  'discount':'{{discount}}',-->
+<!--                  'totalprice':'{{totalprice}}',-->
+<!--                  'quantity':'1',-->
+<!--                  'payment_status':'success',-->
+<!--                  'month':'{{month}}',-->
+<!--                }-->
+<!--                $('#loader-overlay').show(); // Show overlay-->
+<!--                $('#loader').show(); // Show loader-->
+<!--                $.ajax({-->
+<!--                    url:'/payment_success/',-->
+<!--                    method: 'GET',-->
+<!--                    data: myObject,-->
+<!--                    success: function (response) {-->
+<!--                        var responseData = response;-->
+<!--                        if(responseData.status == 1){-->
+<!--                          window.location.href = '/my-courses/';-->
+<!--                        }-->
+<!--                        $('#loader-overlay').hide(); // Show overlay-->
+<!--                        $('#loader').hide(); // Show loader-->
+<!--                    },-->
+<!--                });-->
 
-          },
-    };
+<!--          },-->
+<!--    };-->
 
-    var rzp1 = new Razorpay(options);
+<!--    var rzp1 = new Razorpay(options);-->
 
-    rzp1.on('payment.failed', function (response) {
-      alert(response.error.code);
-      alert(response.error.description);
-      alert(response.error.reason);
-    });
+<!--    rzp1.on('payment.failed', function (response) {-->
+<!--      alert(response.error.code);-->
+<!--      alert(response.error.description);-->
+<!--      alert(response.error.reason);-->
+<!--    });-->
 
 
-    document.getElementById('rzp-button1').onclick = function (e) {
-      rzp1.open();
-      e.preventDefault();
-    }
+<!--    document.getElementById('rzp-button1').onclick = function (e) {-->
+<!--      rzp1.open();-->
+<!--      e.preventDefault();-->
+<!--    }-->
 
 </script>
+
+<script>
+    $('#rzp-button1').on('click', function (e) {
+        e.preventDefault(); // prevent default behavior
+        var user_id = $('#user_id').val();
+        var course_id = $('#course_id').val();
+        $('#loader-overlay').show(); // Show overlay
+        $('#loader').show(); // Show loader
+        $.ajax({
+            url: '/final_pay/',  // replace with your backend URL
+            type: 'POST',
+            data: {
+                user_id: user_id,
+                course_id: course_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}' // if using Django
+            },
+            success: function (response) {
+                $('#loader-overlay').hide();
+                $('#loader').hide();
+
+                if (response.status === 'success') {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Hope you are enjoy MRC therapy if any problem please contact - 9267678888 this number (Inventor Dr. Abhishek Sharma) MRC AYURVEDA & RESEARCH CENTER',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                         window.location.href = '/my-courses/';
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Payment Failed',
+                        text: 'something is wrong plz contact this number - 9267678888',
+                        icon: 'error',
+                        confirmButtonText: 'Try Again'
+                    });
+                }
+            },
+        });
+
+    });
+</script>
+
 
 {% endblock js %}
