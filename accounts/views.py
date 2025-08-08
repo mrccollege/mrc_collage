@@ -84,6 +84,10 @@ def register_account(request):
                                            mobile=contact_number,
                                            address=address,
                                            )
+                mobile = contact_number
+                message = ''
+
+                send_sms(mobile, message)
                 msg = 'User registration successfully.'
         except Exception as e:
             msg = str(e)
