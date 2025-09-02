@@ -36,8 +36,8 @@
                 $('#loader-overlay').hide();
                 $('#loader').hide();
 
-                if (response.redirectUrl) {
-                    window.open(response.redirectUrl);
+               if (response.redirectUrl) {
+                    window.location.href = response.redirectUrl;  // opens in same tab
                 } else {
                     console.error("Redirect URL not found in response");
                 }
