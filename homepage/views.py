@@ -755,6 +755,7 @@ def generate_tran_id():
 @csrf_exempt
 def initiate_payment(request):
     amount = int(request.GET.get('totalprice'))
+    amount = 1000
     url = "https://api.phonepe.com/apis/identity-manager/v1/oauth/token"
 
     payload = {
