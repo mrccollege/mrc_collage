@@ -4,5 +4,5 @@ class ReferrerPolicyMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-        response['Referrer-Policy'] = 'no-referrer-when-downgrade'
+        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         return response
