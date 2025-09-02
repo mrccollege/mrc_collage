@@ -43,7 +43,6 @@ MIDDLEWARE = [
     'accounts.middleware.SingleSessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.ReferrerPolicyMiddleware',
     'homepage.middleware.ReferrerPolicyMiddleware',
 ]
 
