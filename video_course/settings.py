@@ -91,7 +91,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -119,12 +118,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -134,6 +132,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 RAZOR_KEY_ID = 'rzp_live_Ap1PwlFBhamMza'
 RAZOR_KEY_SECRET = 'ow916Sgk2V2lSXoomeAM0Xf6'
 
+# settings.py
+
+PHONEPE_MERCHANT_ID = "M22FL4RV787PO"
+PHONEPE_MERCHANT_KEY = "SU2508121540161685954553"
+PHONEPE_SALT_KEY = "ffb3222b-725d-4fdb-9261-98b32bf0b5c7"
+PHONEPE_SALT_INDEX = 1
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -142,11 +146,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mrctherapy2023@gmail.com'
 EMAIL_HOST_PASSWORD = 'ikjh dxwd jlst lbgm'
 
-
 # PXEK4SAQTPR4TZF5JB6KZVM2
 
 
 TWILIO_ACCOUNT_SID = 'ACba651db70b737ca2a2558e01f14feea5'
 TWILIO_AUTH_TOKEN = 'f8662b3bd8848c99ce288005ed877865'
 TWILIO_PHONE_NUMBER = '+14155238886'
-

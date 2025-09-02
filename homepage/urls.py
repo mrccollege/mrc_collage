@@ -29,6 +29,8 @@ urlpatterns = [
     path('gargi/', views.gargi, name='gargi'),
     path('search-therapy/', views.search_therapy, name='search_therapy'),
     path('final_pay/', views.final_pay, name='final_pay'),
+    path("start/", views.initiate_payment, name="start_payment"),
+    path("payment_callback/", views.payment_callback, name="payment_callback"),
 
 
 ]

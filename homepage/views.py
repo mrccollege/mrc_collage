@@ -1,11 +1,9 @@
-import datetime
-
 import razorpay
 from courses.models import CoursePurchased, Course, VideoFiles, UserWatch, CourseMaster, MonthMoney, FileType
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.sites import requests
+import requests
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -14,7 +12,6 @@ from homepage.models import Lookup, CouponCode
 import os
 import qrcode
 from django.urls import reverse
-from datetime import datetime, timedelta
 
 from demo.models import UploadDemo
 
@@ -25,8 +22,10 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from common_function.send_message import send_sms
-
+from django.http import HttpResponse
 from accounts.models import UserProfile
+import json, base64, hashlib
+from datetime import datetime, timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -628,6 +627,7 @@ def get_service_month(request):
 def get_service_price(request):
     if request.method == 'GET':
         form = request.GET
+        print(form, '=============form')
         user_id = request.session.get('user_id')
         course_id = form.get('course_id')
         month_id = form.get('month_id')
@@ -743,3 +743,70 @@ def final_pay(request):
                 'status': status,
             }
             return JsonResponse(context)
+
+
+# -----------------------------------------
+def generate_tran_id():
+    """Generate unique merchantTransactionId (you can replace this logic)."""
+    import uuid
+    return "TID" + str(uuid.uuid4().hex[:12])
+
+
+@csrf_exempt
+def initiate_payment(request):
+    amount = int(request.GET.get('totalprice'))
+    url = "https://api.phonepe.com/apis/identity-manager/v1/oauth/token"
+
+    payload = {
+        "client_version": 1,
+        "grant_type": "client_credentials",
+        "client_id": "SU2508121540161685954553",
+        "client_secret": "ffb3222b-725d-4fdb-9261-98b32bf0b5c7",
+    }
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    response = requests.post(url, data=payload, headers=headers)
+    data = response.json()
+    access_token = data.get("access_token")
+    try:
+        final_payload = {
+            "merchantOrderId": generate_tran_id(),
+            "amount": amount * 100,
+            "expireAfter": 1200,
+            "metaInfo": {
+                "udf1": "test1",
+                "udf2": "new param2",
+                "udf3": "test3",
+                "udf4": "dummy value 4",
+                "udf5": "addition infor ref1"
+            },
+            "paymentFlow": {
+                "type": "PG_CHECKOUT",
+                "message": "Payment message used for collect requests",
+
+            }
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"O-Bearer {access_token}"
+        }
+
+        url = 'https://api.phonepe.com/apis/pg/checkout/v2/pay'
+        response = requests.post(url, headers=headers, json=final_payload)
+
+        response = response.json()
+        return JsonResponse(response)
+    except Exception as e:
+        return JsonResponse({"error": str(e)})
+
+
+@csrf_exempt
+def payment_callback(request):
+    data = request.POST or request.body
+    print("CALLBACK DATA:", data)
+    # Verify checksum if needed
+    return JsonResponse({"status": "ok"})
