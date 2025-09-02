@@ -43,6 +43,7 @@ MIDDLEWARE = [
     'accounts.middleware.SingleSessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.ReferrerPolicyMiddleware',
 ]
 
 ROOT_URLCONF = 'video_course.urls'
