@@ -1,0 +1,51 @@
+{% extends 'new_base.html' %}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+<div class="col-lg-6 m-5 mx-auto text-center">
+    <input type="hidden" name="user_id" id="user_id" value="{{user_id}}">
+    <input type="hidden" name="course_id" id="course_id" value="{{course_id}}">
+    <button type="button" class="btn btn-primary btn-sm w-50" id="rzp-button1">Complete Checkout</button>
+
+</div>
+<div id="loader" class="d-none"></div>
+{% endblock content %}
+
+{% block js %}
+<script src="https://mercury.phonepe.com/web/bundle/checkout.js"></script>
+<script>
+    $('#rzp-button1').on('click', function (e) {
+        e.preventDefault(); // prevent default behavior
+        var user_id = $('#user_id').val();
+        var course_id = $('#course_id').val();
+        $('#loader-overlay').show(); // Show overlay
+        $('#loader').show(); // Show loader
+        $.ajax({
+            url: '/start/',  // replace with your backend URL
+            type: 'GET',
+            data: {
+                user_id: user_id,
+                course_id: course_id,
+                totalprice: {{totalprice}},
+                csrfmiddlewaretoken: '{{ csrf_token }}' // if using Django
+            },
+            success: function (response) {
+                console.log(response, '==================response')
+                $('#loader-overlay').hide();
+                $('#loader').hide();
+
+               if (response.redirectUrl) {
+                    window.location.href = response.redirectUrl;  // opens in same tab
+                } else {
+                    console.error("Redirect URL not found in response");
+                }
+            },
+        });
+
+    });
+</script>
+
+
+{% endblock js %}
