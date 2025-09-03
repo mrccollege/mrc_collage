@@ -53,7 +53,6 @@
 
         var user_id = document.getElementById("user_id").value;
         var course_id = document.getElementById("course_id").value;
-        var totalprice = 500; // put your static total price
 
         document.getElementById("loader-overlay").style.display = "block";
 
@@ -63,10 +62,10 @@
             data: {
                 user_id: user_id,
                 course_id: course_id,
-                totalprice: totalprice
+                totalprice: {{totalprice}}
             },
             success: function (response) {
-                console.log(response, '=== response');
+<!--                console.log(response, '=== response');-->
                 document.getElementById("loader-overlay").style.display = "none";
 
                 if (response.redirectUrl) {

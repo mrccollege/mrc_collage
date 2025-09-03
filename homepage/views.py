@@ -548,6 +548,7 @@ def buy_course_detail(request, course_id, status=None):
             'user_id': user_id,
             'razorkey': settings.RAZOR_KEY_ID,
         }
+
         return render(request, 'final_pay.html', context)
 
     else:
@@ -755,6 +756,7 @@ def generate_tran_id():
 @csrf_exempt
 def initiate_payment(request):
     amount = int(request.GET.get('totalprice'))
+    print(amount, '=================amount===')
     url = "https://api.phonepe.com/apis/identity-manager/v1/oauth/token"
 
     payload = {
