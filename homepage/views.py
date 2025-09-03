@@ -698,8 +698,6 @@ def buy_course_detail(request, course_id, status=None):
                 course_price = base_price - after_discount
         else:
             course_price = base_price
-
-
         # context = {
         #     'course_price': base_price,
         #     'totalprice': course_price,
@@ -837,7 +835,6 @@ def initiate_payment(request):
                 "merchantUrls": {
                     "redirectUrl": "https://mrctherapy.com/my-courses/"
                 }
-
             }
         }
 
