@@ -494,79 +494,6 @@ def delete_files(request):
 
 
 @login_required(login_url='/accounts/login/')
-def buy_course_detail(request, course_id, status=None):
-    user_id = request.session.get('user_id')
-    if request.method == 'POST':
-        form = request.POST
-        apply_coupon = form.get('apply_coupon')
-        month = form.get('month')
-        course_id = course_id
-        discount = 0
-
-        course_price = MonthMoney.objects.filter(course_id=course_id, month=month)
-        if course_price:
-            base_price = course_price[0].money
-        else:
-            course_price = MonthMoney.objects.filter(course_id=course_id)[0]
-            base_price = course_price.money
-            month = course_price.month
-
-        if apply_coupon:
-            is_exist = CouponCode.objects.filter(coupon_code__exact=apply_coupon)
-            if is_exist:
-                discount = is_exist[0].percent
-                after_discount = discount * base_price / 100
-                course_price = base_price - after_discount
-        else:
-            course_price = base_price
-
-        client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-        payment = client.order.create({'amount': course_price * 100, 'currency': 'INR', 'payment_capture': '1'})
-        order_id = payment['id']
-
-        same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
-        try:
-            if same_user:
-                CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(razorpay_order_id=order_id,
-                                                                                            totalprice=course_price,
-                                                                                            discount=discount,
-                                                                                            start_date=datetime.now()
-                                                                                            )
-            else:
-                CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=order_id, course_id=course_id,
-                                               totalprice=course_price, discount=discount)
-        except:
-            pass
-
-        context = {
-            'payment': payment,
-            'course_price': base_price,
-            'totalprice': course_price,
-            'discount': discount,
-            'month': month,
-            'course_id': course_id,
-            'user_id': user_id,
-            'razorkey': settings.RAZOR_KEY_ID,
-        }
-
-        return render(request, 'final_pay.html', context)
-
-    else:
-        course_data = Course.objects.get(id=course_id)
-
-        already_purchased = CoursePurchased.objects.filter(course_id=course_id, user_id=user_id,
-                                                           payment_status='success')
-        if already_purchased:
-            return redirect('/')
-
-        context = {
-            'status': status,
-            'course_data': course_data,
-        }
-        return render(request, 'new_cart_page.html', context)
-
-
-@login_required(login_url='/accounts/login/')
 def payment_success(request):
     user_id = request.session.get('user_id')
     if request.method == 'GET':
@@ -628,7 +555,6 @@ def get_service_month(request):
 def get_service_price(request):
     if request.method == 'GET':
         form = request.GET
-        print(form, '=============form')
         user_id = request.session.get('user_id')
         course_id = form.get('course_id')
         month_id = form.get('month_id')
@@ -747,6 +673,127 @@ def final_pay(request):
 
 
 # -----------------------------------------
+@login_required(login_url='/accounts/login/')
+def buy_course_detail(request, course_id, status=None):
+    user_id = request.session.get('user_id')
+    if request.method == 'POST':
+        form = request.POST
+        apply_coupon = form.get('apply_coupon')
+        month = form.get('month')
+        course_id = course_id
+        discount = 0
+        course_price = MonthMoney.objects.filter(course_id=course_id, month=month)
+        if course_price:
+            base_price = course_price[0].money
+        else:
+            course_price = MonthMoney.objects.filter(course_id=course_id)[0]
+            base_price = course_price.money
+            month = course_price.month
+
+        if apply_coupon:
+            is_exist = CouponCode.objects.filter(coupon_code__exact=apply_coupon)
+            if is_exist:
+                discount = is_exist[0].percent
+                after_discount = discount * base_price / 100
+                course_price = base_price - after_discount
+        else:
+            course_price = base_price
+
+
+        # context = {
+        #     'course_price': base_price,
+        #     'totalprice': course_price,
+        #     'discount': discount,
+        #     'month': month,
+        #     'course_id': course_id,
+        #     'user_id': user_id,
+        # }
+
+        url = "https://api.phonepe.com/apis/identity-manager/v1/oauth/token"
+
+        payload = {
+            "client_version": 1,
+            "grant_type": "client_credentials",
+            "client_id": "SU2508121540161685954553",
+            "client_secret": "ffb3222b-725d-4fdb-9261-98b32bf0b5c7",
+        }
+
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+
+        response = requests.post(url, data=payload, headers=headers)
+        data = response.json()
+        access_token = data.get("access_token")
+        try:
+            final_payload = {
+                "merchantOrderId": generate_tran_id(),
+                "amount": course_price * 100,
+                "expireAfter": 1200,
+                "metaInfo": {
+                    "udf1": "test1",
+                    "udf2": "new param2",
+                    "udf3": "test3",
+                    "udf4": "dummy value 4",
+                    "udf5": "addition infor ref1"
+                },
+                "paymentFlow": {
+                    "type": "PG_CHECKOUT",
+                    "message": "Payment message used for collect requests",
+                    "merchantUrls": {
+                        "redirectUrl": "https://mrctherapy.com/my-courses/"
+                    }
+
+                }
+            }
+
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"O-Bearer {access_token}"
+            }
+
+            url = 'https://api.phonepe.com/apis/pg/checkout/v2/pay'
+            response = requests.post(url, headers=headers, json=final_payload)
+
+            response = response.json()
+            orderId = response.get("orderId")
+            same_user = CoursePurchased.objects.filter(user_id=user_id, course_id=course_id)
+
+            try:
+                if same_user:
+                    CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(
+                        razorpay_order_id=orderId,
+                        access_token=access_token,
+                        totalprice=course_price,
+                        discount=discount,
+                        start_date=datetime.now()
+                        )
+                else:
+                    CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=orderId,access_token=access_token, course_id=course_id,
+                                                   totalprice=course_price, discount=discount)
+            except:
+                pass
+
+            return JsonResponse(response)
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
+
+    else:
+        course_data = Course.objects.get(id=course_id)
+
+        already_purchased = CoursePurchased.objects.filter(course_id=course_id, user_id=user_id,
+                                                           payment_status='success')
+        if already_purchased:
+            return redirect('/')
+
+        context = {
+            'status': status,
+            'course_data': course_data,
+            'course_id': course_id,
+        }
+        return render(request, 'new_cart_page.html', context)
+
+
 def generate_tran_id():
     """Generate unique merchantTransactionId (you can replace this logic)."""
     import uuid
@@ -756,7 +803,6 @@ def generate_tran_id():
 @csrf_exempt
 def initiate_payment(request):
     amount = int(request.GET.get('totalprice'))
-    print(amount, '=================amount===')
     url = "https://api.phonepe.com/apis/identity-manager/v1/oauth/token"
 
     payload = {
