@@ -101,7 +101,9 @@ class CoursePurchased(models.Model):
     razorpay_payment_id = models.CharField(max_length=100, null=True)
     razorpay_order_id = models.CharField(max_length=100, null=True)
     razorpay_signature = models.CharField(max_length=100, null=True)
+    merchant_reference_id = models.CharField(max_length=100, null=True)
     access_token = models.TextField(null=True, blank=True)
+
     payment_status = models.CharField(max_length=100, null=True)
     mail_delivered = models.BooleanField(default=False, null=True)
     customer_status = models.IntegerField(null=True, blank=True)

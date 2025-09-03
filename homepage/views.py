@@ -106,6 +106,23 @@ def send_order_confirmation_email(order):
 def my_courses(request):
     user_id = request.session.get('user_id')
     if user_id is not None:
+        # CoursePurchased.objects.filter()
+        # url = "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/order/{{TID0214c4b3c0e2}}/status"
+        # payload = {
+        #     "client_version": 1,
+        #     "grant_type": "client_credentials",
+        #     "client_id": "SU2508121540161685954553",
+        #     "client_secret": "ffb3222b-725d-4fdb-9261-98b32bf0b5c7",
+        # }
+        #
+        # headers = {
+        #     "Content-Type": "application/json",
+        #     "Authorization": f"O - Bearer {{eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpZGVudGl0eU1hbmFnZXIiLCJ2ZXJzaW9uIjoiNC4wIiwidGlkIjoiNTIxNDA0NDYtYTQwZS00ZmI3LWIyMTYtMjExMmJiNWRkYWFmIiwic2lkIjoiMThjNzIyYzMtNmM0OC00NjVlLWIyYjYtNjhjMjlhZjgzNzJlIiwiaWF0IjoxNzU2ODg1NjUwLCJleHAiOjE3NTY4ODkyNTB9.WnkGUodHkGR_GnybwNUqEpMEvTpn89Ow6RvajEcmfv3mDMv93hoNEoyo5xOdgOMHiLY_alHCNXNeuQYrT78mjw}}"
+        # }
+        # response = requests.post(url, data=payload, headers=headers)
+        #
+        # print(response.text, 'response--------------12')
+
         is_admin = User.objects.filter(id=user_id, username='admin')
         if is_admin:
             query = Q()
@@ -723,9 +740,10 @@ def buy_course_detail(request, course_id, status=None):
         response = requests.post(url, data=payload, headers=headers)
         data = response.json()
         access_token = data.get("access_token")
+        merchant_reference_id = generate_tran_id()
         try:
             final_payload = {
-                "merchantOrderId": generate_tran_id(),
+                "merchantOrderId": merchant_reference_id,
                 "amount": course_price * 100,
                 "expireAfter": 1200,
                 "metaInfo": {
@@ -761,6 +779,7 @@ def buy_course_detail(request, course_id, status=None):
                 if same_user:
                     CoursePurchased.objects.filter(user_id=user_id, course_id=course_id).update(
                         razorpay_order_id=orderId,
+                        merchant_reference_id=merchant_reference_id,
                         access_token=access_token,
                         totalprice=course_price,
                         discount=discount,
@@ -768,7 +787,7 @@ def buy_course_detail(request, course_id, status=None):
                         )
                 else:
                     CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=orderId,access_token=access_token, course_id=course_id,
-                                                   totalprice=course_price, discount=discount)
+                                                   totalprice=course_price, discount=discount, merchant_reference_id=merchant_reference_id)
             except:
                 pass
 
