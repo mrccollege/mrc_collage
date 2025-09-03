@@ -5,6 +5,7 @@ urlpatterns = [
     path('<int:id>/', views.homepage, name='homepage'),
     path('payment_success/', views.payment_success, name='payment_success'),
     path('my-courses/', views.my_courses, name='my_courses'),
+    path('my-courses/<str:merchant_reference_id>/', views.my_courses, name='my_courses'),
     path('watch-video/<str:type>/<int:course_id>/', views.watch_video, name='watch_video'),
     path('watch-video/<str:pre_next>/<str:type>/<int:course_id>/<int:file_id>/', views.watch_video, name='watch_video'),
     path('count_video/<int:id>/', views.count_video, name='count_video'),

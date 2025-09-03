@@ -102,27 +102,39 @@ def send_order_confirmation_email(order):
         pass
 
 
+def get_order_status(merchant_order_id='TIDe8ecad299ce0', details = False, error_context = False):
+    access_token = CoursePurchased.objects.filter(merchant_reference_id=merchant_order_id)
+    if access_token:
+        access_token = access_token[0].access_token
+    url = f"https://api.phonepe.com/apis/pg/checkout/v2/order/{merchant_order_id}/status"
+
+    params = {
+        "details": str(details).lower(),
+        "errorContext": str(error_context).lower()
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"O-Bearer {access_token}"
+    }
+    try:
+        response = requests.get(url, headers=headers, params=params, timeout=30)
+        response.raise_for_status()
+        data  = response.json()
+        status = data.get('state')
+        if status == 'COMPLETE':
+            CoursePurchased.objects.filter(merchant_reference_id=merchant_order_id).update(payment_status='success')
+        return data
+    except requests.exceptions.RequestException as e:
+        return {"error": str(e)}
+
+
 @login_required(login_url='/accounts/login/')
-def my_courses(request):
+def my_courses(request, merchant_reference_id=None):
     user_id = request.session.get('user_id')
     if user_id is not None:
-        # CoursePurchased.objects.filter()
-        # url = "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/order/{{TID0214c4b3c0e2}}/status"
-        # payload = {
-        #     "client_version": 1,
-        #     "grant_type": "client_credentials",
-        #     "client_id": "SU2508121540161685954553",
-        #     "client_secret": "ffb3222b-725d-4fdb-9261-98b32bf0b5c7",
-        # }
-        #
-        # headers = {
-        #     "Content-Type": "application/json",
-        #     "Authorization": f"O - Bearer {{eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpZGVudGl0eU1hbmFnZXIiLCJ2ZXJzaW9uIjoiNC4wIiwidGlkIjoiNTIxNDA0NDYtYTQwZS00ZmI3LWIyMTYtMjExMmJiNWRkYWFmIiwic2lkIjoiMThjNzIyYzMtNmM0OC00NjVlLWIyYjYtNjhjMjlhZjgzNzJlIiwiaWF0IjoxNzU2ODg1NjUwLCJleHAiOjE3NTY4ODkyNTB9.WnkGUodHkGR_GnybwNUqEpMEvTpn89Ow6RvajEcmfv3mDMv93hoNEoyo5xOdgOMHiLY_alHCNXNeuQYrT78mjw}}"
-        # }
-        # response = requests.post(url, data=payload, headers=headers)
-        #
-        # print(response.text, 'response--------------12')
-
+        if merchant_reference_id != None:
+            get_order_status()
         is_admin = User.objects.filter(id=user_id, username='admin')
         if is_admin:
             query = Q()
@@ -757,7 +769,7 @@ def buy_course_detail(request, course_id, status=None):
                     "type": "PG_CHECKOUT",
                     "message": "Payment message used for collect requests",
                     "merchantUrls": {
-                        "redirectUrl": "https://mrctherapy.com/my-courses/"
+                        "redirectUrl": f"https://mrctherapy.com/my-courses/{merchant_reference_id}"
                     }
 
                 }
@@ -784,10 +796,12 @@ def buy_course_detail(request, course_id, status=None):
                         totalprice=course_price,
                         discount=discount,
                         start_date=datetime.now()
-                        )
+                    )
                 else:
-                    CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=orderId,access_token=access_token, course_id=course_id,
-                                                   totalprice=course_price, discount=discount, merchant_reference_id=merchant_reference_id)
+                    CoursePurchased.objects.create(user_id=user_id, razorpay_order_id=orderId,
+                                                   access_token=access_token, course_id=course_id,
+                                                   totalprice=course_price, discount=discount,
+                                                   merchant_reference_id=merchant_reference_id)
             except:
                 pass
 
