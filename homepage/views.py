@@ -102,51 +102,66 @@ def send_order_confirmation_email(order):
         pass
 
 
-def get_order_status(merchant_order_id='TIDe8ecad299ce0', details = False, error_context = False):
-    access_token = CoursePurchased.objects.filter(merchant_reference_id=merchant_order_id)
-    if access_token:
-        access_token = access_token[0].access_token
-    url = f"https://api.phonepe.com/apis/pg/checkout/v2/order/{merchant_order_id}/status"
+def get_order_status(merchant_order_id, details=False, error_context=False):
+    cp = CoursePurchased.objects.filter(merchant_reference_id=merchant_order_id).first()
+    if not cp:
+        return {"error": "Invalid merchant order id"}
+
+    access_token = cp.access_token
+    merchantOrderId = merchant_order_id
+    url = f"https://api.phonepe.com/apis/pg/checkout/v2/order/{merchantOrderId}/status"
 
     params = {
         "details": str(details).lower(),
-        "errorContext": str(error_context).lower()
+        "errorContext": str(error_context).lower(),
     }
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"O-Bearer {access_token}"
+        "Authorization": f"O-Bearer {access_token}",  # Double-check with PhonePe docs
     }
+
     try:
         response = requests.get(url, headers=headers, params=params, timeout=30)
         response.raise_for_status()
-        data  = response.json()
+        data = response.json()
+
         status = data.get('state')
-        if status == 'COMPLETE':
-            CoursePurchased.objects.filter(merchant_reference_id=merchant_order_id).update(payment_status='success')
+        if status == 'COMPLETED':
+            CoursePurchased.objects.filter(
+                merchant_reference_id=merchant_order_id
+            ).update(payment_status='success')
+
         return data
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         return {"error": str(e)}
+
+
+
 
 
 @login_required(login_url='/accounts/login/')
 def my_courses(request, merchant_reference_id=None):
     user_id = request.session.get('user_id')
-    if user_id is not None:
-        if merchant_reference_id != None:
-            get_order_status()
-        is_admin = User.objects.filter(id=user_id, username='admin')
-        if is_admin:
-            query = Q()
-        else:
-            query = Q(user_id=user_id) & Q(payment_status='success') | Q(user_id=user_id) & Q(payment_status='renew')
-            course_purchased = CoursePurchased.objects.filter(query).values_list('course', flat=True)
-            query = Q(id__in=course_purchased)
-        my_pur_cours = Course.objects.filter(query)
-        context = {'my_course': my_pur_cours}
-        return render(request, 'my_course.html', context)
-    else:
+    if user_id is None:
         return redirect('/accounts/login/')
+
+    if merchant_reference_id:
+        res_ponse = get_order_status(merchant_reference_id)
+    is_admin = User.objects.filter(id=user_id, username='admin').exists()
+    if is_admin:
+        query = Q()
+    else:
+        query = (
+                (Q(user_id=user_id) & Q(payment_status='success')) |
+                (Q(user_id=user_id) & Q(payment_status='renew'))
+        )
+        course_purchased = CoursePurchased.objects.filter(query).values_list('course', flat=True)
+        query = Q(id__in=course_purchased)
+
+    my_pur_cours = Course.objects.filter(query)
+    context = {'my_course': my_pur_cours}
+    return render(request, 'my_course.html', context)
 
 
 def watch_video(request, pre_next='', type='', course_id=0, file_id=0):
