@@ -39,7 +39,14 @@
     <div class="container">
         <div class="col-lg-8 mb-3 mx-auto p-5 text-center">
             <button id="my_courses" type="button" class="btn btn-primary m-3">My Course</button>
-<!--            <button id="watch_demo" type="button" class="btn btn-primary m-3">Listen Demo</button>-->
+            <!--            <button id="watch_demo" type="button" class="btn btn-primary m-3">Listen Demo</button>-->
+            {% if user.is_authenticated %}
+            <!-- Show this if user IS logged in -->
+            <a href="/accounts/logout/" class="btn btn-xs btn-danger">Logout</a>
+            {% else %}
+            <!-- Show this if user is NOT logged in -->
+            <a href="/accounts/login/" class="btn btn-xs btn-base-light">Login</a>
+            {% endif %}
 
             <div class="col-lg-6 d-none mx-auto" id="demo_code">
                 <h6 class="mt-2">Only for one time so please listen complete demo when you have free 30 minutes</h6>
@@ -230,10 +237,11 @@
                                 <div class="single-course-wrap">
                                     <div class="thumb">
                                         {% if course_master.demo_video %}
-                                        <video class="img-fluid" src="{{course_master.demo_video.url}}" controls controlsList="nodownload">
-                                        {% else %}
-                                        <img class="img-fluid" src="{{course_master.course_image.url}}" alt="img"/>
-                                        {% endif %}
+                                        <video class="img-fluid" src="{{course_master.demo_video.url}}" controls
+                                               controlsList="nodownload">
+                                            {% else %}
+                                            <img class="img-fluid" src="{{course_master.course_image.url}}" alt="img"/>
+                                            {% endif %}
                                     </div>
                                     <div class="wrap-details">
                                         <h6>{{course_master.name|title}}</h6>
