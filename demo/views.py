@@ -39,7 +39,7 @@ def count_video_play(request):
         bulk_code = form.get('bulk_code')
         status = 0
         try:
-            bulk_code = BulkCode.objects.filter(code__iexact=bulk_code)
+            bulk_code = UploadDemo.objects.filter(code__iexact=bulk_code)
             if bulk_code:
                 bulk_code = bulk_code[0].code
                 if bulk_code:
@@ -77,7 +77,7 @@ def get_demo_data(request):
             demo_data = None
 
         try:
-            bulk_code = BulkCode.objects.filter(code__iexact=bulk_code)
+            bulk_code = UploadDemo.objects.filter(code__iexact=bulk_code)
             if bulk_code:
                 bulk_code = bulk_code[0].code
                 if bulk_code:
