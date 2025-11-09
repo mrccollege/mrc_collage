@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from numpy.core.defchararray import strip
 
-from .models import DemoClass, MainUserDemo, AddUserDemoCode, BulkCode
+from .models import DemoClass, MainUserDemo, AddUserDemoCode, BulkCode, UploadDemo
 
 # Create your views here.
 from courses.models import Course
@@ -66,6 +66,16 @@ def get_demo_data(request):
         user_id = request.session.get('user_id')
         bulk_code = strip(form.get('bulk_code'))
         status = 0
+        demo_class = UploadDemo.objects.filter(code__iexact=bulk_code).first()
+        if demo_class:
+            demo_data = {
+                'title': demo_class.title,
+                'description': demo_class.description,
+                'file_url': demo_class.file.url if demo_class.file else None,
+            }
+        else:
+            demo_data = None
+
         try:
             bulk_code = BulkCode.objects.filter(code__iexact=bulk_code)
             if bulk_code:
@@ -81,5 +91,6 @@ def get_demo_data(request):
 
         context = {
             'status': status,
+            'demo_data': demo_data,
         }
         return JsonResponse(context)

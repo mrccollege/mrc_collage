@@ -28,6 +28,7 @@ class UserDemoClass(models.Model):
 
 
 class UploadDemo(models.Model):
+    code = models.CharField(max_length=10, null=True)
     title = models.CharField(max_length=1000, null=True)
     description = models.TextField(null=True, blank=True)
     file = models.FileField(upload_to='upload_demo')

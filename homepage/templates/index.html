@@ -39,7 +39,7 @@
     <div class="container">
         <div class="col-lg-8 mb-3 mx-auto p-5 text-center">
             <button id="my_courses" type="button" class="btn btn-primary m-3">My Course</button>
-            <!--            <button id="watch_demo" type="button" class="btn btn-primary m-3">Listen Demo</button>-->
+            <button id="watch_demo" type="button" class="btn btn-primary m-3">Listen Demo</button>
             {% if user.is_authenticated %}
             <!-- Show this if user IS logged in -->
             <a href="/accounts/logout/" class="btn btn-xs btn-danger">Logout</a>
@@ -61,7 +61,7 @@
             <div class="single-course-wrap mb-0">
                 <div class="thumb">
                     <video controls controlsList="nodownload" id="video_frame"
-                           src="{{demo_file}}" type="video/mp4" class="img-fluid plyr"
+                           src="" type="video/mp4" class="img-fluid plyr"
                            poster="static/assets/img/wave.gif">
                     </video>
                 </div>
@@ -327,9 +327,12 @@
                     'bulk_code': bulk_code
                 },
                 success: function(data){
+                    $('#video_frame').attr('src', data.demo_data.file_url)
+
                     $('#loader-overlay').hide(); // Show overlay
                     $('#loader').hide(); // Show loader
                     if (data.status == 0){
+
                         $('#demo_div').addClass('d-none')
                         Swal.fire({
                             title: 'Your demo is completed.',
