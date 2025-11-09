@@ -43,7 +43,7 @@ def count_video_play(request):
             if bulk_code:
                 bulk_code = bulk_code[0].code
                 if bulk_code:
-                    is_added = MainUserDemo.objects.filter(user_id=user_id).exists()
+                    is_added = MainUserDemo.objects.filter(user_id=user_id, code=bulk_code).exists()
                     if is_added:
                         status = status
                     else:
@@ -81,7 +81,7 @@ def get_demo_data(request):
             if bulk_code:
                 bulk_code = bulk_code[0].code
                 if bulk_code:
-                    is_added = MainUserDemo.objects.filter(user_id=user_id).exists()
+                    is_added = MainUserDemo.objects.filter(user_id=user_id, code=bulk_code).exists()
                     if is_added:
                         status = status
                     else:
