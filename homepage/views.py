@@ -56,10 +56,6 @@ def homepage(request, id=0):
     if demo_file:
         demo_file_path = demo_file[0].file.url
 
-    bulk_code = BulkCode.objects.filter(Q()).order_by('id')
-    if bulk_code:
-        bulk_code = bulk_code[0].code
-
     context = {
         'id': id,
         'course_master1': course_master1,
@@ -68,7 +64,6 @@ def homepage(request, id=0):
         'course_master4': course_master4,
         'course_master5': course_master5,
         'demo_file': demo_file_path,
-        'bulk_code': bulk_code,
         'user_id': user_id,
     }
     return render(request, 'index.html', context)

@@ -324,7 +324,7 @@
             $.ajax({
                 url:'/demo/get_demo_data/',
                 data:{
-                    'bulk_code': bulk_code
+                    'bulk_code': bulk_code,
                 },
                 success: function(data){
                     $('#video_frame').attr('src', data.demo_data.file_url)
@@ -371,10 +371,11 @@
    const video = document.getElementById('video_frame');
 
    video.addEventListener('play', function() {
+       var bulk_code = $('#user_code').val()
        $.ajax({
            url:'/demo/count_video_play/',
            data:{
-               'bulk_code': {{bulk_code}}
+               'bulk_code': bulk_code,
            },
            success: function(data){
                if (data.status == 0){
