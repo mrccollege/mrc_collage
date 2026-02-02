@@ -76,68 +76,26 @@ class MonthMoneyAdmin(admin.ModelAdmin):
     list_filter = ('id', 'course', 'month', 'money')
 
 
-# class CoursePurchasedAdmin(admin.ModelAdmin):
-#     list_display = (
-#         'user', 'get_first_name', 'course', 'totalprice', 'razorpay_signature', 'payment_status', 'coupon_code',
-#         'month', 'start_date')
-#     list_filter = (
-#         'user', 'course', 'razorpay_signature', 'payment_status', 'coupon_code', 'month', 'start_date')
-#     search_fields = (
-#         'user__username', 'user__first_name', 'course__name', 'razorpay_order_id', 'razorpay_payment_id',
-#         'payment_status')
-#
-#     list_per_page = 10
-#     actions = [export_course_purchases_to_excel]
-#
-#     def get_list_per_page(self, request):
-#         try:
-#             per_page = int(request.GET.get('per_page', self.list_per_page))
-#             if per_page in [10, 50, 100, 500]:
-#                 return per_page
-#         except ValueError:
-#             pass
-#         return self.list_per_page
-#
-#     def get_first_name(self, obj):
-#         return obj.user.first_name
-#
-#     get_first_name.short_description = 'First Name'
-
 class CoursePurchasedAdmin(admin.ModelAdmin):
-    PER_PAGE_CHOICES = [10, 50, 100, 500]
-
     list_display = (
-        'user', 'get_first_name', 'course', 'totalprice',
-        'razorpay_signature', 'payment_status',
-        'coupon_code', 'month', 'start_date'
-    )
-
+        'user', 'get_first_name', 'course', 'totalprice', 'razorpay_signature', 'payment_status', 'coupon_code',
+        'month', 'start_date')
     list_filter = (
-        'user', 'course', 'razorpay_signature',
-        'payment_status', 'coupon_code',
-        'month', 'start_date'
-    )
-
+        'user', 'course', 'razorpay_signature', 'payment_status', 'coupon_code', 'month', 'start_date')
     search_fields = (
-        'user__username', 'user__first_name',
-        'course__name', 'razorpay_order_id',
-        'razorpay_payment_id', 'payment_status'
-    )
+        'user__username', 'user__first_name', 'course__name', 'razorpay_order_id', 'razorpay_payment_id',
+        'payment_status')
 
-    list_per_page = 10
+    list_per_page = 100
     actions = [export_course_purchases_to_excel]
 
     def get_list_per_page(self, request):
-        per_page = request.GET.get('per_page')
-
-        if per_page:
-            try:
-                per_page = int(per_page)
-                if per_page in self.PER_PAGE_CHOICES:
-                    return per_page
-            except (ValueError, TypeError):
-                pass
-
+        try:
+            per_page = int(request.GET.get('per_page', self.list_per_page))
+            if per_page in [10, 50, 100, 500]:
+                return per_page
+        except ValueError:
+            pass
         return self.list_per_page
 
     def get_first_name(self, obj):
