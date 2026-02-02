@@ -89,6 +89,15 @@ class CoursePurchasedAdmin(admin.ModelAdmin):
     list_per_page = 10
     actions = [export_course_purchases_to_excel]
 
+    def get_list_per_page(self, request):
+        try:
+            per_page = int(request.GET.get('per_page', self.list_per_page))
+            if per_page in [10, 50, 100, 500]:
+                return per_page
+        except ValueError:
+            pass
+        return self.list_per_page
+
     def get_first_name(self, obj):
         return obj.user.first_name
 
