@@ -33,7 +33,7 @@ class UserQueryAdmin(admin.ModelAdmin):
 
 
 class OtpVerifyAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'otp', 'created_at')
+    list_display = ('id', 'email', 'mobile', 'otp', 'created_at')
 
 
 admin.site.register(UserQuery, UserQueryAdmin)
