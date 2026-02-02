@@ -85,6 +85,8 @@ class CoursePurchasedAdmin(admin.ModelAdmin):
     search_fields = (
         'user__username', 'user__first_name', 'course__name', 'razorpay_order_id', 'razorpay_payment_id',
         'payment_status')
+
+    list_per_page = 10
     actions = [export_course_purchases_to_excel]
 
     def get_first_name(self, obj):
