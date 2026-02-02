@@ -28,7 +28,8 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 
 class UserQueryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'message', 'email', 'created_at')
+    list_display = ('name', 'whatsapp', 'message', 'email', 'created_at', 'id')
+    search_fields = ('name', 'whatsapp', 'message', 'email', 'created_at', 'id')
 
 
 class OtpVerifyAdmin(admin.ModelAdmin):

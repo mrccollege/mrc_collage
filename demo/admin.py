@@ -3,8 +3,8 @@ from .models import UploadDemo, BulkCode, MainUserDemo
 
 
 class MainUserDemoAdmin(admin.ModelAdmin):
-    list_display = ['get_first_name', 'get_email','user', 'code', 'watch_count']
-    search_fields = ('user__username', 'user__email', 'user__first_name', 'code')
+    list_display = ['get_first_name', 'get_email','user', 'code', 'watch_count', 'created_at']
+    search_fields = ('user__username', 'user__email', 'user__first_name', 'code', 'created_at')
 
     def get_first_name(self, obj):
         return obj.user.first_name
