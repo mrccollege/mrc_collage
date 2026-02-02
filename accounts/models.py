@@ -36,6 +36,7 @@ class UserQuery(models.Model):
 class OtpVerify(models.Model):
     email = models.EmailField(null=True, unique=True)
     otp = models.CharField(max_length=10, null=True)
+    mobile = models.CharField(max_length=10, null=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(null=True)
 
