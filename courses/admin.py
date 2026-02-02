@@ -33,7 +33,7 @@ def export_course_purchases_to_excel(modeladmin, request, queryset):
     ]
     worksheet.append(headers)
 
-    sorted_queryset = queryset.order_by('start_date')
+    sorted_queryset = queryset.order_by('-start_date')
 
     # Populate the data
     for obj in sorted_queryset:
