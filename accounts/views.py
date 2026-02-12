@@ -192,19 +192,22 @@ def forget_password(request):
                 status = 1
                 msg = f'OTP Send successfully on {email}'
             else:
-                try:
-                    user_profile = UserProfile.objects.filter(user_id=is_user[0].id)
-                    if user_profile:
-                        mobile = user_profile.mobile
-                    else:
-                        mobile = '0000000000'
-                    OtpVerify.objects.create(email=email, otp=otp, mobile=mobile)
-                    send_otp_email(email, otp)
-                    status = 1
-                    msg = f'OTP Send successfully on {email}'
-                except Exception as e:
-                    status = 0
-                    msg = str(e)
+
+                user_profile = UserProfile.objects.filter(user_id=is_user[0].id)
+                if user_profile[0].mobile:
+                    mobile = user_profile[0].mobile
+                else:
+                    mobile = '0000000000'
+                OtpVerify.objects.create(email=email, otp=otp, mobile=mobile)
+                send_otp_email(email, otp)
+                status = 1
+                msg = f'OTP Send successfully on {email}'
+
+                # try:
+                #
+                # except Exception as e:
+                #     status = 0
+                #     msg = str(e)
         else:
             status = 0
             msg = 'Email is not registered'
