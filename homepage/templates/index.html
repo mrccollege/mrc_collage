@@ -240,7 +240,7 @@
                                         <video class="img-fluid" src="{{course_master.demo_video.url}}" controls
                                                controlsList="nodownload">
                                             {% else %}
-                                            <img class="img-fluid" src="{{course_master.course_image.url}}" alt="img"/>
+                                            <img class="img-fluid" src="{% if course_master.course_image %}{{course_master.course_image.url}} {% endif %}" alt="img"/>
                                             {% endif %}
                                     </div>
                                     <div class="wrap-details">
