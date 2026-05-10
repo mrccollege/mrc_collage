@@ -12,6 +12,12 @@ from homepage.models import Lookup, CouponCode
 import os
 import qrcode
 from django.urls import reverse
+import base64
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+
+
 
 from demo.models import UploadDemo
 
@@ -894,10 +900,31 @@ def initiate_payment(request):
     except Exception as e:
         return JsonResponse({"error": str(e)})
 
-
+### replaced  callback
 @csrf_exempt
 def payment_callback(request):
-    data = request.POST or request.body
-    print("CALLBACK DATA:", data)
-    # Verify checksum if needed
-    return JsonResponse({"status": "ok"})
+    expected_username = "phonepe_webhook"
+    expected_password = "MrcWebhook@2026!Secure"
+
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Basic "):
+        return JsonResponse({"success": False, "msg": "Missing auth"}, status=401)
+
+    try:
+        encoded = auth_header.split(" ", 1)[1].strip()
+        decoded = base64.b64decode(encoded).decode("utf-8")
+        username, password = decoded.split(":", 1)
+    except Exception:
+        return JsonResponse({"success": False, "msg": "Invalid auth"}, status=401)
+
+    if username != expected_username or password != expected_password:
+        return JsonResponse({"success": False, "msg": "Unauthorized"}, status=401)
+
+    try:
+        body = request.body.decode("utf-8") if request.body else ""
+        print("PHONEPE CALLBACK BODY:", body)
+        print("PHONEPE CALLBACK HEADERS:", dict(request.headers))
+    except Exception as e:
+        print("PHONEPE CALLBACK ERROR:", str(e))
+
+    return JsonResponse({"success": True})

@@ -13,6 +13,7 @@ from .models import UserQuery, OtpVerify, UserProfile
 from twilio.rest import Client
 from django.db.models import Q
 
+
 # from common_function.send_message import send_sms
 
 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)

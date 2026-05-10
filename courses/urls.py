@@ -5,5 +5,7 @@ urlpatterns = [
     path('course_list/', view_api.course_list, name='course_list'),
     path('course_detail/', view_api.course_detail, name='course_detail'),
     path('my_courses/', view_api.my_courses, name='my_courses'),
-
+    path('home_catalog/', view_api.home_catalog, name='home_catalog'),
+    path('course_full_detail/', view_api.course_full_detail, name='course_full_detail'),	
+    path('home_catalog1/', view_api.home_catalog1, name='home_catalog1'),
 ]

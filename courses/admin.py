@@ -59,7 +59,6 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     list_filter = ('id', 'name')
 
-
 class ScreenColumnAdmin(admin.ModelAdmin):
     list_display = ('id', 'screen_column')
     list_filter = ('id', 'screen_column')
