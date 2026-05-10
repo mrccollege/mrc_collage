@@ -123,3 +123,25 @@ class UserWatch(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+class Category(models.Model):
+    Category_main_id = models.IntegerField(primary_key=True)
+    Category_main_name = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.Category_main_name or str(self.Category_main_id)
+
+    class Meta:
+        db_table = "Category"
+        managed = False
+
+
+
+class CourseMasterDisplay(models.Model):
+    course_master = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='display_settings')
+    screen_order = models.IntegerField(default=0, null=True, blank=True)
+    rating = models.FloatField(default=0.0, null=True, blank=True)
+
+    def __str__(self):
+        return f"Display for {self.course.name}"
+
