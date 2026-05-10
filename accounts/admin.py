@@ -4,21 +4,27 @@ from .models import UserQuery, OtpVerify, UserProfile
 
 # Register your models here.
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'get_first_name', 'get_address', 'created_at')
-    list_filter = ('user', 'mobile', 'user__first_name', 'created_at')
+    list_display = ('user_id', 'user', 'get_email', 'get_first_name', 'get_address', 'created_at')
+    # list_filter = ('user', 'mobile', 'user__first_name', 'created_at')
     search_fields = ('user__username', 'mobile', 'user__first_name', 'created_at')
 
     def get_first_name(self, obj):
         return obj.user.first_name
+
     get_first_name.short_description = 'First Name'
+
+    def get_email(self, obj):
+        return obj.user.email
 
     def get_address(self, obj):
         return obj.address
+
     get_address.short_description = 'Address'
 
     # def get_address(self, obj):
     #     return obj.address
     # get_address.short_description = 'Address'
+
 
 # https://www.youtube.com/@mrcayurveda3775
 # https://www.youtube.com/@DrAbhishekSharmaMRC

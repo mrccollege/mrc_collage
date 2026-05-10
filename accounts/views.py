@@ -169,13 +169,34 @@ def generate_time_based_otp():
     return otp
 
 
-def send_otp_email(email, otp):
-    subject = 'Your OTP for Verification'
-    message = f'Your OTP is: {otp}'
-    from_email = 'sanjay.singh@crebritech.com'
-    recipient_list = [email]
+# def send_otp_email(email, otp):
+#     subject = 'Your OTP for Verification'
+#     message = f'Your OTP is: {otp}'
+#     from_email = 'mrctherapy2023@gmail.com'
+#     recipient_list = [email]
+#     send_mail(subject, message, from_email, recipient_list)
 
-    send_mail(subject, message, from_email, recipient_list)
+def send_otp_email(email, otp):
+        subject = 'Your OTP for Verification'
+
+        message = f'''
+        Hello,
+    
+        Your OTP is: {otp}
+    
+        Do not share this OTP with anyone.
+        '''
+
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [email]
+
+        send_mail(
+            subject,
+            message,
+            from_email,
+            recipient_list,
+            fail_silently=False,
+        )
 
 
 def forget_password(request):
@@ -192,7 +213,6 @@ def forget_password(request):
                 status = 1
                 msg = f'OTP Send successfully on {email}'
             else:
-
                 user_profile = UserProfile.objects.filter(user_id=is_user[0].id)
                 if user_profile[0].mobile:
                     mobile = user_profile[0].mobile
