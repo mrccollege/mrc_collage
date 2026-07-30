@@ -44,7 +44,7 @@ urlpatterns = [
  # New Master Course Management Paths
     path("app_get_courses/", views_app_api.app_get_courses, name="app_get_courses"),
     path("update_master_bulk/", views_app_api.update_master_bulk, name="update_master_bulk"),
- 
+    path("app-buy-course-sdk/<int:course_id>/", views_app_api.app_buy_course_sdk,name="app_buy_course_sdk"),
     
 
 

@@ -1,6 +1,7 @@
 import uuid
 import requests
 import json
+
 from datetime import datetime, timedelta
 from django.db import connection
 
@@ -113,6 +114,12 @@ def create_phonepe_checkout(user_id, course_id, month, apply_coupon, redirect_ur
     )
     response.raise_for_status()
     response_data = response.json()
+ # added 
+    print("=" * 100)
+    print("PHONEPE CHECKOUT RESPONSE")
+    print(json.dumps(response_data, indent=2))
+    print("=" * 100)
+#
     return response_data, access_token, merchant_reference_id, course_price, discount, resolved_month
 
 
@@ -273,7 +280,7 @@ def app_buy_course_detail(request, course_id):
             course_id=course_id,
             month=month,
             apply_coupon=apply_coupon,
-            redirect_url=f"https://mrctherapy.com/app-payment-return/{merchant_reference_id}/",
+            redirect_url=f"therapyapp://my-course",
             merchant_reference_id=merchant_reference_id,
         )
 
@@ -284,12 +291,19 @@ def app_buy_course_detail(request, course_id):
         # Extract redirect URL from instrumentResponse → redirectInfo → url
         instrument_response = data_dict.get("instrumentResponse", {})
         redirect_info = instrument_response.get("redirectInfo", {})
+       
         redirect_url = (
             redirect_info.get("url")
             or data_dict.get("redirectUrl")
             or response_data.get("redirectUrl", "")
         )
-
+        # add
+        print("=" * 100)
+        print("DATA DICT =", json.dumps(data_dict, indent=2))
+        print("INSTRUMENT RESPONSE =", json.dumps(instrument_response, indent=2))
+        print("REDIRECT URL =", redirect_url)
+        print("=" * 100)
+        #
         # Extract QR / UPI string so the mobile app can render a scannable QR code
         qr_string = (
             instrument_response.get("qrData")
@@ -297,6 +311,9 @@ def app_buy_course_detail(request, course_id):
             or instrument_response.get("intentUrl")
             or ""
         )
+        # add
+        print("QR STRING =", qr_string)
+        # add
 
         persist_course_payment(
             user_id=user_id,
@@ -309,6 +326,14 @@ def app_buy_course_detail(request, course_id):
             month=resolved_month,
             apply_coupon=apply_coupon,
         )
+        #
+        print("FINAL RESPONSE TO APP")
+        print(json.dumps({
+            "redirectUrl": redirect_url,
+            "qrString": qr_string,
+            "merchant_reference_id": merchant_reference_id,
+        }, indent=2))
+        #
 
         return JsonResponse({
             "status": "success",
@@ -417,16 +442,16 @@ def app_payment_return(request, merchant_reference_id):
         <title>Returning to App</title>
         <script>
           window.onload = function() {{
-            window.location.href = "therapyapp://payment-return";
+            window.location.href = "therapyapp://my-course";
             setTimeout(function() {{
-              window.location.href = "https://mrctherapy.com/";
+              window.location.href = "therapyapp://my-course";
             }}, 1500);
           }};
         </script>
       </head>
       <body style="font-family: Arial, sans-serif; text-align:center; padding:40px;">
         <h2>Returning to app...</h2>
-        <p>If the app does not open, <a href="therapyapp://payment-return">tap here</a>.</p>
+        <p>If the app does not open, <a href="therapyapp://my-course">tap here</a>.</p>
         <p>Reference: {merchant_reference_id}</p>
       </body>
     </html>
@@ -709,3 +734,202 @@ def registration_user_msg(request):
             return JsonResponse({'status': 'invalid json'}, status=400)
             
     return JsonResponse({'status': 'method not allowed'}, status=405)
+
+def get_phonepe_access_token_v2():
+    config = get_phonepe_config()
+
+    environment = config.get("environment", "SANDBOX").upper()
+
+    if environment == "PRODUCTION":
+        url = "https://api.phonepe.com/apis/identity-manager/v1/oauth/token"
+    else:
+        url = "https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token"
+
+    payload = {
+        "client_id": config["client_id"],
+        "client_version": config["client_version"],
+        "client_secret": config["client_secret"],
+        "grant_type": "client_credentials"
+    }
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    response = requests.post(
+        url,
+        data=payload,
+        headers=headers,
+        timeout=30
+    )
+
+    response.raise_for_status()
+
+    token_response = response.json()
+
+    return {
+        "access_token": token_response["access_token"],
+        "expires_at": token_response.get("expires_at"),
+        "token_type": token_response.get("token_type", "O-Bearer")
+    }
+
+def create_phonepe_sdk_order_v2(
+    user_id,
+    course_id,
+    month,
+    apply_coupon=""
+):
+    course_price, discount, resolved_month = resolve_checkout_amount(
+        course_id,
+        month,
+        apply_coupon
+    )
+
+    token_data = get_phonepe_access_token_v2()
+
+    access_token = token_data["access_token"]
+
+    merchant_order_id = generate_tran_id()
+
+    payload = {
+        "merchantOrderId": merchant_order_id,
+        "amount": int(course_price * 100),
+        "expireAfter": 1200,
+        "metaInfo": {
+            "udf1": str(user_id),
+            "udf2": str(course_id),
+            "udf3": str(resolved_month),
+            "udf4": apply_coupon or "",
+            "udf5": "therapyapp",
+            "udf6": "Test1",
+            "udf7": "Test11",
+            "udf8": "Test1",
+            "udf9": "Test1",
+            "udf10": "Test1",
+            "udf11": "Test1",
+            "udf12": "Test1",
+            "udf13": "Test1",
+            "udf14": "Test1",
+            "udf15": "Test1"
+        },
+        "paymentFlow": {
+            "type": "PG_CHECKOUT",
+        }
+    }
+
+    env = get_phonepe_config().get(
+        "environment",
+        "SANDBOX"
+    ).upper()
+
+    if env == "PRODUCTION":
+        url = "https://api.phonepe.com/apis/pg/checkout/v2/sdk/order"
+    else:
+        url = "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/sdk/order"
+
+    headers = {
+        "Authorization": f"O-Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(
+        url,
+        json=payload,
+        headers=headers,
+        timeout=30
+    )
+
+    response.raise_for_status()
+
+    return {
+        "phonepe_response": response.json(),
+        "access_token": access_token,
+        "merchant_order_id": merchant_order_id,
+        "amount": course_price,
+        "discount": discount,
+        "month": resolved_month
+    }
+
+
+@csrf_exempt
+def app_buy_course_sdk(request, course_id):
+
+    if request.method != "POST":
+        return JsonResponse(
+            {"status": "failed", "msg": "Method not allowed"},
+            status=405
+        )
+
+    user_id = (
+        request.session.get("user_id")
+        or request.POST.get("user_id")
+    )
+
+    month = request.POST.get("month")
+
+    apply_coupon = (
+        request.POST.get("apply_coupon")
+        or request.POST.get("coupon_code")
+        or ""
+    )
+
+    if not user_id:
+        return JsonResponse(
+            {
+                "status": "failed",
+                "msg": "user_id is required"
+            },
+            status=400
+        )
+
+    try:
+
+        sdk_order = create_phonepe_sdk_order_v2(
+            user_id=user_id,
+            course_id=course_id,
+            month=month,
+            apply_coupon=apply_coupon
+        )
+
+        sdk_response = sdk_order["phonepe_response"]
+
+        order_id = sdk_response["orderId"]
+        token = sdk_response["token"]
+
+        persist_course_payment(
+            user_id=user_id,
+            course_id=course_id,
+            order_id=order_id,
+            access_token=sdk_order["access_token"],
+            merchant_reference_id=sdk_order["merchant_order_id"],
+            course_price=sdk_order["amount"],
+            discount=sdk_order["discount"],
+            month=sdk_order["month"],
+            apply_coupon=apply_coupon
+        )
+        phonepe_config = get_phonepe_config()
+        return JsonResponse({
+            "status": "success",
+            "orderId": order_id,
+            "token": token,
+            "paymentMode": {
+                "type": "PAY_PAGE"
+            },
+            "state": sdk_response.get("state"),
+            "expireAt": sdk_response.get("expireAt"),
+            "merchantId": phonepe_config["merchant_id"],
+            "phonePeEnvironment": phonepe_config["environment"],
+            "merchant_reference_id": sdk_order["merchant_order_id"],
+            "amount": sdk_order["amount"],
+            "discount": sdk_order["discount"],
+            "month": sdk_order["month"]
+        })
+
+    except Exception as e:
+        return JsonResponse(
+            {
+                "status": "failed",
+                "msg": str(e)
+            },
+            status=500
+        )
