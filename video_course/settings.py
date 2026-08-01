@@ -70,25 +70,17 @@ WSGI_APPLICATION = 'video_course.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'mrc_college',
-#         'USER': 'root',
-#         'PASSWORD': 'Hello12345678#$@',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mrc_college',
         'USER': 'sanjay',
         'PASSWORD': 'Hello12345678#$@',
-        'HOST': '145.223.18.243',
+        'HOST': 'localhost',
         'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
 
